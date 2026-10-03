@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA — Mémoire de projet</title>
+<meta name="description" content="Projet 360 — NOVA : état du projet au 30 septembre 2026, réponses sourcées, chronologie, actions et mises à jour.">
+<!--STYLES-->
+</head>
+<body>
+<a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+<header class="entete">
+  <div class="entete-haut">
+    <div class="titre-bloc">
+      <h1>NOVA <span class="titre-fin">— Mémoire de projet</span></h1>
+      <p class="situation" id="situation"></p>
+    </div>
+    <form class="recherche-rapide" id="form-question" role="search">
+      <label for="champ-question" class="visuellement-cache">Poser une question sur le projet</label>
+      <input id="champ-question" type="search" placeholder="Poser une question… ex. : quelle est la date approuvée ?" autocomplete="off">
+      <button type="submit" class="bouton primaire">Chercher</button>
+    </form>
+  </div>
+  <div class="bandeau-version" id="bandeau-version" hidden></div>
+  <nav class="onglets" aria-label="Espaces de l'application">
+    <button type="button" data-onglet="vue">1. Vue d'ensemble</button>
+    <button type="button" data-onglet="questions">2. Questions et preuves</button>
+    <button type="button" data-onglet="historique">3. Historique et décisions</button>
+    <button type="button" data-onglet="actions">4. Actions</button>
+    <button type="button" data-onglet="documents">5. Documents et mises à jour</button>
+  </nav>
+</header>
+
+<main id="contenu" tabindex="-1"></main>
+
+<footer class="pied">
+  <p id="pied-texte"></p>
+</footer>
+
+<dialog id="visionneuse" aria-labelledby="visionneuse-titre">
+  <div class="visionneuse-entete">
+    <div>
+      <p class="visionneuse-sur" id="visionneuse-sur"></p>
+      <h2 id="visionneuse-titre">Preuve</h2>
+    </div>
+    <button type="button" class="bouton" id="visionneuse-fermer">Fermer <span aria-hidden="true">✕</span></button>
+  </div>
+  <div class="visionneuse-corps" id="visionneuse-corps"></div>
+</dialog>
+
+<div id="zone-impression" aria-hidden="true"></div>
+<div id="annonce" class="visuellement-cache" aria-live="polite"></div>
+
+<!--DONNEES-->
+<!--SCRIPTS-->
+</body>
+</html>

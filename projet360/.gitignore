@@ -1,0 +1,5 @@
+# Corpus brut du défi et rendu autonome (qui embarque le corpus) : hors git par défaut.
+# Voir MODE_EMPLOI.md, section « Données et git ».
+corpus/
+dist/
+node_modules/
