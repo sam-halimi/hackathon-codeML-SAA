@@ -1,136 +1,149 @@
+// Génère docs/deck/Boussole-pitch.pptx (3 diapos). NODE_PATH doit contenir pptxgenjs.
 const pptxgen = require('pptxgenjs');
+const fs = require('fs');
 const path = require('path');
 const pres = new pptxgen();
-pres.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5
+pres.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 in
 pres.title = 'Boussole — pitch';
 pres.theme = { headFontFace: 'Calibri', bodyFontFace: 'Calibri' };
-const NAVY = '0F1B2D', NAVY2 = '1B2B44', CREAM = 'F6F1EA', AMBER = 'E8A33D', RED = 'C8553D', MUTED = 'A9B1BD';
+const NAVY = '0F1B2D', CARD = '18263C', CREAM = 'F6F1EA', AMBER = 'E8A33D', RED = 'E06A50', MUTED = '9AA6B8';
 const A = (p) => path.join(__dirname, '..', 'assets', p);
 const URL = process.env.SITE_URL || 'sam-halimi.github.io/hackathon-codeML-SAA';
+const T = (s, text, o) => s.addText(text, { margin: 0, isTextBox: true, ...o });
 
-function logo(s) {
-  s.addShape(pres.shapes.OVAL, { x: 0.5, y: 0.4, w: 0.42, h: 0.42, line: { color: AMBER, width: 2 }, fill: { type: 'none' } });
-  s.addShape(pres.shapes.DIAMOND, { x: 0.635, y: 0.43, w: 0.15, h: 0.36, fill: { color: AMBER }, line: { color: AMBER } });
-  s.addText('Boussole', { x: 1.0, y: 0.38, w: 3, h: 0.46, fontSize: 22, bold: true, color: CREAM, margin: 0, isTextBox: true });
-}
-function fictif(s) {
-  s.addText('DONNÉES FICTIVES · PROTOTYPE', { x: 9.8, y: 7.02, w: 3.1, h: 0.3, fontSize: 10, bold: true, color: RED, align: 'right', margin: 0, isTextBox: true });
+function frame(s, kicker, title) {
+  s.background = { color: NAVY };
+  s.addShape(pres.shapes.OVAL, { x: 0.6, y: 0.42, w: 0.34, h: 0.34, line: { color: AMBER, width: 1.75 }, fill: { type: 'none' } });
+  s.addShape(pres.shapes.DIAMOND, { x: 0.715, y: 0.45, w: 0.11, h: 0.28, fill: { color: AMBER }, line: { color: AMBER } });
+  T(s, 'Boussole', { x: 1.04, y: 0.4, w: 2.5, h: 0.38, fontSize: 18, bold: true, color: CREAM });
+  T(s, kicker, { x: 8.73, y: 0.42, w: 4, h: 0.34, fontSize: 12, bold: true, color: AMBER, align: 'right', charSpacing: 3 });
+  T(s, title, { x: 0.6, y: 0.95, w: 12.1, h: 0.85, fontSize: 38, bold: true, color: CREAM });
 }
 
-// ---------- Diapo 1 : Léa + 4 fuites ----------
+// ===== Diapo 1 : contexte et problème =====
 {
-  const s = pres.addSlide(); s.background = { color: NAVY }; logo(s);
-  s.addText('3:00', { x: 8.6, y: 0.2, w: 4.3, h: 1.5, fontSize: 96, bold: true, color: NAVY2, align: 'right', margin: 0, isTextBox: true });
-  s.addText([
-    { text: 'La preuve a une date ', options: { color: CREAM } },
-    { text: "d'expiration", options: { color: RED } },
-  ], { x: 0.5, y: 1.25, w: 12.3, h: 0.9, fontSize: 40, bold: true, margin: 0, isTextBox: true });
-  s.addText('Le dossier fuit à 4 endroits', { x: 0.5, y: 2.1, w: 12, h: 0.5, fontSize: 20, color: MUTED, margin: 0, isTextBox: true });
-  const leaks = [
-    ['1 · Où aller ?', '3', 'hôpitaux avant d\'obtenir une trousse (Montréal, 2020)'],
-    ['2 · La première nuit', '24 h', 'après, le sang ne révèle plus la plupart des drogues'],
-    ['3 · La police', '6 %', 'des agressions signalées · 640 / 1 000 sans accusation'],
-    ['4 · Le tribunal', '1 / 3', 'des causes dépassent les délais Jordan (2022-23)'],
+  const s = pres.addSlide();
+  frame(s, '01 · LE PROBLÈME', [{ text: 'La preuve a une date ' }, { text: "d'expiration", options: { color: RED } }]);
+  T(s, [{ text: 'Au Canada, seulement ', options: {} }, { text: '6 %', options: { bold: true, color: AMBER } }, { text: ' des agressions sexuelles sont signalées à la police. Et le dossier fuit à chaque étape.' }],
+    { x: 0.6, y: 1.8, w: 12.1, h: 0.45, fontSize: 18, color: MUTED });
+  const cards = [
+    { img: 'articles/noovo.jpg', step: '1 · OÙ ALLER ?', src: 'Noovo · 2023', head: '« Pourquoi a-t-on refusé une trousse médicolégale à une femme francophone ? »', big: '3 hôpitaux', cap: "avant d'obtenir une trousse" },
+    { img: null, step: '2 · LA PREMIÈRE NUIT', src: 'Norme ANSI/ASB 121', head: 'La plupart des drogues ne sont plus détectables dans le sang après 24 h.', big: '24 h', cap: 'pour la toxicologie sanguine' },
+    { img: 'articles/globe2.jpg', step: '3 · LA POLICE', src: 'The Globe and Mail · enquête « Unfounded »', head: '« Will police believe you? »', big: '1 sur 5', cap: 'plaintes classées « non fondées »' },
+    { img: 'articles/cbc.jpg', step: '4 · LE TRIBUNAL', src: 'CBC News · 2025', head: '« Hundreds of stayed sexual assault cases send chilling message to victims »', big: '1 sur 3', cap: 'causes au-delà des délais Jordan' },
   ];
-  const w = 2.9, gap = 0.233, y = 2.95;
-  leaks.forEach(([lab, big, cap], i) => {
-    const x = 0.5 + i * (w + gap);
-    const hi = i === 1;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 3.1, rectRadius: 0.12, fill: { color: NAVY2 }, line: { color: hi ? AMBER : NAVY2, width: hi ? 2.5 : 0.5 } });
-    s.addText(lab, { x: x + 0.25, y: y + 0.25, w: w - 0.5, h: 0.4, fontSize: 16, bold: true, color: hi ? AMBER : CREAM, margin: 0, isTextBox: true });
-    s.addText(big, { x: x + 0.25, y: y + 0.8, w: w - 0.5, h: 1.1, fontSize: 60, bold: true, color: RED, margin: 0, isTextBox: true });
-    s.addText(cap, { x: x + 0.25, y: y + 2.0, w: w - 0.5, h: 0.9, fontSize: 14, color: CREAM, margin: 0, valign: 'top', isTextBox: true });
+  const w = 2.85, gap = 0.233, y = 2.5, ph = 1.45;
+  cards.forEach((c, i) => {
+    const x = 0.6 + i * (w + gap);
+    const hi = !c.img;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 3.85, rectRadius: 0.1, fill: { color: CARD }, line: { color: hi ? AMBER : CARD, width: hi ? 2 : 0.5 } });
+    if (c.img) {
+      s.addImage({ path: A(c.img), x, y, w, h: ph, sizing: { type: 'cover', w, h: ph } });
+    } else {
+      s.addShape(pres.shapes.RECTANGLE, { x: x + 0.02, y: y + 0.02, w: w - 0.04, h: ph - 0.02, fill: { color: AMBER }, line: { color: AMBER } });
+      T(s, '03:00', { x, y: y + 0.25, w, h: 0.9, fontSize: 54, bold: true, color: NAVY, align: 'center' });
+    }
+    T(s, c.step, { x: x + 0.2, y: y + ph + 0.15, w: w - 0.4, h: 0.28, fontSize: 11, bold: true, color: AMBER, charSpacing: 2 });
+    T(s, c.head, { x: x + 0.2, y: y + ph + 0.45, w: w - 0.4, h: 0.8, fontSize: 12, italic: true, color: CREAM, valign: 'top' });
+    T(s, c.big, { x: x + 0.2, y: y + ph + 1.25, w: w - 0.4, h: 0.6, fontSize: 30, bold: true, color: RED });
+    T(s, c.cap, { x: x + 0.2, y: y + ph + 1.85, w: w - 0.4, h: 0.28, fontSize: 12, color: MUTED });
+    T(s, c.src, { x: x + 0.2, y: y + 3.85 - 0.32, w: w - 0.4, h: 0.22, fontSize: 9, color: MUTED });
   });
-  s.addText("Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.", { x: 0.5, y: 6.25, w: 12.3, h: 0.5, fontSize: 18, italic: true, color: CREAM, margin: 0, isTextBox: true });
-  s.addText('Léa : personnage fictif. Sources : StatCan (ESG 2019 ; 2015-19), ANSI/ASB 121, Noovo 2020, Ombudsman fédéral des victimes 2022-23, INSPQ 2018.', { x: 0.5, y: 6.95, w: 9.2, h: 0.35, fontSize: 10, color: MUTED, margin: 0, isTextBox: true });
-  s.addNotes(`PERSONNE 1 (0:00–0:50)
-Imaginez Léa. Elle est fictive, mais tout ce qui lui arrive est documenté. Léa a 22 ans. Il est 3 h du matin. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec un trou de près de trois heures dans sa soirée. À l'urgence, elle raconte son histoire quatre fois. Chaque fois, on lui demande l'heure exacte. Elle ne s'en souvient pas. Et elle ne sait pas encore si elle veut porter plainte. [PAUSE]
-Le dossier de Léa va fuir à quatre endroits. Un : où aller ? En 2020, une victime a fait trois hôpitaux de Montréal avant d'obtenir une trousse. Deux : la première nuit. La preuve expire : après 24 heures, le sang ne révèle plus la plupart des drogues. Trois : la police. Seulement 6 % des agressions sont signalées ; sur mille, 640 finissent sans accusation. Quatre : le tribunal. Près d'une cause sur trois dépasse les délais Jordan.
+  T(s, "Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.", { x: 0.6, y: 6.55, w: 12.1, h: 0.4, fontSize: 17, italic: true, color: CREAM });
+  T(s, 'Sources : StatCan (ESG 2019 ; affaires 2015-19), Noovo, The Globe and Mail, CBC, Ombudsman fédéral des victimes (2022-23), ANSI/ASB 121. Léa : personnage fictif.', { x: 0.6, y: 7.0, w: 12.1, h: 0.25, fontSize: 9, color: MUTED });
+  s.addNotes(`PERSONNE 1 (0:00–0:50) · Histoire + chiffres
+Imaginez Léa. Elle est fictive, mais tout ce qui lui arrive est documenté. Léa a 22 ans. Il est 3 h du matin. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec un trou de près de trois heures dans sa soirée. À l'urgence, elle raconte son histoire quatre fois. On lui demande l'heure exacte ; elle ne s'en souvient pas. Et elle ne sait pas encore si elle veut porter plainte. [PAUSE]
+Au Canada, seulement 6 % des agressions sexuelles sont signalées. Et le dossier fuit à quatre endroits. Où aller : une victime a fait trois hôpitaux de Montréal avant d'obtenir une trousse. La première nuit : après 24 heures, le sang ne révèle plus la plupart des drogues. La police : une plainte sur cinq classée « non fondée ». Le tribunal : près d'une cause sur trois dépasse les délais Jordan.
 Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.
 
-PERSONNE 2 (0:50–1:05)
-[SEULEMENT SI VRAI : une phrase personnelle, sinon la supprimer.]
-Au Québec, une femme sur quatre. Statistiquement, chacun de nous connaît quelqu'un qui l'a vécu, souvent sans le savoir. On est trois étudiants, et on a décidé de travailler sur la sécurité qui compte le plus : celle d'une personne, et de sa preuve.`);
+PERSONNE 2 (0:50–1:05) · Nous
+[SEULEMENT SI VRAI : une phrase personnelle.] Au Québec, une femme sur quatre. Statistiquement, chacun de nous connaît quelqu'un qui l'a vécu. On a choisi la sécurité qui compte le plus : celle d'une personne, et de sa preuve.`);
 }
 
-// ---------- Diapo 2 : solution + clip ----------
-function slide2(withVideo) {
-  const s = pres.addSlide(); s.background = { color: NAVY }; logo(s); fictif(s);
-  if (!withVideo) s.hidden = true;
-  s.addText('La première nuit, sans perdre la preuve', { x: 0.5, y: 1.0, w: 12.3, h: 0.7, fontSize: 36, bold: true, color: CREAM, margin: 0, isTextBox: true });
-  if (withVideo) {
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.45, y: 1.95, w: 7.7, h: 4.36, rectRadius: 0.08, fill: { color: AMBER } });
-    if (process.env.NOVIDEO) s.addImage({ path: A('screens/04-checklist.png'), x: 0.5, y: 2.0, w: 7.6, h: 4.26 }); else s.addMedia({ type: 'video', path: A('video/boussole-demo-light.mp4'), cover: 'data:image/png;base64,' + require('fs').readFileSync(A('screens/04-checklist.png')).toString('base64'), x: 0.5, y: 2.0, w: 7.6, h: 4.26 });
-  } else {
-    const shots = [['04-checklist.png', 'Règles : les délais, sans IA'], ['07-validation.png', 'IA : cite ses sources, ne juge pas'], ['09-alteration.png', 'Humain : valide ; journal prouvé']];
-    shots.forEach(([f, cap], i) => {
-      const x = 0.5 + i * 2.6;
-      s.addImage({ path: A('screens/' + f), x, y: 2.3, w: 2.45, h: 1.38 });
-      s.addText(cap, { x, y: 3.75, w: 2.45, h: 0.7, fontSize: 13, color: CREAM, margin: 0, valign: 'top', isTextBox: true });
-    });
-  }
-  const layers = [['RÈGLES', 'Délais et priorités · pas d\'IA', NAVY2, CREAM], ['IA', 'Chronologie, sources, trous · secrétaire, jamais juge', AMBER, NAVY], ['HUMAIN', 'Valide chaque ligne · la victime consent', CREAM, NAVY]];
-  layers.forEach(([t, d, bg, fg], i) => {
-    const y = 1.95 + i * 0.95;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 8.5, y, w: 4.35, h: 0.82, rectRadius: 0.08, fill: { color: bg }, line: { color: bg } });
-    s.addText(t, { x: 8.7, y, w: 1.3, h: 0.82, fontSize: 16, bold: true, color: fg, valign: 'middle', margin: 0, isTextBox: true });
-    s.addText(d, { x: 9.95, y, w: 2.8, h: 0.82, fontSize: 13, color: fg, valign: 'middle', margin: 0, isTextBox: true });
+// ===== Diapo 2 : la solution =====
+{
+  const s = pres.addSlide();
+  frame(s, '02 · NOTRE SOLUTION', [{ text: "L'IA guide. " }, { text: "L'humain décide.", options: { color: AMBER } }]);
+  T(s, "Le copilote des soignants pour la première nuit : un seul récit, des consentements respectés, des délais tenus, une preuve intacte.", { x: 0.6, y: 1.8, w: 12.1, h: 0.45, fontSize: 17, color: MUTED });
+  const vx = 0.6, vy = 2.45, vw = 7.4, vh = vw * 9 / 16;
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: vx - 0.06, y: vy - 0.06, w: vw + 0.12, h: vh + 0.12, rectRadius: 0.08, fill: { color: AMBER }, line: { color: AMBER } });
+  const cover = 'data:image/png;base64,' + fs.readFileSync(A('screens/04-checklist.png')).toString('base64');
+  if (process.env.NOVIDEO) s.addImage({ path: A('screens/04-checklist.png'), x: vx, y: vy, w: vw, h: vh });
+  else s.addMedia({ type: 'video', path: A('video/boussole-demo-light.mp4'), cover, x: vx, y: vy, w: vw, h: vh });
+  T(s, 'Démo réelle du prototype · données 100 % fictives · cliquer pour lancer', { x: vx, y: vy + vh + 0.12, w: vw, h: 0.25, fontSize: 10, color: MUTED });
+  const pillars = [
+    ['1', 'Règles', "Délais et prélèvements prioritaires calculés par des règles écrites, validées. Pas d'IA."],
+    ['2', 'IA (Claude)', 'Range les notes en chronologie, cite chaque source, signale les trous. Secrétaire, jamais juge.'],
+    ['3', 'Humain', 'Le soignant valide chaque ligne. La victime consent à chaque étape.'],
+  ];
+  pillars.forEach(([n, t, d], i) => {
+    const y = 2.45 + i * 1.02;
+    s.addShape(pres.shapes.OVAL, { x: 8.4, y: y + 0.05, w: 0.55, h: 0.55, fill: { color: i === 1 ? AMBER : CARD }, line: { color: AMBER, width: 1.5 } });
+    T(s, n, { x: 8.4, y: y + 0.05, w: 0.55, h: 0.55, fontSize: 18, bold: true, color: i === 1 ? NAVY : AMBER, align: 'center', valign: 'middle' });
+    T(s, t, { x: 9.15, y, w: 3.6, h: 0.32, fontSize: 17, bold: true, color: CREAM });
+    T(s, d, { x: 9.15, y: y + 0.33, w: 3.6, h: 0.62, fontSize: 12, color: MUTED, valign: 'top' });
   });
-  s.addText([
-    { text: 'Pseudonymisation visible : Léa → [PATIENTE]', options: { bullet: true, breakLine: true } },
-    { text: 'Consentement par étape, révocable', options: { bullet: true, breakLine: true } },
-    { text: 'Rien vers la police sans son accord', options: { bullet: true, breakLine: true } },
-    { text: 'Journal SHA-256 : retouche détectée', options: { bullet: true } },
-  ], { x: 8.5, y: 4.85, w: 4.35, h: 1.5, fontSize: 14, color: CREAM, paraSpaceAfter: 4, margin: 0, isTextBox: true });
-  s.addText('En production : hébergement au Canada, chiffrement, EFVP (Loi 25), aucun entraînement sur les données', { x: 0.5, y: 6.55, w: 12.3, h: 0.35, fontSize: 12, color: MUTED, margin: 0, isTextBox: true });
-  s.addNotes(`PERSONNE 3 (1:05–2:05)
-Avant le clip : On ne répare pas les tribunaux. On répare la première nuit, celle où tout commence et où la preuve se perd. Voici Boussole. [CLIC : lancer le clip]
+  T(s, 'VIE PRIVÉE, CONCRÈTEMENT', { x: 8.4, y: 5.55, w: 4.3, h: 0.25, fontSize: 11, bold: true, color: AMBER, charSpacing: 2 });
+  const chips = ['Nom masqué avant l\'IA', 'Consentement révocable', 'Rien vers la police sans accord', 'Journal SHA-256 infalsifiable'];
+  chips.forEach((c, i) => {
+    const x = 8.4 + (i % 2) * 2.2, y = 5.88 + Math.floor(i / 2) * 0.48;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: 2.1, h: 0.38, rectRadius: 0.19, fill: { color: CARD }, line: { color: '2E4262', width: 0.75 } });
+    T(s, c, { x, y, w: 2.1, h: 0.38, fontSize: 10.5, color: CREAM, align: 'center', valign: 'middle' });
+  });
+  T(s, 'Pas de score de crédibilité · pas de coupable désigné · pas de reconnaissance faciale · en production : hébergement au Canada, chiffrement, EFVP Loi 25', { x: 0.6, y: 7.0, w: 12.1, h: 0.25, fontSize: 9, color: MUTED });
+  s.addNotes(`PERSONNE 3 (1:05–2:05) · Solution + démo
+Avant le clip : On ne répare pas les tribunaux. On répare la première nuit, celle où tout commence et où la preuve se perd. Voici Boussole. [CLIC sur la vidéo]
 0–3 s : Retour à 3 h du matin.
 3–8 s : Léa consent étape par étape. Elle peut refuser un prélèvement, et décider plus tard pour la plainte.
-8–16 s : Trente heures depuis les faits, substance soupçonnée. Un moteur de règles, pas l'IA, réordonne tout : peau, encore 18 heures ; VIH, 42 heures ; le sang, c'est trop tard.
-16–26 s : Claude, d'Anthropic, range les notes en chronologie où chaque ligne cite sa phrase source. Le trou de près de trois heures est signalé comme normal après une substance. Et l'IA ne voit jamais son nom.
+8–16 s : Trente heures depuis les faits, substance soupçonnée. Un moteur de règles, pas l'IA, réordonne tout : peau, 18 heures ; VIH, 42 heures ; le sang, c'est trop tard.
+16–26 s : Claude range les notes en chronologie ; chaque ligne cite sa source. Le trou de près de trois heures est signalé comme normal après une substance. Et l'IA ne voit jamais son nom.
 26–29 s : L'IA est une secrétaire, jamais un juge. L'humain valide chaque ligne.
 29–35 s : À l'export, chaque entrée est chaînée par SHA-256. Une retouche, et ça se voit.
-35–40 s : (silence, laisser lire)
-Après le clip : Pas de score de crédibilité, pas de coupable désigné, pas de reconnaissance faciale. En production : hébergé au Canada, chiffré, évaluation Loi 25, aucun entraînement sur les données. Et rien ne part vers la police sans l'accord de Léa.
-${withVideo ? '' : 'PLAN B (diapo cachée) : même texte en 3 temps, en pointant les 3 captures.'}`);
+Après : Pas de score de crédibilité, pas de coupable, pas de reconnaissance faciale. Hébergé au Canada, chiffré, conforme Loi 25. Rien ne part vers la police sans l'accord de Léa.`);
 }
-slide2(true);
-slide2(false); // 2-bis, cachée
 
-// ---------- Diapo 3 : marché + demande + QR ----------
+// ===== Diapo 3 : plan de vente =====
 {
-  const s = pres.addSlide(); s.background = { color: NAVY }; logo(s);
-  s.addText('On vend au soin. Pas à la police.', { x: 0.5, y: 1.0, w: 12.3, h: 0.7, fontSize: 36, bold: true, color: CREAM, margin: 0, isTextBox: true });
-  const cards = [['PAIE', 'Établissements de santé (CISSS / CIUSSS) · centres désignés', 'Licence SaaS / centre / an (hypothèse)'], ['UTILISE', 'Infirmières, médecins, intervenantes', 'Moins de temps administratif'], ['BÉNÉFICIE', 'Victimes', 'Gratuit, toujours']];
-  cards.forEach(([t, a, b], i) => {
-    const x = 0.5 + i * 2.95;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: 1.95, w: 2.75, h: 2.05, rectRadius: 0.1, fill: { color: CREAM }, line: { color: CREAM } });
-    s.addText(t, { x: x + 0.2, y: 2.1, w: 2.35, h: 0.35, fontSize: 14, bold: true, color: AMBER, margin: 0, isTextBox: true });
-    s.addText(a, { x: x + 0.2, y: 2.5, w: 2.35, h: 0.9, fontSize: 15, bold: true, color: NAVY, margin: 0, valign: 'top', isTextBox: true });
-    s.addText(b, { x: x + 0.2, y: 3.45, w: 2.35, h: 0.45, fontSize: 13, color: NAVY, margin: 0, isTextBox: true });
+  const s = pres.addSlide();
+  frame(s, '03 · PLAN DE VENTE', [{ text: 'On vend au soin. ' }, { text: 'Pas à la police.', options: { color: AMBER } }]);
+  T(s, "Client : les établissements de santé (CISSS / CIUSSS) qui hébergent les centres désignés. Gratuit pour les victimes, toujours.", { x: 0.6, y: 1.8, w: 12.1, h: 0.45, fontSize: 17, color: MUTED });
+  const phases = [
+    ['0–3 MOIS', 'Pilote', "1 centre désigné. Financé par subvention (fonds d'aide aux victimes, Mitacs). On mesure l'impact."],
+    ['6–12 MOIS', 'Région', 'Licence SaaS annuelle par centre + mise en place et formation des équipes.'],
+    ['12–24 MOIS', 'Québec → Canada', 'Appels d\'offres régionaux, puis un module de règles par province.'],
+  ];
+  const pw = 2.75, py = 2.5;
+  phases.forEach(([when, t, d], i) => {
+    const x = 0.6 + i * (pw + 0.35);
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y: py, w: pw, h: 2.2, rectRadius: 0.1, fill: { color: i === 0 ? AMBER : CARD }, line: { color: i === 0 ? AMBER : '2E4262', width: 0.75 } });
+    const fg = i === 0 ? NAVY : CREAM;
+    T(s, when, { x: x + 0.2, y: py + 0.18, w: pw - 0.4, h: 0.28, fontSize: 11, bold: true, color: i === 0 ? NAVY : AMBER, charSpacing: 2 });
+    T(s, t, { x: x + 0.2, y: py + 0.5, w: pw - 0.4, h: 0.45, fontSize: 22, bold: true, color: fg });
+    T(s, d, { x: x + 0.2, y: py + 1.0, w: pw - 0.4, h: 1.1, fontSize: 12.5, color: fg, valign: 'top' });
+    if (i < 2) s.addShape(pres.shapes.RIGHT_TRIANGLE, { x: x + pw + 0.1, y: py + 0.95, w: 0.16, h: 0.3, rotate: 0, fill: { color: AMBER }, line: { color: AMBER }, flipH: false });
   });
-  s.addText('Police et DPCP reçoivent le dossier (avec accord), sans l\'acheter · Partenaires : CAVAC, CALACS, LSJML', { x: 0.5, y: 4.15, w: 8.6, h: 0.4, fontSize: 13, color: MUTED, margin: 0, isTextBox: true });
-  s.addText([
-    { text: 'Track-Kit (7 États US) suit la boîte.', options: { color: CREAM, breakLine: true } },
-    { text: 'Boussole accompagne la personne.', options: { color: AMBER, bold: true } },
-  ], { x: 0.5, y: 4.7, w: 8.6, h: 0.8, fontSize: 18, margin: 0, isTextBox: true });
-  s.addText([
-    { text: 'On cherche 1 centre désigné', options: { breakLine: true } },
-    { text: 'pour un pilote de 3 mois' },
-  ], { x: 0.5, y: 5.6, w: 8.6, h: 0.95, fontSize: 26, bold: true, color: AMBER, margin: 0, isTextBox: true });
-  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 9.55, y: 1.95, w: 3.3, h: 3.75, rectRadius: 0.12, fill: { color: CREAM }, line: { color: CREAM } });
-  s.addImage({ path: A('qr-boussole.png'), x: 9.75, y: 2.1, w: 2.9, h: 2.9 });
-  s.addText('Scannez pour essayer', { x: 9.55, y: 5.0, w: 3.3, h: 0.35, fontSize: 15, bold: true, color: NAVY, align: 'center', margin: 0, isTextBox: true });
-  s.addText(URL, { x: 9.55, y: 5.3, w: 3.3, h: 0.3, fontSize: 10, color: NAVY, align: 'center', margin: 0, isTextBox: true });
-  s.addText("« On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être. »", { x: 0.5, y: 6.75, w: 12.3, h: 0.45, fontSize: 18, italic: true, color: CREAM, margin: 0, isTextBox: true });
-  s.addNotes(`PERSONNE 1 (2:05–2:40)
-Qui paie ? Les établissements de santé, CISSS et CIUSSS, qui hébergent les centres désignés dans les 17 régions. Un cofinancement est possible par les fonds d'aide aux victimes. Notre hypothèse : une licence SaaS par centre et par an, plus la formation et des modules de règles par juridiction.
-La police et le DPCP reçoivent le dossier, mais ne l'achètent pas : c'est un choix de confiance. [PAUSE] Pour les victimes, c'est gratuit, toujours.
-Track-Kit suit la boîte de la trousse jusqu'au labo. Nous, on accompagne la personne et son dossier, pendant la première nuit. Et c'est le moment : 190 recommandations dans Rebâtir la confiance, un tribunal spécialisé voté à l'unanimité.
+  const rows = [
+    ['Paie', 'CISSS / CIUSSS · cofinancement fonds d\'aide aux victimes'],
+    ['Utilise', 'Infirmières, médecins, intervenantes'],
+    ['Reçoit', 'Police et DPCP : le dossier, avec accord, sans l\'acheter'],
+    ['Concurrence', 'Track-Kit (7 États US) suit la boîte. Nous, la personne.'],
+  ];
+  rows.forEach(([k, v], i) => {
+    const y = 4.95 + i * 0.36;
+    T(s, k, { x: 0.6, y, w: 1.5, h: 0.32, fontSize: 13, bold: true, color: AMBER });
+    T(s, v, { x: 2.1, y, w: 7.2, h: 0.32, fontSize: 13, color: CREAM });
+  });
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 9.95, y: 2.5, w: 2.8, h: 3.75, rectRadius: 0.12, fill: { color: CREAM }, line: { color: CREAM } });
+  s.addImage({ path: A('qr-boussole.png'), x: 10.15, y: 2.65, w: 2.4, h: 2.4 });
+  T(s, 'Essayez le prototype', { x: 9.95, y: 5.12, w: 2.8, h: 0.32, fontSize: 15, bold: true, color: NAVY, align: 'center' });
+  T(s, URL, { x: 10.05, y: 5.45, w: 2.6, h: 0.5, fontSize: 9, color: NAVY, align: 'center', valign: 'top' });
+  T(s, [{ text: 'On cherche : ', options: { color: CREAM } }, { text: '1 centre désigné pour un pilote de 3 mois', options: { color: AMBER, bold: true } }], { x: 0.6, y: 6.45, w: 12.1, h: 0.4, fontSize: 20 });
+  T(s, "« On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être. »", { x: 0.6, y: 6.95, w: 12.1, h: 0.3, fontSize: 13, italic: true, color: MUTED });
+  s.addNotes(`PERSONNE 1 (2:05–2:40) · Plan de vente
+On vend au soin, pas à la police. Nos clients : les CISSS et CIUSSS qui hébergent les centres désignés, dans les 17 régions. Étape 1, un pilote de trois mois dans un centre, financé par subvention. Étape 2, une licence annuelle par centre, avec la formation. Étape 3, le Québec puis le Canada, avec un module de règles par province. La police et le DPCP reçoivent le dossier, mais ne l'achètent pas : c'est un choix de confiance. [PAUSE] Pour les victimes, c'est gratuit, toujours. Track-Kit suit la boîte de la trousse. Nous, on accompagne la personne.
 
-PERSONNE 2 (2:40–3:00)
-Le prototype est en ligne : scannez le code. Données fictives, réponse d'IA préenregistrée dans la démo publique. Ce qu'on cherche : un centre désigné pour un pilote de trois mois. On mesurera les récits répétés, les prélèvements dans les délais et le temps administratif. [PAUSE] On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être. (2 s de silence)`);
+PERSONNE 2 (2:40–3:00) · Appel à l'action
+Le prototype est en ligne : scannez le code. Ce qu'on cherche : un centre désigné pour un pilote de trois mois. [PAUSE] On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être.`);
 }
 
 pres.writeFile({ fileName: process.env.OUT || path.join(__dirname, 'Boussole-pitch.pptx') }).then((f) => console.log('wrote', f));
