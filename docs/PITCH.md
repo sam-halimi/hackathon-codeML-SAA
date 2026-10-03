@@ -30,10 +30,10 @@ Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de si
 
 ### Bloc 1 : L'histoire vraie (0:00–0:30) · Personne 1
 
-> Montréal, 2020. Une femme vient d'être agressée sexuellement. Elle se présente à l'Hôpital général de Montréal. On la réoriente : un protocole qui date des années 1970 envoie les victimes francophones ailleurs le soir et la fin de semaine. Deuxième hôpital : le CHUM. Elle obtient enfin sa trousse médicolégale au troisième, Notre-Dame. **Trois hôpitaux**, pendant que la preuve s'efface. [PAUSE]
-> Elle a tenu bon, et cette trousse a fini par faire condamner son agresseur. Mais combien abandonnent en route ?
+> Octobre 2024, université Cornell. Une étudiante de 20 ans dit avoir été droguée, puis violée par sept étudiants. Elle met trois semaines à oser le signaler : bien trop tard pour retrouver une drogue dans son sang. Elle est interrogée par un agent qui n'est pas formé pour ça. Des preuves numériques ne sont jamais examinées. Et la sanction de l'université ? Deux expulsions… et, pour certains, des **dissertations**. [PAUSE] Il a fallu une poursuite civile, ce mois-ci, pour que le procureur rouvre l'enquête.
+> Ce n'est pas qu'aux États-Unis.
 
-*Source : Noovo Info. Cas réel ; la victime n'est pas nommée publiquement, on ne lui donne pas de nom.*
+*Sources : L'Avenir (28 sept. 2026), Radio-Canada. Faits **allégués**, procédure en cours : ne jamais nommer les accusés ni la victime, toujours dire « dit avoir été », « présumé ».*
 
 ### Bloc 2 : Les 4 fuites du dossier (0:25–0:50) · Personne 1 · ~70 mots
 

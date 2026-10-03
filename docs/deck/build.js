@@ -23,18 +23,17 @@ function frame(s, kicker, title) {
 // ===== Diapo 1 : contexte et problème (histoire réelle, Noovo) =====
 {
   const s = pres.addSlide();
-  frame(s, '01 · LE PROBLÈME', [{ text: 'Trois hôpitaux ' }, { text: 'avant une trousse', options: { color: RED } }]);
+  frame(s, '01 · LE PROBLÈME', [{ text: 'Sept étudiants. ' }, { text: 'Des dissertations.', options: { color: RED } }]);
   // Histoire réelle : grande carte gauche
   const lx = 0.6, ly = 2.0, lw = 7.2, ph = 3.0;
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: lx, y: ly, w: lw, h: 4.45, rectRadius: 0.1, fill: { color: CARD }, line: { color: CARD } });
-  s.addImage({ path: A('articles/noovo.jpg'), x: lx, y: ly, w: lw, h: ph, sizing: { type: 'cover', w: lw, h: ph } });
+  s.addImage({ path: A('articles/cornell.jpg'), x: lx, y: ly, w: lw, h: ph, sizing: { type: 'cover', w: lw, h: ph } });
   s.addShape(pres.shapes.RECTANGLE, { x: lx, y: ly + ph - 0.62, w: lw, h: 0.62, fill: { color: NAVY, transparency: 25 }, line: { color: NAVY, transparency: 100 } });
-  T(s, '« Pourquoi a-t-on refusé une trousse médicolégale à une femme francophone ? »', { x: lx + 0.25, y: ly + ph - 0.58, w: lw - 0.5, h: 0.54, fontSize: 15, bold: true, italic: true, color: CREAM, valign: 'middle' });
+  T(s, '« Viol collectif présumé d\'une étudiante par 7 garçons : certains ont été punis avec… des dissertations »', { x: lx + 0.25, y: ly + ph - 0.58, w: lw - 0.5, h: 0.54, fontSize: 15, bold: true, italic: true, color: CREAM, valign: 'middle' });
   T(s, [
-    { text: 'Montréal, 2020. ', options: { bold: true, color: AMBER } },
-    { text: "Une femme agressée sexuellement est réorientée à cause d'un protocole linguistique des années 1970 : Hôpital général de Montréal, puis CHUM, puis Notre-Dame. Elle obtient sa trousse au troisième hôpital. La preuve a fini par faire condamner son agresseur." },
-  ], { x: lx + 0.25, y: ly + ph + 0.15, w: lw - 0.5, h: 1.05, fontSize: 13.5, color: CREAM, valign: 'top' });
-  T(s, 'Noovo Info · cas réel, victime non nommée', { x: lx + 0.25, y: ly + 4.45 - 0.3, w: lw - 0.5, h: 0.22, fontSize: 9, color: MUTED });
+    { text: 'Université Cornell, octobre 2024. ', options: { bold: true, color: AMBER } },
+    { text: "Une étudiante de 20 ans dit avoir été droguée puis violée par sept étudiants. Elle signale trois semaines plus tard, bien après toute fenêtre toxicologique. Interrogée par un agent non formé ; des preuves numériques jamais examinées. Sanction : deux expulsions… et des dissertations. Septembre 2026 : le procureur rouvre l'enquête." },
+  ], { x: lx + 0.25, y: ly + ph + 0.12, w: lw - 0.5, h: 1.25, fontSize: 12.5, color: CREAM, valign: 'top' });
   // Trois fuites à droite
   const items = [
     { img: null, step: 'LA PREMIÈRE NUIT', big: '24 h', cap: 'après, le sang ne révèle plus la plupart des drogues', src: 'ANSI/ASB 121' },
@@ -54,11 +53,10 @@ function frame(s, kicker, title) {
   });
   T(s, [{ text: 'Et seulement ' }, { text: '6 %', options: { bold: true, color: AMBER } }, { text: " des agressions sexuelles sont signalées. Le problème n'est pas la parole des victimes : c'est le dossier qui se construit mal, trop tard, au mauvais endroit." }],
     { x: 0.6, y: 6.6, w: 12.1, h: 0.4, fontSize: 15, italic: true, color: CREAM });
-  T(s, 'Sources : Noovo Info ; StatCan (ESG 2019 ; affaires 2015-19) ; The Globe and Mail ; CBC News ; Ombudsman fédéral des victimes (2022-23) ; ANSI/ASB 121.', { x: 0.6, y: 7.05, w: 12.1, h: 0.22, fontSize: 9, color: MUTED });
+  T(s, 'Sources : L\'Avenir (28 sept. 2026) et Radio-Canada, faits allégués, procédure en cours ; StatCan (ESG 2019 ; affaires 2015-19) ; The Globe and Mail ; CBC News ; Ombudsman fédéral des victimes (2022-23) ; ANSI/ASB 121.', { x: 0.6, y: 7.05, w: 12.1, h: 0.22, fontSize: 9, color: MUTED });
   s.addNotes(`PERSONNE 1 (0:00–0:50) · L'histoire vraie + le problème
-Montréal, 2020. Une femme vient d'être agressée sexuellement. Elle se présente à l'Hôpital général de Montréal. On la réoriente : un protocole qui date des années 1970 envoie les victimes francophones ailleurs le soir et la fin de semaine. Deuxième hôpital : le CHUM. Elle obtient enfin sa trousse médicolégale au troisième, Notre-Dame. Trois hôpitaux, pendant que la preuve s'efface. [PAUSE]
-Elle a tenu bon, et cette trousse a fini par faire condamner son agresseur. Mais combien abandonnent en route ?
-Parce que le dossier fuit partout. La première nuit : après 24 heures, le sang ne révèle plus la plupart des drogues. La police : une plainte sur cinq est classée « non fondée ». Le tribunal : près d'une cause sur trois dépasse les délais Jordan. Et seulement 6 % des agressions sont signalées.
+Octobre 2024, université Cornell. Une étudiante de 20 ans dit avoir été droguée, puis violée par sept étudiants. Elle met trois semaines à oser le signaler : bien trop tard pour retrouver une drogue dans son sang. Elle est interrogée par un agent qui n'est pas formé pour ça. Des preuves numériques ne sont jamais examinées. Et la sanction de l'université ? Deux expulsions… et, pour certains, des dissertations. [PAUSE] Il a fallu une poursuite civile, ce mois-ci, pour que le procureur rouvre l'enquête.
+Ce n'est pas qu'aux États-Unis. Ici, seulement 6 % des agressions sexuelles sont signalées. Et le dossier fuit partout : la première nuit, après 24 heures, le sang ne révèle plus la plupart des drogues. À la police, une plainte sur cinq est classée « non fondée ». Au tribunal, près d'une cause sur trois dépasse les délais Jordan.
 Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.
 
 PERSONNE 2 (0:50–1:05) · Nous
