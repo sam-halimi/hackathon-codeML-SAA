@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0F1B2D;
+  --color-navy-2: #1B2B44;
+  --color-cream: #F6F1EA;
+  --color-amber: #E8A33D;
+  --color-alert: #C8553D;
+  --color-ok: #3E8E63;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body { @apply bg-cream text-navy antialiased; }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}
