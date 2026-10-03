@@ -150,6 +150,8 @@
     if ('etat' in m && ETATS_FERMES.includes(m.etat) && /^conditions\//.test(impact.cible || '')) {
       if (nature !== 'validation_obtenue')
         erreurs.push(`${impact.cible} : une condition ne se ferme qu'avec une « Validation obtenue » (pas un correctif livré).`);
+      if (evenement.source && evenement.source.autorite === 'fournisseur')
+        erreurs.push(`${impact.cible} : une déclaration du fournisseur ne peut pas fermer une condition ; il faut la validation de l'équipe responsable.`);
     }
     if (nature === 'proposition' && 'etat' in m && ETATS_FERMES.includes(m.etat))
       erreurs.push(`${nom} : une proposition ne peut pas fermer un élément.`);

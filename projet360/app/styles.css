@@ -60,6 +60,7 @@ small, .petit { font-size: .85rem; }
 .bandeau-version { max-width: 1240px; margin: 0 auto .3rem; padding: .45rem 1rem; display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; font-size: .92rem; }
 
 main { max-width: 1240px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+main [id] { scroll-margin-top: 175px; }
 main:focus { outline: none; }
 .pied { max-width: 1240px; margin: 0 auto; padding: 1rem; color: var(--texte-doux); font-size: .85rem; border-top: 1px solid var(--bordure); }
 
@@ -211,6 +212,7 @@ mark { background: #ffd966; color: #1b1b1b; padding: 0 .1rem; border-radius: 2px
   html { font-size: 16px; }
   .versus, .pdf-page { grid-template-columns: 1fr; }
   .entete { position: static; }
+  main [id] { scroll-margin-top: 10px; }
   .onglets button { padding: .5rem .55rem; font-size: .88rem; }
 }
 
@@ -233,4 +235,5 @@ mark { background: #ffd966; color: #1b1b1b; padding: 0 .1rem; border-radius: 2px
   .imp .src { color: #444; font-size: 8.6px; }
   .imp .imp-pied { margin-top: 5px; font-size: 8.4px; color: #444; border-top: 1px solid #999; padding-top: 3px; }
   .imp .badge { border: 1px solid #555; background: none !important; color: #000 !important; padding: 0 3px; font-size: 8.6px; }
+  .imp .badge [aria-hidden="true"] { display: none; }
 }

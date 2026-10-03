@@ -113,6 +113,17 @@ export function verifier(charge, C) {
   // 7. Événements : garde-fous appliqués.
   for (const [nom, liste] of [['intégrés', evenements], ['exemples', exemples]]) {
     if (!liste.length) continue;
+    // Chaque passage cité par un impact doit exister dans la source de l'événement.
+    for (const ev of liste) {
+      const doc = ev.source && documents[ev.source.id];
+      if (!doc) { erreurs.push(`Événement ${ev.id} : source « ${ev.source?.id} » sans texte ni fichier lisible.`); continue; }
+      const texte = texteDocument(doc);
+      (ev.impacts || []).forEach((im, i) => {
+        nbPreuves++;
+        if (im.passage && texte && !C.trouverPassage(texte, im.passage))
+          erreurs.push(`Événement ${ev.id}, impact ${i + 1} : passage introuvable dans la source ${ev.source.id} :\n      « ${im.passage.slice(0, 110)} »`);
+      });
+    }
     const { erreurs: errs, journal } = C.appliquerEvenements(op, liste);
     errs.forEach((e) => erreurs.push(`Événement (${nom}) ${e}`));
     journal.forEach((j) => infos.push(`Événement ${j.evenement} (${nom}) : ${j.impacts.length} impact(s) appliqué(s), ${j.refuses.length} refusé(s).`));

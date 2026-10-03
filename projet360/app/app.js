@@ -44,11 +44,12 @@
   function enregistrerSourceEvenement(ev) {
     const s = ev.source;
     if (!s || !s.id) return;
-    if (!SOURCES[s.id]) {
+    if (!SOURCES[s.id] || SOURCES[s.id]._apercu) {
       SOURCES[s.id] = Object.assign({ autorite: 'officielle', titre: s.titre || ev.titre, date: (ev.date || '').slice(0, 10), _evenement: ev.id }, s);
     }
-    if (!DOCS[s.id]) {
-      const f = s.fichier;
+    if (!DOCS[s.id] || DOCS[s.id]._apercu) {
+      // Un fichier joint n'est accepté que s'il s'agit d'une vraie URL de données (pas de HTML injecté).
+      const f = s.fichier && /^data:[\w.+\/-]+;base64,[A-Za-z0-9+/=]+$/.test(s.fichier.dataUrl || '') ? s.fichier : null;
       if (f && /^image\//.test(f.type)) DOCS[s.id] = { genre: 'image', original: f.dataUrl, chemin: f.nom, texteJoint: s.texte };
       else if (f && f.type === 'application/pdf') DOCS[s.id] = { genre: 'pdf', original: f.dataUrl, pages: s.texte ? [{ texte: s.texte }] : [], chemin: f.nom };
       else DOCS[s.id] = { genre: 'texte', texte: s.texte || '(aucun texte fourni)', chemin: (f && f.nom) || '(texte collé dans la mise à jour)' };
@@ -579,6 +580,9 @@
   // Exposé pour les autres parties de l'application.
   window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees };
 
-  recalculer();
-  lireAncre();
+  // Premier affichage une fois tous les scripts chargés (espaces.js, mises_a_jour.js).
+  document.addEventListener('DOMContentLoaded', () => {
+    recalculer();
+    lireAncre();
+  });
 })();

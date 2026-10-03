@@ -1,0 +1,50 @@
+{
+  "id": "MAJ-202610011030",
+  "titre": "Titre court de la nouvelle information",
+  "date": "2026-10-01T10:30:00-04:00",
+  "nature": "proposition",
+  "methode": "Analyse humaine assistée par Claude (déclarée)",
+  "resume": "Qu'est-ce qui vient de changer ? Deux phrases maximum.",
+  "sujets": ["date"],
+  "source": {
+    "id": "NS-202610011030",
+    "titre": "Courriel de … du 1er octobre",
+    "type": "Courriel",
+    "auteur": "Nom (organisation)",
+    "date": "2026-10-01",
+    "autorite": "fournisseur",
+    "texte": "Texte intégral de la source, copié tel quel. Ou bien supprimez cette ligne et utilisez \"chemin\": \"nouvelles_sources/mon_fichier.eml\" (fichier placé dans corpus/nouvelles_sources/)."
+  },
+  "impacts": [
+    {
+      "cible": "conditions/C2",
+      "nature": "correctif_livre",
+      "modifs": { "etat": "correctif_livre" },
+      "note": "Précision affichée sous la condition.",
+      "passage": "Phrase exacte de la source qui justifie ce changement.",
+      "repere": "Courriel, 1er paragraphe"
+    },
+    {
+      "ajouter": "propositions",
+      "nature": "proposition",
+      "objet": { "id": "P-01", "date_proposee": "2026-10-29", "texte": "29 octobre 2026", "propose_par": "Boréal", "motif": "…", "statut": "En attente de décision" },
+      "passage": "Phrase exacte de la source."
+    },
+    {
+      "ajouter": "actions",
+      "nature": "proposition",
+      "objet": { "id": "A12", "titre": "…", "condition": null, "responsable": "…", "responsable_statut": "propose", "echeance": null, "echeance_texte": "À confirmer", "etat": "a_faire", "type": "recommandation" },
+      "passage": "Phrase exacte de la source."
+    },
+    {
+      "cible": "questions/Q01",
+      "nature": "proposition",
+      "note": "Texte de mise à jour affiché au-dessus de la réponse Q01.",
+      "passage": "Phrase exacte de la source."
+    }
+  ],
+  "inchange": [
+    "La date approuvée reste le 22 octobre 2026 : aucune décision.",
+    "C1 et C3 restent ouvertes."
+  ]
+}

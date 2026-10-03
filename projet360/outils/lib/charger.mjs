@@ -103,9 +103,10 @@ export function toutCharger({ embarquer = true, journal = console } = {}) {
   const toutesSources = [...operations.sources, ...sourcesEvenements];
   for (const s of toutesSources) {
     if (s.chemin) {
-      const complet = path.join(racineCorpus, s.chemin);
-      if (!fs.existsSync(complet)) { avertissements.push(`Source ${s.id} : fichier introuvable (${s.chemin}).`); continue; }
-      documents[s.id] = lireDocument(racineCorpus, s.chemin, { dossierCache, embarquerOriginaux: embarquer });
+      // Les nouvelles sources peuvent être dans le kit ou directement dans corpus/ (ex. corpus/nouvelles_sources/).
+      const racine = [racineCorpus, DOSSIER_CORPUS].find((r) => fs.existsSync(path.join(r, s.chemin)));
+      if (!racine) { avertissements.push(`Source ${s.id} : fichier introuvable (${s.chemin}).`); continue; }
+      documents[s.id] = lireDocument(racine, s.chemin, { dossierCache, embarquerOriginaux: embarquer });
     } else if (s.texte) {
       documents[s.id] = { genre: 'texte', texte: s.texte, chemin: '(texte collé dans l\'événement)', ext: '.txt', taille: s.texte.length };
     }

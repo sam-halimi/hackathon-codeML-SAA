@@ -1,0 +1,84 @@
+{
+  "id": "EXEMPLE-01",
+  "exemple": true,
+  "titre": "EXEMPLE FICTIF — Boréal livre ACC-303 et propose le 29 octobre",
+  "date": "2026-10-01T10:30:00-04:00",
+  "nature": "proposition",
+  "methode": "Exemple rédigé par l'équipe pour répéter la démonstration (analyse humaine assistée par Claude). Ce n'est PAS une source du corpus.",
+  "resume": "EXEMPLE FICTIF. Boréal annonce avoir livré le correctif d'ACC-303 dans la build du 1er octobre, et propose de déplacer la mise en production au 29 octobre pour terminer le runbook. Le comité n'a rien décidé.",
+  "sujets": ["accessibilite", "date", "exploitation"],
+  "source": {
+    "id": "EXEMPLE-SRC-01",
+    "titre": "EXEMPLE FICTIF — Courriel de Boréal du 1er octobre",
+    "type": "Courriel",
+    "auteur": "Julien Moreau (Boréal) — fictif",
+    "date": "2026-10-01",
+    "autorite": "fournisseur",
+    "remarque": "Texte inventé pour l'entraînement. Ne fait pas partie du corpus.",
+    "texte": "EXEMPLE FICTIF POUR ENTRAÎNEMENT — NE FAIT PAS PARTIE DU CORPUS\n\nDe : Julien Moreau (Boréal)\nÀ : Nicolas Perron\nDate : 1er octobre 2026, 10 h 30\nObjet : NOVA - ACC-303 et date\n\nBonjour Nicolas,\n\nLe correctif ACC-303 est livré dans la build du 1er octobre. Mélissa peut refaire son test au clavier.\n\nPour le runbook, notre équipe ops a besoin d'une semaine de plus pour la procédure de retour arrière. Nous proposons donc de déplacer la mise en production au 29 octobre.\n\nC'est une proposition : la décision revient au comité.\n\nJulien"
+  },
+  "impacts": [
+    {
+      "cible": "conditions/C2",
+      "nature": "correctif_livre",
+      "modifs": { "etat": "correctif_livre", "detail": "Correctif livré par Boréal dans la build du 1er oct. (exemple) ; ACC-303 reste ouvert jusqu'au re-test de Mélissa Gagnon." },
+      "passage": "Le correctif ACC-303 est livré dans la build du 1er octobre.",
+      "repere": "Courriel fictif, 1er paragraphe"
+    },
+    {
+      "cible": "actions/A02",
+      "nature": "correctif_livre",
+      "modifs": { "etat": "fait" },
+      "note": "Correctif annoncé comme livré (exemple). Son efficacité reste à confirmer par le re-test (A03).",
+      "passage": "Le correctif ACC-303 est livré dans la build du 1er octobre.",
+      "repere": "Courriel fictif, 1er paragraphe"
+    },
+    {
+      "cible": "actions/A03",
+      "nature": "correctif_livre",
+      "modifs": { "etat": "a_faire", "echeance_note": "Le re-test peut commencer : correctif livré le 1er oct. (exemple). Date du re-test à confirmer." },
+      "passage": "Mélissa peut refaire son test au clavier.",
+      "repere": "Courriel fictif, 1er paragraphe"
+    },
+    {
+      "ajouter": "propositions",
+      "nature": "proposition",
+      "objet": { "id": "P-01", "date_proposee": "2026-10-29", "texte": "29 octobre 2026", "propose_par": "Boréal (Julien Moreau)", "motif": "Une semaine de plus pour la procédure de retour arrière du runbook", "statut": "En attente de décision du comité" },
+      "passage": "Nous proposons donc de déplacer la mise en production au 29 octobre.",
+      "repere": "Courriel fictif, 2e paragraphe"
+    },
+    {
+      "ajouter": "actions",
+      "nature": "proposition",
+      "objet": { "id": "A12", "titre": "Faire trancher par le comité de direction la proposition du 29 octobre (Boréal)", "condition": null, "responsable": "Nicolas Perron (comité de direction)", "responsable_statut": "propose", "echeance": null, "echeance_texte": "À confirmer (avant le 22 octobre)", "etat": "a_faire", "type": "recommandation" },
+      "passage": "C'est une proposition : la décision revient au comité.",
+      "repere": "Courriel fictif, 3e paragraphe"
+    },
+    {
+      "cible": "questions/Q01",
+      "nature": "proposition",
+      "note": "Boréal propose le 29 octobre (exemple). Ce n'est pas une décision : la date approuvée reste le 22 octobre 2026, avec ses trois conditions.",
+      "passage": "Nous proposons donc de déplacer la mise en production au 29 octobre.",
+      "repere": "Courriel fictif, 2e paragraphe"
+    },
+    {
+      "cible": "questions/Q09",
+      "nature": "correctif_livre",
+      "note": "Selon Boréal, le correctif d'ACC-303 est livré (exemple). ACC-303 reste ouvert tant que Mélissa Gagnon ne l'a pas re-testé et fermé.",
+      "passage": "Le correctif ACC-303 est livré dans la build du 1er octobre.",
+      "repere": "Courriel fictif, 1er paragraphe"
+    },
+    {
+      "cible": "questions/Q10",
+      "nature": "correctif_livre",
+      "note": "Les trois conditions restent ouvertes (exemple) : C2 a un correctif livré, mais pas encore validé ; le runbook (C3) n'est toujours pas prêt.",
+      "passage": "notre équipe ops a besoin d'une semaine de plus pour la procédure de retour arrière.",
+      "repere": "Courriel fictif, 2e paragraphe"
+    }
+  ],
+  "inchange": [
+    "La date approuvée reste le 22 octobre 2026 : le comité n'a rien décidé.",
+    "C1 (SEC-210) reste en validation : rien de nouveau de l'équipe sécurité.",
+    "C3 (runbook) reste ouvert : Boréal demande plus de temps."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "projet360-nova",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mémoire opérationnelle du projet NOVA (défi Projet 360) : application HTML autonome, sans dépendance.",
+  "type": "module",
+  "scripts": {
+    "verifier": "node outils/verifier.mjs",
+    "construire": "node outils/construire.mjs",
+    "tester": "node outils/tester_navigateur.mjs"
+  },
+  "engines": { "node": ">=18" }
+}
