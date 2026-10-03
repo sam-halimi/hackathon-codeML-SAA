@@ -29,6 +29,7 @@ type Shot = {
   zoom?: [number, number]; // échelle début -> fin
   origin?: string; // transform-origin
   pill?: string;
+  rate?: number; // vitesse de lecture de l'enregistrement
 };
 
 const SHOTS: Shot[] = [
@@ -38,7 +39,8 @@ const SHOTS: Shot[] = [
   { from: 15.5, dur: 4.5, src: 17.6, caption: "Ce que l'IA voit : jamais son nom.", zoom: [1.1, 1.35], origin: "20% 45%", pill: "PSEUDONYMISATION" },
   { from: 20, dur: 6, src: 22.3, caption: "Chaque ligne cite sa source. Le trou de mémoire est signalé sans jugement.", zoom: [1, 1.1], origin: "75% 50%", pill: "IA · SUGGESTIONS" },
   { from: 26, dur: 3, src: 28.5, caption: "L'IA est une secrétaire, jamais un juge. L'humain valide.", zoom: [1.15, 1.2], origin: "75% 85%" },
-  { from: 29, dur: 6, src: 32, caption: "Journal chaîné SHA-256 : toute retouche se voit.", zoom: [1, 1.1], origin: "50% 40%" },
+  { from: 29, dur: 3, src: 31.5, caption: "Journal chaîné SHA-256 : toute retouche se voit.", zoom: [1, 1.06], origin: "50% 40%" },
+  { from: 32, dur: 3, src: 34.8, rate: 0.5, caption: "Une modification après coup ? Détectée.", zoom: [1.06, 1.15], origin: "50% 75%" },
 ];
 
 const Caption: React.FC<{ text: string }> = ({ text }) => {
@@ -71,7 +73,7 @@ const UiShot: React.FC<{ shot: Shot }> = ({ shot }) => {
   return (
     <AbsoluteFill style={{ background: NAVY }}>
       <AbsoluteFill style={{ transform: `scale(${scale})`, transformOrigin: shot.origin ?? "50% 50%" }}>
-        <OffthreadVideo src={staticFile("rec/demo.webm")} trimBefore={s(shot.src)} muted style={{ width: "100%", height: "100%" }} />
+        <OffthreadVideo src={staticFile("rec/demo.webm")} trimBefore={s(shot.src)} playbackRate={shot.rate ?? 1} muted style={{ width: "100%", height: "100%" }} />
       </AbsoluteFill>
       {shot.pill && <Pill text={shot.pill} />}
       <Caption text={shot.caption} />
@@ -154,7 +156,7 @@ export const BoussoleShort: React.FC = () => (
       <UiShot shot={{ ...SHOTS[4], dur: 3 }} />
     </Sequence>
     <Sequence from={s(8.5)} durationInFrames={s(3)}>
-      <UiShot shot={{ ...SHOTS[6], dur: 3, src: 34.5 }} />
+      <UiShot shot={{ ...SHOTS[7], dur: 3 }} />
     </Sequence>
     <Sequence from={s(11.5)} durationInFrames={s(3.5)}>
       <EndCard />

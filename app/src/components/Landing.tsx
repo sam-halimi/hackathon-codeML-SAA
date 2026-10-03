@@ -31,6 +31,11 @@ export default function Landing() {
         </div>
       </section>
 
+      <section className="max-w-5xl mx-auto px-4 pt-16">
+        <video src={`${import.meta.env.BASE_URL}boussole-15s.mp4`} autoPlay muted loop playsInline controls className="w-full rounded-xl shadow-lg border border-navy/10" />
+        <p className="text-xs text-navy/50 mt-2">Enregistrement réel du prototype · données fictives · réponse IA pré-enregistrée</p>
+      </section>
+
       <section className="max-w-5xl mx-auto px-4 py-16">
         <p className="text-sm font-semibold text-alert uppercase tracking-wide">Le problème</p>
         <h2 className="text-3xl font-bold mt-1 max-w-3xl">Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.</h2>
