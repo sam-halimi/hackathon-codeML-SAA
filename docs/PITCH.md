@@ -28,14 +28,12 @@ Cible : **~440 mots** au total, débit posé (~150 mots/min). Chaque bloc indiqu
 
 Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de silence. Les chiffres en **gras** se disent lentement.
 
-### Bloc 1 : L'histoire (0:00–0:25) · Personne 1 · ~60 mots
+### Bloc 1 : L'histoire vraie (0:00–0:30) · Personne 1
 
-> Imaginez Léa. Elle est fictive, mais tout ce qui lui arrive est documenté.
-> Léa a 22 ans. Il est **3 h du matin**. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec **un trou de près de trois heures** dans sa soirée.
-> À l'urgence, elle raconte son histoire **quatre fois**. Chaque fois, on lui demande l'heure exacte. Elle ne s'en souvient pas.
-> Et elle ne sait pas encore si elle veut porter plainte. [PAUSE]
+> Montréal, 2020. Une femme vient d'être agressée sexuellement. Elle se présente à l'Hôpital général de Montréal. On la réoriente : un protocole qui date des années 1970 envoie les victimes francophones ailleurs le soir et la fin de semaine. Deuxième hôpital : le CHUM. Elle obtient enfin sa trousse médicolégale au troisième, Notre-Dame. **Trois hôpitaux**, pendant que la preuve s'efface. [PAUSE]
+> Elle a tenu bon, et cette trousse a fini par faire condamner son agresseur. Mais combien abandonnent en route ?
 
-*Direction : debout, sans regarder l'écran. Pas de musique, pas d'effet.*
+*Source : Noovo Info. Cas réel ; la victime n'est pas nommée publiquement, on ne lui donne pas de nom.*
 
 ### Bloc 2 : Les 4 fuites du dossier (0:25–0:50) · Personne 1 · ~70 mots
 
@@ -89,7 +87,7 @@ Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de si
 
 > Le prototype est en ligne : scannez le code. [geste vers le QR] Données fictives, réponse d'IA préenregistrée dans la démo publique.
 > Ce qu'on cherche : **un centre désigné pour un pilote de trois mois.** On mesurera les récits répétés, les prélèvements dans les délais et le temps administratif.
-> [PAUSE] On ne remplace pas l'humain auprès de Léa. **On lui rend le temps de l'être.**
+> [PAUSE] On ne remplace pas l'humain auprès de la victime. **On lui rend le temps de l'être.**
 
 *Direction : dernière phrase lente, regard sur le jury, ne pas dire « merci » tout de suite (2 s de silence).*
 

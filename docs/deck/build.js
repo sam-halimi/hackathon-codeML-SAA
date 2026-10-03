@@ -20,40 +20,45 @@ function frame(s, kicker, title) {
   T(s, title, { x: 0.6, y: 0.95, w: 12.1, h: 0.85, fontSize: 38, bold: true, color: CREAM });
 }
 
-// ===== Diapo 1 : contexte et problème =====
+// ===== Diapo 1 : contexte et problème (histoire réelle, Noovo) =====
 {
   const s = pres.addSlide();
-  frame(s, '01 · LE PROBLÈME', [{ text: 'La preuve a une date ' }, { text: "d'expiration", options: { color: RED } }]);
-  T(s, [{ text: 'Au Canada, seulement ', options: {} }, { text: '6 %', options: { bold: true, color: AMBER } }, { text: ' des agressions sexuelles sont signalées à la police. Et le dossier fuit à chaque étape.' }],
-    { x: 0.6, y: 1.8, w: 12.1, h: 0.45, fontSize: 18, color: MUTED });
-  const cards = [
-    { img: 'articles/noovo.jpg', step: '1 · OÙ ALLER ?', src: 'Noovo · 2023', head: '« Pourquoi a-t-on refusé une trousse médicolégale à une femme francophone ? »', big: '3 hôpitaux', cap: "avant d'obtenir une trousse" },
-    { img: null, step: '2 · LA PREMIÈRE NUIT', src: 'Norme ANSI/ASB 121', head: 'La plupart des drogues ne sont plus détectables dans le sang après 24 h.', big: '24 h', cap: 'pour la toxicologie sanguine' },
-    { img: 'articles/globe2.jpg', step: '3 · LA POLICE', src: 'The Globe and Mail · enquête « Unfounded »', head: '« Will police believe you? »', big: '1 sur 5', cap: 'plaintes classées « non fondées »' },
-    { img: 'articles/cbc.jpg', step: '4 · LE TRIBUNAL', src: 'CBC News · 2025', head: '« Hundreds of stayed sexual assault cases send chilling message to victims »', big: '1 sur 3', cap: 'causes au-delà des délais Jordan' },
+  frame(s, '01 · LE PROBLÈME', [{ text: 'Trois hôpitaux ' }, { text: 'avant une trousse', options: { color: RED } }]);
+  // Histoire réelle : grande carte gauche
+  const lx = 0.6, ly = 2.0, lw = 7.2, ph = 3.0;
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: lx, y: ly, w: lw, h: 4.45, rectRadius: 0.1, fill: { color: CARD }, line: { color: CARD } });
+  s.addImage({ path: A('articles/noovo.jpg'), x: lx, y: ly, w: lw, h: ph, sizing: { type: 'cover', w: lw, h: ph } });
+  s.addShape(pres.shapes.RECTANGLE, { x: lx, y: ly + ph - 0.62, w: lw, h: 0.62, fill: { color: NAVY, transparency: 25 }, line: { color: NAVY, transparency: 100 } });
+  T(s, '« Pourquoi a-t-on refusé une trousse médicolégale à une femme francophone ? »', { x: lx + 0.25, y: ly + ph - 0.58, w: lw - 0.5, h: 0.54, fontSize: 15, bold: true, italic: true, color: CREAM, valign: 'middle' });
+  T(s, [
+    { text: 'Montréal, 2020. ', options: { bold: true, color: AMBER } },
+    { text: "Une femme agressée sexuellement est réorientée à cause d'un protocole linguistique des années 1970 : Hôpital général de Montréal, puis CHUM, puis Notre-Dame. Elle obtient sa trousse au troisième hôpital. La preuve a fini par faire condamner son agresseur." },
+  ], { x: lx + 0.25, y: ly + ph + 0.15, w: lw - 0.5, h: 1.05, fontSize: 13.5, color: CREAM, valign: 'top' });
+  T(s, 'Noovo Info · cas réel, victime non nommée', { x: lx + 0.25, y: ly + 4.45 - 0.3, w: lw - 0.5, h: 0.22, fontSize: 9, color: MUTED });
+  // Trois fuites à droite
+  const items = [
+    { img: null, step: 'LA PREMIÈRE NUIT', big: '24 h', cap: 'après, le sang ne révèle plus la plupart des drogues', src: 'ANSI/ASB 121' },
+    { img: 'articles/globe2.jpg', step: 'LA POLICE', big: '1 sur 5', cap: 'plaintes classées « non fondées »', src: 'The Globe and Mail' },
+    { img: 'articles/cbc.jpg', step: 'LE TRIBUNAL', big: '1 sur 3', cap: 'causes au-delà des délais Jordan', src: 'CBC · Ombudsman fédéral' },
   ];
-  const w = 2.85, gap = 0.233, y = 2.5, ph = 1.45;
-  cards.forEach((c, i) => {
-    const x = 0.6 + i * (w + gap);
-    const hi = !c.img;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 3.85, rectRadius: 0.1, fill: { color: CARD }, line: { color: hi ? AMBER : CARD, width: hi ? 2 : 0.5 } });
-    if (c.img) {
-      s.addImage({ path: A(c.img), x, y, w, h: ph, sizing: { type: 'cover', w, h: ph } });
-    } else {
-      s.addShape(pres.shapes.RECTANGLE, { x: x + 0.02, y: y + 0.02, w: w - 0.04, h: ph - 0.02, fill: { color: AMBER }, line: { color: AMBER } });
-      T(s, '03:00', { x, y: y + 0.25, w, h: 0.9, fontSize: 54, bold: true, color: NAVY, align: 'center' });
-    }
-    T(s, c.step, { x: x + 0.2, y: y + ph + 0.15, w: w - 0.4, h: 0.28, fontSize: 11, bold: true, color: AMBER, charSpacing: 2 });
-    T(s, c.head, { x: x + 0.2, y: y + ph + 0.45, w: w - 0.4, h: 0.8, fontSize: 12, italic: true, color: CREAM, valign: 'top' });
-    T(s, c.big, { x: x + 0.2, y: y + ph + 1.25, w: w - 0.4, h: 0.6, fontSize: 30, bold: true, color: RED });
-    T(s, c.cap, { x: x + 0.2, y: y + ph + 1.85, w: w - 0.4, h: 0.28, fontSize: 12, color: MUTED });
-    T(s, c.src, { x: x + 0.2, y: y + 3.85 - 0.32, w: w - 0.4, h: 0.22, fontSize: 9, color: MUTED });
+  const rx = 8.05, rw = 4.68, rh = 1.38;
+  items.forEach((c, i) => {
+    const y = ly + i * (rh + 0.155);
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: rx, y, w: rw, h: rh, rectRadius: 0.1, fill: { color: CARD }, line: { color: c.img ? CARD : AMBER, width: c.img ? 0.5 : 1.75 } });
+    if (c.img) s.addImage({ path: A(c.img), x: rx, y, w: 1.45, h: rh, sizing: { type: 'cover', w: 1.45, h: rh } });
+    else { s.addShape(pres.shapes.RECTANGLE, { x: rx + 0.02, y: y + 0.02, w: 1.43, h: rh - 0.04, fill: { color: AMBER }, line: { color: AMBER } }); T(s, '03:00', { x: rx, y, w: 1.45, h: rh, fontSize: 24, bold: true, color: NAVY, align: 'center', valign: 'middle' }); }
+    T(s, c.step, { x: rx + 1.62, y: y + 0.12, w: 2.9, h: 0.24, fontSize: 10, bold: true, color: AMBER, charSpacing: 2 });
+    T(s, c.big, { x: rx + 1.62, y: y + 0.36, w: 2.9, h: 0.48, fontSize: 26, bold: true, color: RED });
+    T(s, c.cap, { x: rx + 1.62, y: y + 0.84, w: 2.95, h: 0.32, fontSize: 11, color: CREAM });
+    T(s, c.src, { x: rx + 1.62, y: y + 1.12, w: 2.9, h: 0.2, fontSize: 8.5, color: MUTED });
   });
-  T(s, "Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.", { x: 0.6, y: 6.55, w: 12.1, h: 0.4, fontSize: 17, italic: true, color: CREAM });
-  T(s, 'Sources : StatCan (ESG 2019 ; affaires 2015-19), Noovo, The Globe and Mail, CBC, Ombudsman fédéral des victimes (2022-23), ANSI/ASB 121. Léa : personnage fictif.', { x: 0.6, y: 7.0, w: 12.1, h: 0.25, fontSize: 9, color: MUTED });
-  s.addNotes(`PERSONNE 1 (0:00–0:50) · Histoire + chiffres
-Imaginez Léa. Elle est fictive, mais tout ce qui lui arrive est documenté. Léa a 22 ans. Il est 3 h du matin. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec un trou de près de trois heures dans sa soirée. À l'urgence, elle raconte son histoire quatre fois. On lui demande l'heure exacte ; elle ne s'en souvient pas. Et elle ne sait pas encore si elle veut porter plainte. [PAUSE]
-Au Canada, seulement 6 % des agressions sexuelles sont signalées. Et le dossier fuit à quatre endroits. Où aller : une victime a fait trois hôpitaux de Montréal avant d'obtenir une trousse. La première nuit : après 24 heures, le sang ne révèle plus la plupart des drogues. La police : une plainte sur cinq classée « non fondée ». Le tribunal : près d'une cause sur trois dépasse les délais Jordan.
+  T(s, [{ text: 'Et seulement ' }, { text: '6 %', options: { bold: true, color: AMBER } }, { text: " des agressions sexuelles sont signalées. Le problème n'est pas la parole des victimes : c'est le dossier qui se construit mal, trop tard, au mauvais endroit." }],
+    { x: 0.6, y: 6.6, w: 12.1, h: 0.4, fontSize: 15, italic: true, color: CREAM });
+  T(s, 'Sources : Noovo Info ; StatCan (ESG 2019 ; affaires 2015-19) ; The Globe and Mail ; CBC News ; Ombudsman fédéral des victimes (2022-23) ; ANSI/ASB 121.', { x: 0.6, y: 7.05, w: 12.1, h: 0.22, fontSize: 9, color: MUTED });
+  s.addNotes(`PERSONNE 1 (0:00–0:50) · L'histoire vraie + le problème
+Montréal, 2020. Une femme vient d'être agressée sexuellement. Elle se présente à l'Hôpital général de Montréal. On la réoriente : un protocole qui date des années 1970 envoie les victimes francophones ailleurs le soir et la fin de semaine. Deuxième hôpital : le CHUM. Elle obtient enfin sa trousse médicolégale au troisième, Notre-Dame. Trois hôpitaux, pendant que la preuve s'efface. [PAUSE]
+Elle a tenu bon, et cette trousse a fini par faire condamner son agresseur. Mais combien abandonnent en route ?
+Parce que le dossier fuit partout. La première nuit : après 24 heures, le sang ne révèle plus la plupart des drogues. La police : une plainte sur cinq est classée « non fondée ». Le tribunal : près d'une cause sur trois dépasse les délais Jordan. Et seulement 6 % des agressions sont signalées.
 Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.
 
 PERSONNE 2 (0:50–1:05) · Nous
@@ -94,12 +99,12 @@ PERSONNE 2 (0:50–1:05) · Nous
   s.addNotes(`PERSONNE 3 (1:05–2:05) · Solution + démo
 Avant le clip : On ne répare pas les tribunaux. On répare la première nuit, celle où tout commence et où la preuve se perd. Voici Boussole. [CLIC sur la vidéo]
 0–3 s : Retour à 3 h du matin.
-3–8 s : Léa consent étape par étape. Elle peut refuser un prélèvement, et décider plus tard pour la plainte.
+3–8 s : Dans notre démo, un cas fictif : elle consent étape par étape. Elle peut refuser un prélèvement, et décider plus tard pour la plainte.
 8–16 s : Trente heures depuis les faits, substance soupçonnée. Un moteur de règles, pas l'IA, réordonne tout : peau, 18 heures ; VIH, 42 heures ; le sang, c'est trop tard.
 16–26 s : Claude range les notes en chronologie ; chaque ligne cite sa source. Le trou de près de trois heures est signalé comme normal après une substance. Et l'IA ne voit jamais son nom.
 26–29 s : L'IA est une secrétaire, jamais un juge. L'humain valide chaque ligne.
 29–35 s : À l'export, chaque entrée est chaînée par SHA-256. Une retouche, et ça se voit.
-Après : Pas de score de crédibilité, pas de coupable, pas de reconnaissance faciale. Hébergé au Canada, chiffré, conforme Loi 25. Rien ne part vers la police sans l'accord de Léa.`);
+Après : Pas de score de crédibilité, pas de coupable, pas de reconnaissance faciale. Hébergé au Canada, chiffré, conforme Loi 25. Rien ne part vers la police sans l'accord de la victime.`);
 }
 
 // ===== Diapo 3 : plan de vente =====
@@ -138,12 +143,12 @@ Après : Pas de score de crédibilité, pas de coupable, pas de reconnaissance f
   T(s, 'Essayez le prototype', { x: 9.95, y: 5.12, w: 2.8, h: 0.32, fontSize: 15, bold: true, color: NAVY, align: 'center' });
   T(s, URL, { x: 10.05, y: 5.45, w: 2.6, h: 0.5, fontSize: 9, color: NAVY, align: 'center', valign: 'top' });
   T(s, [{ text: 'On cherche : ', options: { color: CREAM } }, { text: '1 centre désigné pour un pilote de 3 mois', options: { color: AMBER, bold: true } }], { x: 0.6, y: 6.45, w: 12.1, h: 0.4, fontSize: 20 });
-  T(s, "« On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être. »", { x: 0.6, y: 6.95, w: 12.1, h: 0.3, fontSize: 13, italic: true, color: MUTED });
+  T(s, "« On ne remplace pas l'humain auprès de la victime. On lui rend le temps de l'être. »", { x: 0.6, y: 6.95, w: 12.1, h: 0.3, fontSize: 13, italic: true, color: MUTED });
   s.addNotes(`PERSONNE 1 (2:05–2:40) · Plan de vente
 On vend au soin, pas à la police. Nos clients : les CISSS et CIUSSS qui hébergent les centres désignés, dans les 17 régions. Étape 1, un pilote de trois mois dans un centre, financé par subvention. Étape 2, une licence annuelle par centre, avec la formation. Étape 3, le Québec puis le Canada, avec un module de règles par province. La police et le DPCP reçoivent le dossier, mais ne l'achètent pas : c'est un choix de confiance. [PAUSE] Pour les victimes, c'est gratuit, toujours. Track-Kit suit la boîte de la trousse. Nous, on accompagne la personne.
 
 PERSONNE 2 (2:40–3:00) · Appel à l'action
-Le prototype est en ligne : scannez le code. Ce qu'on cherche : un centre désigné pour un pilote de trois mois. [PAUSE] On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être.`);
+Le prototype est en ligne : scannez le code. Ce qu'on cherche : un centre désigné pour un pilote de trois mois. [PAUSE] On ne remplace pas l'humain auprès de la victime. On lui rend le temps de l'être.`);
 }
 
 pres.writeFile({ fileName: process.env.OUT || path.join(__dirname, 'Boussole-pitch.pptx') }).then((f) => console.log('wrote', f));
