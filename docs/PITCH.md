@@ -31,7 +31,7 @@ Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de si
 ### Bloc 1 : L'histoire (0:00–0:25) · Personne 1 · ~60 mots
 
 > Imaginez Léa. Elle est fictive, mais tout ce qui lui arrive est documenté.
-> Léa a 22 ans. Il est **3 h du matin**. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec **un trou de deux heures** dans sa soirée.
+> Léa a 22 ans. Il est **3 h du matin**. Elle se réveille chez quelqu'un qu'elle connaît à peine, avec **un trou de près de trois heures** dans sa soirée.
 > À l'urgence, elle raconte son histoire **quatre fois**. Chaque fois, on lui demande l'heure exacte. Elle ne s'en souvient pas.
 > Et elle ne sait pas encore si elle veut porter plainte. [PAUSE]
 
@@ -69,7 +69,7 @@ Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de si
 | 0–3 s | Carte « 3 h du matin » | « Retour à 3 h du matin. » |
 | 3–8 s | Consentement par étape | « Léa consent étape par étape. Elle peut refuser un prélèvement, et décider plus tard pour la plainte. » |
 | 8–16 s | Dossier → checklist qui se réordonne | « Trente heures depuis les faits, substance soupçonnée. Un **moteur de règles, pas l'IA**, réordonne tout : peau, encore 18 heures ; VIH, 42 heures ; le sang, c'est trop tard. » |
-| 16–26 s | Chronologie IA + « Ce que l'IA voit » | « L'infirmière colle ses notes. Claude, d'Anthropic, en fait une chronologie où chaque ligne cite sa phrase source. Le trou de deux heures est signalé, comme normal après une substance. Et l'IA ne voit jamais son nom. » |
+| 16–26 s | Chronologie IA + « Ce que l'IA voit » | « L'infirmière colle ses notes. Claude, d'Anthropic, en fait une chronologie où chaque ligne cite sa phrase source. Le trou de près de trois heures est signalé, comme normal après une substance. Et l'IA ne voit jamais son nom. » |
 | 26–30 s | Validation humaine | « L'IA est une **secrétaire, jamais un juge**. L'humain valide chaque ligne. » |
 | 30–35 s | Export + « Intégrité vérifiée » | « À l'export, chaque entrée est chaînée par SHA-256. Une retouche, et ça se voit. » |
 | 35–40 s | Carte de fin | *(silence, laisser lire « L'IA guide, l'humain décide. »)* |

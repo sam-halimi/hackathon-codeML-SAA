@@ -1,32 +1,9 @@
-# React + TypeScript + Vite
+# Boussole — prototype (hackathon CodeML 2026)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+**L'IA guide, l'humain décide.** Copilote pour les soignants qui accueillent une victime d'agression sexuelle. Données 100 % fictives.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- `/` : page de la startup · `#/demo` : le logiciel (consentement → dossier guidé → prélèvements par règles → chronologie IA → export avec journal SHA-256).
+- Lancer : `npm install && npm run dev` → http://localhost:5173/#/demo
+- IA en direct (local seulement) : `ANTHROPIC_API_KEY=... npm run dev`. La route `/api/timeline` (middleware Vite, `server/timelineApi.ts`) appelle Claude avec une sortie JSON contrainte, sur texte pseudonymisé. Sans clé, ou sur le site public, l'app utilise une réponse **pré-enregistrée, étiquetée comme telle**.
+- Règles et délais : `src/lib/rules.ts` — **prototype, à valider par sources médicales**.
+- Déploiement : GitHub Pages via `.github/workflows/pages.yml`.
