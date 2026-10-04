@@ -1,0 +1,152 @@
+{
+ "fps": 60,
+ "pre_roll": 0.75,
+ "voix": "prise1.mp3",
+ "duree_voix": 59.79,
+ "debut_carton": 61.59,
+ "duree_totale": 63.59,
+ "images": 3815,
+ "phrases": [
+  {
+   "texte": "Mercredi, neuf heures.",
+   "debut": 0.75,
+   "fin": 2.01
+  },
+  {
+   "texte": "Le lancement est dans trois semaines. C'est à vous de trancher.",
+   "debut": 2.634,
+   "fin": 5.45
+  },
+  {
+   "texte": "Soixante-quatre documents. Des courriels, des comptes rendus, des factures, des tableaux.",
+   "debut": 6.093,
+   "fin": 10.81
+  },
+  {
+   "texte": "Le rapport dit que la sécurité est au vert.",
+   "debut": 11.556,
+   "fin": 13.43
+  },
+  {
+   "texte": "Le plan dit le quinze octobre. Le comité a décidé le vingt-deux.",
+   "debut": 14.109,
+   "fin": 17.35
+  },
+  {
+   "texte": "Et une facture réclame dix-huit mille dollars que personne n'a approuvés.",
+   "debut": 18.151,
+   "fin": 20.55
+  },
+  {
+   "texte": "Qui croire ?",
+   "debut": 21.734,
+   "fin": 22.25
+  },
+  {
+   "texte": "Et si vous aviez la réponse en cinq minutes ?",
+   "debut": 22.999,
+   "fin": 24.73
+  },
+  {
+   "texte": "Voici Nova : la mémoire de votre projet.",
+   "debut": 25.64,
+   "fin": 27.95
+  },
+  {
+   "texte": "La date, les conditions, ce qui bloque : tout tient sur un seul écran.",
+   "debut": 28.83,
+   "fin": 33.05
+  },
+  {
+   "texte": "Chaque réponse a sa preuve.",
+   "debut": 33.722,
+   "fin": 34.99
+  },
+  {
+   "texte": "Un clic, et le document s'ouvre au passage exact.",
+   "debut": 35.699,
+   "fin": 38.33
+  },
+  {
+   "texte": "Les contradictions sont tranchées.",
+   "debut": 39.156,
+   "fin": 40.53
+  },
+  {
+   "texte": "Chaque action a un responsable.",
+   "debut": 41.096,
+   "fin": 42.71
+  },
+  {
+   "texte": "Une nouvelle tombe ? Collez le courriel dans l'assistant.",
+   "debut": 43.414,
+   "fin": 45.69
+  },
+  {
+   "texte": "Il prépare la mise à jour, vérifie les règles, et attend votre accord.",
+   "debut": 46.889,
+   "fin": 50.39
+  },
+  {
+   "texte": "Une proposition reste une proposition.",
+   "debut": 51.382,
+   "fin": 53.09
+  },
+  {
+   "texte": "Un fournisseur ne valide jamais à votre place.",
+   "debut": 54.049,
+   "fin": 56.07
+  },
+  {
+   "texte": "Nova. Reprenez n'importe quel projet… en cinq minutes.",
+   "debut": 56.879,
+   "fin": 60.29
+  }
+ ],
+ "cles": {
+  "mercredi": 0.75,
+  "neuf": 1.57,
+  "trois_semaines": 3.65,
+  "trancher": 4.99,
+  "documents": 6.49,
+  "courriels": 7.77,
+  "comptes_rendus": 8.61,
+  "factures": 9.57,
+  "tableaux": 10.43,
+  "rapport": 11.65,
+  "vert": 13.25,
+  "plan": 14.23,
+  "quinze": 14.79,
+  "comite": 16.15,
+  "vingt_deux": 17.11,
+  "facture": 18.35,
+  "dix_huit": 19.11,
+  "personne": 20.23,
+  "qui_croire": 21.734,
+  "cinq_minutes": 24.21,
+  "nova": 25.95,
+  "memoire": 26.89,
+  "la_date": 28.93,
+  "conditions": 29.73,
+  "bloque": 30.99,
+  "un_seul_ecran": 32.57,
+  "preuve": 34.57,
+  "clic": 35.81,
+  "passage": 37.65,
+  "contradictions": 39.25,
+  "responsable": 42.01,
+  "nouvelle": 43.51,
+  "collez": 44.87,
+  "assistant": 45.79,
+  "prepare": 46.99,
+  "regles": 48.87,
+  "accord": 50.11,
+  "proposition": 51.51,
+  "reste": 51.89,
+  "fournisseur": 54.17,
+  "jamais": 55.05,
+  "nova_fin": 56.879,
+  "reprenez": 57.71,
+  "cinq_minutes_fin": 59.73
+ }
+}

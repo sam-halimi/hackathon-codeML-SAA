@@ -1,0 +1,13 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Ignore the output video from Git but not videos you import into src/.
+out
+
+# Spot NOVA : fichiers fabriqués (régénérables, voir README.md)
+build
+public/captures
+audio/rendu
+audio/voix/prise2.*
