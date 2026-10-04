@@ -48,7 +48,7 @@ Format 16:9, 1920×1080. Texte minimal : le jury écoute, la diapo appuie.
 **Titre** : `La première nuit, sans perdre la preuve.`
 
 **Mise en page (2 colonnes)**
-- **Gauche (60 %)** : zone vidéo 16:9 qui lit le clip muet de 40 s (`video/out/boussole-demo.mp4`). Cadre fin ambre, coins arrondis.
+- **Gauche (60 %)** : zone vidéo 16:9 qui lit le clip muet de 40 s (`boussole/video/out/boussole-demo.mp4`). Cadre fin ambre, coins arrondis.
 - **Droite (40 %)** : schéma vertical à 3 bandes, de haut en bas :
 
 ```
@@ -75,7 +75,7 @@ Format 16:9, 1920×1080. Texte minimal : le jury écoute, la diapo appuie.
 **Notes de présentation**
 - Personne 3 dit la phrase « On ne répare pas les tribunaux… » **avant** de lancer le clip.
 - Lancer le clip au clic (lecture automatique désactivée, pour éviter qu'il parte trop tôt).
-- Parler par-dessus selon le tableau du bloc 4 de `docs/PITCH.md`. Si en retard, sauter la phrase sur le consentement (elle est sur la diapo).
+- Parler par-dessus selon le tableau du bloc 4 de `boussole/pitch/PITCH.md`. Si en retard, sauter la phrase sur le consentement (elle est sur la diapo).
 - Après le clip, montrer du doigt les 4 puces vie privée en les disant.
 
 ### Plan B si la vidéo échoue (décision en 3 s)
@@ -112,7 +112,7 @@ Personne 3 dit le même texte, en 3 temps, en pointant A, B, C. Garder aussi le 
   `Cherche : 1 centre désigné`
   `Pilote de 3 mois`
   puis en petit : `Mesures : récits répétés · prélèvements dans les délais · temps administratif`
-- **Bas droit : QR code** `docs/assets/qr-boussole.png`, **au moins 300×300 px**, sur carré blanc cassé, avec l'URL en dessous : `boussole-beta.vercel.app`
+- **Bas droit : QR code** `boussole/pitch/assets/qr-boussole.png`, **au moins 300×300 px**, sur carré blanc cassé, avec l'URL en dessous : `boussole-beta.vercel.app`
 - **Pied** : *On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être.* (italique, blanc cassé)
 
 **Notes de présentation**

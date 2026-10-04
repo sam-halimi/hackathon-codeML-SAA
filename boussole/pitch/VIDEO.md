@@ -1,8 +1,8 @@
 # Clip démo : Boussole (40 s, muet)
 
-**Usage** : lu sur la diapo 2 pendant le pitch, Personne 3 parle par-dessus (texte calé dans `docs/PITCH.md`, bloc 4). Aussi publiable seul (site, réseaux).
+**Usage** : lu sur la diapo 2 pendant le pitch, Personne 3 parle par-dessus (texte calé dans `boussole/pitch/PITCH.md`, bloc 4). Aussi publiable seul (site, réseaux).
 
-**Spécifications** : 1920×1080, 30 fps, **1 200 images (40 s)**, muet (aucune piste audio), MP4 H.264. Projet Remotion dans `video/`, rendu vers `video/out/boussole-demo.mp4`.
+**Spécifications** : 1920×1080, 30 fps, **1 200 images (40 s)**, muet (aucune piste audio), MP4 H.264. Projet Remotion dans `video/`, rendu vers `boussole/video/out/boussole-demo.mp4`.
 
 **Règle d'or : on n'invente aucune interface.** Tous les plans d'interface viennent de l'enregistrement réel de `/demo` (capture Playwright). Le motion design se limite à : cartes de titre, zooms/recadrages, surlignages, flèches, sous-titres. Si une fonction n'existe pas encore dans l'app, on coupe le plan, on ne la dessine pas.
 
@@ -22,7 +22,7 @@
 | 4b | 0:21–0:26 | 5 s (630–780) | « Ce que l'IA voit » | Panneau pseudonymisation : `Léa Tremblay → [PATIENTE]`, `12/03/2004 → [DATE]`, `123, rue des Érables → [LIEU]`, téléphone → `[TÉLÉPHONE]` ; étiquette « Réponse IA préenregistrée (démo publique) » | Zoom 120 % sur le panneau ; chaque remplacement clignote une fois en ambre | « Ce que l'IA voit : jamais son nom. » | Enregistrement app |
 | 5 | 0:26–0:30 | 4 s (780–900) | Validation humaine | Le soignant valide 6 lignes, en rejette 1, et marque l'incohérence « Corrigé » | Curseur visible ; léger ralenti sur le clic « Rejeter » | « L'IA est une secrétaire, jamais un juge. L'humain valide. » | Enregistrement app |
 | 6 | 0:30–0:35 | 5 s (900–1050) | Export + intégrité | Aperçu de l'export : résumé + journal de chaîne de conservation (horodatage, auteur, action, hash court `a3f9…`) ; badge **« Intégrité vérifiée »** vert/ambre | Défilement du journal ; zoom sur 2 hash consécutifs avec flèche « chaîné » ; badge apparaît en dernier | « Journal chaîné SHA-256. Toute retouche se voit. » | Enregistrement app + flèche motion |
-| 7 | 0:35–0:40 | 5 s (1050–1200) | Carte de fin | Logo Boussole (aiguille ambre), tagline, **QR code** (`docs/assets/qr-boussole.png`, ≥ 360 px), URL | Aiguille qui pivote et se fige au nord (20 images) ; tagline en fondu ; QR fixe dès 0:36 pour laisser scanner | **Boussole** / *L'IA guide, l'humain décide.* / `boussole-beta.vercel.app` / petit : « Prototype · données fictives » | Motion graphics |
+| 7 | 0:35–0:40 | 5 s (1050–1200) | Carte de fin | Logo Boussole (aiguille ambre), tagline, **QR code** (`boussole/pitch/assets/qr-boussole.png`, ≥ 360 px), URL | Aiguille qui pivote et se fige au nord (20 images) ; tagline en fondu ; QR fixe dès 0:36 pour laisser scanner | **Boussole** / *L'IA guide, l'humain décide.* / `boussole-beta.vercel.app` / petit : « Prototype · données fictives » | Motion graphics |
 
 **Transitions** : coupes franches entre plans d'interface ; fondu au noir bleu nuit (8 images) seulement entre 1→2 et 6→7. Pas de musique (le clip est muet par conception).
 
@@ -30,7 +30,7 @@
 
 ---
 
-## 2. Scénario de démo (identique à l'application, `app/src/lib/demoCase.ts` et `timelineFixture.ts`)
+## 2. Scénario de démo (identique à l'application, `boussole/app/src/lib/demoCase.ts` et `timelineFixture.ts`)
 
 Cas **100 % fictif**, déjà préchargé dans `/demo` : rien à taper, l'enregistrement est reproductible.
 
@@ -62,9 +62,9 @@ Cas **100 % fictif**, déjà préchargé dans `/demo` : rien à taper, l'enregis
 
 **Export** : badge vert « Intégrité du journal vérifiée — 15 entrées chaînées par SHA-256 », puis bouton « Simuler une modification après coup » → « ✗ Altération détectée à l'entrée #1 » (le plan « chaîne rompue » est donc disponible).
 
-**Enregistrement brut déjà produit** : `video/public/rec/demo.webm` (1600×900) + captures `docs/assets/screens/*.png` (plan B).
+**Enregistrement brut déjà produit** : `boussole/video/public/rec/demo.webm` (1600×900) + captures `boussole/pitch/assets/screens/*.png` (plan B).
 
-**Capture Playwright** : viewport 1920×1080, `deviceScaleFactor: 1`, `slowMo` ≈ 60 ms, vidéo activée (`recordVideo`), curseur visible. Saisir le texte avec `type()` à délai 20 ms (lisible une fois accéléré ×2). Exporter les segments bruts dans `video/public/rec/` (un fichier par plan : `02-consent.webm`, `03-intake.webm`, …) et prendre en même temps les 3 captures PNG du plan B (checklist, chronologie + panneau IA, export + badge).
+**Capture Playwright** : viewport 1920×1080, `deviceScaleFactor: 1`, `slowMo` ≈ 60 ms, vidéo activée (`recordVideo`), curseur visible. Saisir le texte avec `type()` à délai 20 ms (lisible une fois accéléré ×2). Exporter les segments bruts dans `boussole/video/public/rec/` (un fichier par plan : `02-consent.webm`, `03-intake.webm`, …) et prendre en même temps les 3 captures PNG du plan B (checklist, chronologie + panneau IA, export + badge).
 
 ---
 
@@ -86,7 +86,7 @@ Le consentement est retiré de la version courte : à dire à l'oral si elle est
 
 ## 4. Liste de contrôle du rendu
 
-- [ ] Aucun plan d'interface dessiné à la main : tout vient de `video/public/rec/`
+- [ ] Aucun plan d'interface dessiné à la main : tout vient de `boussole/video/public/rec/`
 - [ ] « DONNÉES FICTIVES » lisible sur chaque plan d'interface
 - [ ] Étiquette « Réponse IA préenregistrée » visible sur le plan 4b
 - [ ] Les chiffres à l'écran = ceux dits à l'oral (18 h, 42 h, sang dépassé)
@@ -98,7 +98,7 @@ Le consentement est retiré de la version courte : à dire à l'oral si elle est
 
 ## Implémentation (faite)
 
-- Compositions Remotion : `video/src/Boussole.tsx` → `BoussoleDemo` (40 s) et `BoussoleShort` (15 s).
-- Source vidéo : `video/public/rec/demo.webm` (enregistrement Playwright réel de `/demo`).
+- Compositions Remotion : `boussole/video/src/Boussole.tsx` → `BoussoleDemo` (40 s) et `BoussoleShort` (15 s).
+- Source vidéo : `boussole/video/public/rec/demo.webm` (enregistrement Playwright réel de `/demo`).
 - Rendu : `cd video && npx remotion render BoussoleDemo out/boussole-demo.mp4` (et `BoussoleShort out/boussole-15s.mp4`).
 - Prévisualiser / ajuster les plans : `npx remotion studio` (tableau `SHOTS` en haut du fichier : début, durée, seconde source, sous-titre, zoom).

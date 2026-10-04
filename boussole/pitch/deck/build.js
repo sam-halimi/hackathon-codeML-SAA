@@ -1,4 +1,4 @@
-// Génère docs/deck/Boussole-pitch.pptx (3 diapos). NODE_PATH doit contenir pptxgenjs.
+// Génère boussole/pitch/deck/Boussole-pitch.pptx (3 diapos). NODE_PATH doit contenir pptxgenjs.
 const pptxgen = require('pptxgenjs');
 const fs = require('fs');
 const path = require('path');

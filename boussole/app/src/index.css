@@ -3,28 +3,37 @@
 /* Boussole · DA « Tech institutionnelle » : papier chaud, encre teintée,
    filets 1px, un seul accent (le nord de la boussole). */
 @theme {
-  --color-paper: #F7F5F0;
-  --color-panel: #EFECE5;
-  --color-rule: #DFDAD0;
-  --color-ink: #16181D;
-  --color-ink-2: #4A4D55;
-  --color-ink-3: #7C7F87;
-  --color-north: #0F7A64;       /* accent unique : marque + action */
-  --color-north-soft: #E3EFEA;
-  --color-warn: #A85A00;        /* délai urgent */
-  --color-warn-soft: #F6EAD8;
-  --color-alert: #B3261E;       /* altération, refus */
-  --color-alert-soft: #F6E3E1;
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* DA « réconfort » : fond crème chaud, couleurs douces, tout est arrondi. */
+  --color-paper: #FFF9F3;
+  --color-panel: #F6EFE8;
+  --color-rule: #EADFD4;
+  --color-ink: #2D2440;
+  --color-ink-2: #5E5670;
+  --color-ink-3: #948BA3;
+  --color-north: #6A4CE0;        /* violet doux : marque et actions */
+  --color-north-soft: #EEE8FF;
+  --color-coral: #FF8A65;
+  --color-coral-soft: #FFE6DC;
+  --color-sage: #2F9E78;
+  --color-sage-soft: #DDF3E8;
+  --color-sky: #3D86D6;
+  --color-sky-soft: #E1EEFB;
+  --color-sun: #E9A23B;
+  --color-sun-soft: #FFF1D6;
+  --color-warn: #C2701A;
+  --color-warn-soft: #FFF1D6;
+  --color-alert: #D64545;
+  --color-alert-soft: #FDE4E4;
+  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-mono: "Nunito", ui-rounded, system-ui, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html { scroll-behavior: smooth; }
-body { @apply bg-paper text-ink antialiased; font-feature-settings: "ss01", "cv11"; }
+body { @apply bg-paper text-ink antialiased; }
 
-.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
-.display { letter-spacing: -0.025em; line-height: 1; font-weight: 500; }
+.eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 0.02em; }
+.display { letter-spacing: -0.02em; line-height: 1.08; font-weight: 800; }
 
 /* Interactions : retour tactile précis, jamais décoratif */
 .press { transition: transform 160ms var(--ease-out-soft), background-color 300ms var(--ease-out-soft), border-color 300ms var(--ease-out-soft), color 300ms var(--ease-out-soft), opacity 300ms var(--ease-out-soft); }
@@ -51,14 +60,14 @@ body { @apply bg-paper text-ink antialiased; font-feature-settings: "ss01", "cv1
 .slide-r { animation: slideR 550ms var(--ease-out-soft) both; }
 
 /* Champs de saisie */
-.input { width: 100%; border-radius: 16px; border: 1px solid var(--color-rule); background: var(--color-paper); padding: 12px 16px; font-size: 16px; line-height: 1.55; outline: none; transition: border-color 400ms var(--ease-out-soft), box-shadow 400ms var(--ease-out-soft); }
+.input { width: 100%; border-radius: 20px; border: 1px solid var(--color-rule); background: var(--color-paper); padding: 12px 16px; font-size: 16px; line-height: 1.55; outline: none; transition: border-color 400ms var(--ease-out-soft), box-shadow 400ms var(--ease-out-soft); }
 .input:focus { border-color: var(--color-north); box-shadow: 0 0 0 4px var(--color-north-soft); }
 .input::placeholder { color: var(--color-ink-3); }
 
 /* Carte Leaflet dans la DA */
 .leaflet-container { font-family: var(--font-sans); background: var(--color-panel); }
 .leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: 0 20px 50px -20px rgba(22,24,29,.4); }
-.pin { width: 30px; height: 30px; border-radius: 999px 999px 999px 4px; transform: rotate(-45deg); display: grid; place-items: center; border: 2px solid #F7F5F0; box-shadow: 0 6px 16px -6px rgba(22,24,29,.5); transition: transform 300ms var(--ease-out-soft); }
+.pin { width: 32px; height: 32px; border-radius: 999px 999px 999px 6px; transform: rotate(-45deg); display: grid; place-items: center; border: 2px solid #F7F5F0; box-shadow: 0 6px 16px -6px rgba(22,24,29,.5); transition: transform 300ms var(--ease-out-soft); }
 .pin.active { transform: rotate(-45deg) scale(1.25); }
 .pin span { transform: rotate(45deg); color: #F7F5F0; font: 600 11px var(--font-mono); }
 
@@ -70,3 +79,7 @@ body { @apply bg-paper text-ink antialiased; font-feature-settings: "ss01", "cv1
   .no-print { display: none !important; }
   body { background: white; }
 }
+
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.float { animation: float 6s ease-in-out infinite; }
+.card-soft { border-radius: 28px; background: white; box-shadow: 0 1px 0 rgba(45,36,64,.04), 0 18px 40px -28px rgba(45,36,64,.35); }

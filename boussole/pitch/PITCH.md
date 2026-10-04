@@ -5,7 +5,7 @@
 
 Défi : Propolys, *Startup Challenge : Sécurité & IA* (Polytechnique Montréal). Livrable : pitch oral de 3 min, 3 diapositives au plus. Critères : idée claire et originale, lien avec la sécurité, potentiel entrepreneurial, qualité du pitch.
 
-Fichiers liés : `docs/SLIDES.md` (3 diapos), `docs/VIDEO.md` (clip muet de 40 s), site : https://boussole-beta.vercel.app/ (accueil `/`, logiciel `/demo`).
+Fichiers liés : `boussole/pitch/SLIDES.md` (3 diapos), `boussole/pitch/VIDEO.md` (clip muet de 40 s), site : https://boussole-beta.vercel.app/ (accueil `/`, logiciel `/demo`).
 
 ---
 
@@ -93,7 +93,7 @@ Légende : `[CLIC]` = diapo ou animation suivante. `[PAUSE]` = une seconde de si
 
 ### Plan B (si le clip ne démarre pas en 3 s)
 
-Personne 3 passe à la version **3 captures** de la diapo 2 (voir `docs/SLIDES.md`) et dit le même texte en 3 temps : « Consentement et règles » → « Chronologie IA et ce que l'IA voit » → « Export et intégrité vérifiée ». Ne jamais déboguer devant le jury.
+Personne 3 passe à la version **3 captures** de la diapo 2 (voir `boussole/pitch/SLIDES.md`) et dit le même texte en 3 temps : « Consentement et règles » → « Chronologie IA et ce que l'IA voit » → « Export et intégrité vérifiée ». Ne jamais déboguer devant le jury.
 
 ---
 
@@ -195,5 +195,5 @@ Personne 3 passe à la version **3 captures** de la diapo 2 (voir `docs/SLIDES.m
 - [ ] **Track-Kit, 7 États** : vérifier le nombre à jour sur le site de STACS DNA.
 - [ ] **Phrase personnelle du bloc 3** : chaque membre valide que sa phrase est vraie, sinon on la supprime.
 - [ ] **Narration du clip** : les comptes à rebours dits à l'oral (peau 18 h, VIH 42 h, sang dépassé) doivent correspondre exactement à l'écran enregistré.
-- [ ] **QR code** (`docs/assets/qr-boussole.png`) : scanner avec 2 téléphones depuis le fond de la salle.
+- [ ] **QR code** (`boussole/pitch/assets/qr-boussole.png`) : scanner avec 2 téléphones depuis le fond de la salle.
 - [ ] **Chronomètre** : 3 répétitions complètes, viser 2:50.
