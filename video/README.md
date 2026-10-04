@@ -25,7 +25,7 @@ node outils/capturer.mjs                               # captures haute définit
 python3 audio/composer.py                              # musique, bruitages, mixage, master −14 LUFS / −1 dBTP
 npx remotion render NovaSpot16x9 out/NOVA_spot_16x9_image.mp4 --muted --concurrency=4 --crf=16 --jpeg-quality=95
 npx remotion render NovaSpot9x16 out/NOVA_spot_9x16_image.mp4 --muted --concurrency=4 --crf=16 --jpeg-quality=95
-node outils/finaliser.mjs                              # image + son, pistes, planches contact, README de livraison
+node outils/finaliser.mjs                              # image + son, copies web (MP4, WebM), pistes, planches contact, README
 ```
 
 Aperçu interactif : `npm run dev`, puis les compositions `NovaSpot16x9` et `NovaSpot9x16`.

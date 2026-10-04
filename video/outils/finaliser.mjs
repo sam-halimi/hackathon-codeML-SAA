@@ -42,6 +42,10 @@ for (const f of formats) {
   if (!fs.existsSync(src)) continue;
   ff(['-i', src, '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-maxrate', '3.5M', '-bufsize', '7M', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', path.join(OUT, 'web', f.final)]);
   console.log(`  ✓ web/${f.final} (${(fs.statSync(path.join(OUT, 'web', f.final)).size / 1048576).toFixed(1)} Mo)`);
+  // WebM (VP9 + Opus) : lu par l'écran d'accueil de l'application dans les navigateurs sans H.264.
+  const webm = f.final.replace(/\.mp4$/, '.webm');
+  ff(['-i', src, '-c:v', 'libvpx-vp9', '-crf', '34', '-b:v', '0', '-row-mt', '1', '-cpu-used', '4', '-deadline', 'good', '-tile-columns', '2', '-pix_fmt', 'yuv420p', '-c:a', 'libopus', '-b:a', '128k', path.join(OUT, 'web', webm)]);
+  console.log(`  ✓ web/${webm} (${(fs.statSync(path.join(OUT, 'web', webm)).size / 1048576).toFixed(1)} Mo)`);
 }
 // Pistes séparées (WAV 24 bits, 48 kHz).
 fs.mkdirSync(path.join(OUT, 'pistes'), { recursive: true });
@@ -62,7 +66,7 @@ ${lignes}
 
 - \`planche_contact_16x9.jpg\`, \`planche_contact_9x16.jpg\` : 24 images régulières, horodatées.
 - \`pistes/\` : \`voix.wav\`, \`musique.wav\`, \`bruitages.wav\` (pistes séparées, avant mastering) et \`mix_master.wav\` (WAV 24 bits, 48 kHz).
-- \`web/\` : copies allégées pour la mise en ligne (H.264 CRF 23, AAC 192 kb/s), lues sur https://nova-projet360.vercel.app/video/, où les masters sont aussi proposés en téléchargement.
+- \`web/\` : copies allégées pour la mise en ligne (H.264 CRF 23, AAC 192 kb/s, et WebM VP9 pour les navigateurs sans H.264), lues sur https://nova-projet360.vercel.app/video/, où les masters sont aussi proposés en téléchargement, et par l'écran d'accueil de l'application.
 
 ## Son
 
