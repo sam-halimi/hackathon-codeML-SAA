@@ -24,8 +24,8 @@
   --color-warn-soft: #FFF1D6;
   --color-alert: #D64545;
   --color-alert-soft: #FDE4E4;
-  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
-  --font-mono: "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Nunito Variable", "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-mono: "Nunito Variable", "Nunito", ui-rounded, system-ui, sans-serif;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
