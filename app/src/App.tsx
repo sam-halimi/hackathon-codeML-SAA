@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Landing from './components/Landing'
-import Demo from './components/Demo'
 
-// Routage par ancre (#/demo) : fonctionne tel quel sur GitHub Pages.
+const Demo = lazy(() => import('./components/Demo'))
+const Espace = lazy(() => import('./components/Espace'))
+
+// Routage par ancre : #/ accueil, #/espace espace personnel, #/demo outil soignant.
 export default function App() {
   const [route, setRoute] = useState(window.location.hash)
   useEffect(() => {
@@ -13,5 +15,9 @@ export default function App() {
     window.addEventListener('hashchange', on)
     return () => window.removeEventListener('hashchange', on)
   }, [])
-  return route.startsWith('#/demo') ? <Demo /> : <Landing />
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      {route.startsWith('#/demo') ? <Demo /> : route.startsWith('#/espace') ? <Espace /> : <Landing />}
+    </Suspense>
+  )
 }

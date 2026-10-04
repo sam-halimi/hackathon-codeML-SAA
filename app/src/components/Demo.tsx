@@ -104,7 +104,7 @@ export default function Demo() {
           await onClick?.()
           setStep(step + 1)
         }}
-        className="press group inline-flex items-center gap-3 rounded-md bg-ink px-5 py-3 text-[15px] font-medium text-paper hover:bg-north disabled:cursor-not-allowed disabled:opacity-30"
+        className="press group inline-flex items-center gap-3 rounded-xl bg-ink px-5 py-3 text-[15px] font-medium text-paper hover:bg-north disabled:cursor-not-allowed disabled:opacity-30"
       >
         {label}
         <ArrowRight size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
@@ -127,12 +127,12 @@ export default function Demo() {
             Dossier <span className="mx-1.5 font-mono text-ink">#DEMO-0042</span> · cas fictif « Léa » · centre désigné (fictif)
           </div>
           <div className="flex items-center gap-2 border-l border-rule px-5">
-            <span className="hidden items-center gap-1.5 rounded border border-rule px-2 py-1 text-xs text-ink-2 sm:inline-flex">
+            <span className="hidden items-center gap-1.5 rounded-full border border-rule px-2 py-1 text-xs text-ink-2 sm:inline-flex">
               <Sparkles size={13} strokeWidth={1.75} className="text-north" /> L'IA suggère, l'humain valide
             </span>
             <span
               id="integrity-chip"
-              className={`inline-flex items-center gap-1.5 rounded border px-2 py-1 font-mono text-[11px] transition-colors duration-500 ${integrity.ok ? 'border-north/30 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-1 font-mono text-[11px] transition-colors duration-500 ${integrity.ok ? 'border-north/30 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}
             >
               <Link2 size={13} strokeWidth={1.75} />
               {log.length} · {integrity.ok ? 'intègre' : `altéré #${integrity.brokenAt}`}
@@ -166,7 +166,7 @@ export default function Demo() {
       <main key={step} className="mx-auto max-w-6xl px-5 py-12 sm:py-16">
         {step === 0 && (
           <Section n="01" title="Consentement, étape par étape" lead="La personne garde le contrôle. Chaque choix est horodaté dans le journal de conservation.">
-            <div className="grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
+            <div className="grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule sm:grid-cols-2">
               {(Object.keys(CONSENT_LABELS) as (keyof Consent)[]).map((k, i) => (
                 <label
                   key={k}
@@ -174,7 +174,7 @@ export default function Demo() {
                   className={`rise rise-${i + 1} press group flex cursor-pointer gap-4 p-6 ${consent[k] ? 'bg-north-soft' : 'bg-paper hover:bg-panel'}`}
                 >
                   <input type="checkbox" className="peer sr-only" checked={consent[k]} onChange={() => toggleConsent(k)} />
-                  <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded border transition-all duration-500 ease-[var(--ease-out-soft)] ${consent[k] ? 'border-north bg-north text-paper' : 'border-ink-3/50 bg-paper group-hover:border-ink'}`}>
+                  <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border transition-all duration-500 ease-[var(--ease-out-soft)] ${consent[k] ? 'border-north bg-north text-paper' : 'border-ink-3/50 bg-paper group-hover:border-ink'}`}>
                     <Check size={14} strokeWidth={2.5} className={`transition-all duration-500 ${consent[k] ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`} />
                   </span>
                   <span>
@@ -194,7 +194,7 @@ export default function Demo() {
 
         {step === 1 && (
           <Section n="02" title="Dossier guidé" lead="Les questions s'adaptent aux réponses. « Je ne sais pas » est une réponse valide.">
-            <div className="rise rounded-lg border border-rule p-6">
+            <div className="rise rounded-2xl border border-rule p-6">
               <div className="eyebrow text-ink-3">Temps écoulé depuis les faits</div>
               <div className="mt-3 flex flex-wrap items-end gap-6">
                 <span className="display text-6xl tabular-nums sm:text-7xl">{intake.hoursSince}<span className="ml-1 text-3xl text-ink-3">h</span></span>
@@ -209,7 +209,7 @@ export default function Demo() {
                 />
               </div>
             </div>
-            <div className="mt-6 divide-y divide-rule rounded-lg border border-rule">
+            <div className="mt-6 divide-y divide-rule rounded-2xl border border-rule">
               <YesNo id="q-substance" q="Une substance est-elle soupçonnée (drogue, médicament, alcool à son insu) ?" v={intake.substance} set={(v) => setIntake({ ...intake, substance: v })} />
               <div className={`grid transition-all duration-700 ease-[var(--ease-out-soft)] ${intake.substance ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                 <div className="overflow-hidden">
@@ -230,18 +230,18 @@ export default function Demo() {
 
         {step === 2 && (
           <Section n="03" title={`Prélèvements prioritaires, ${intake.hoursSince} h après les faits`} lead="Calculé par un moteur de règles, sans IA. Trié par urgence.">
-            <div className="mb-5 flex items-start gap-2 rounded-md border border-warn/30 bg-warn-soft px-4 py-3 text-sm text-warn">
+            <div className="mb-5 flex items-start gap-2 rounded-xl border border-warn/30 bg-warn-soft px-4 py-3 text-sm text-warn">
               <ClipboardList size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" />
               <span>
                 Délais prototype, à valider par sources médicales et par le protocole de l'établissement. <span className="font-mono text-xs opacity-80">{RULES_VERSION}</span>
               </span>
             </div>
             {!consent.prelevements && (
-              <div className="mb-5 flex items-center gap-2 rounded-md border border-alert/30 bg-alert-soft px-4 py-3 text-sm text-alert">
+              <div className="mb-5 flex items-center gap-2 rounded-xl border border-alert/30 bg-alert-soft px-4 py-3 text-sm text-alert">
                 <Lock size={16} strokeWidth={1.75} /> Consentement aux prélèvements non accordé : liste informative, rien ne peut être coché.
               </div>
             )}
-            <ul className="divide-y divide-rule overflow-hidden rounded-lg border border-rule" id="checklist">
+            <ul className="divide-y divide-rule overflow-hidden rounded-2xl border border-rule" id="checklist">
               {checklist.map((c, i) => {
                 const disabled = !consent.prelevements || c.status === 'depasse'
                 return (
@@ -254,7 +254,7 @@ export default function Demo() {
                         setDone((d) => ({ ...d, [c.id]: !d[c.id] }))
                         await log_(done[c.id] ? 'Prélèvement décoché' : 'Prélèvement effectué et scellé', c.label)
                       }}
-                      className={`press grid h-6 w-6 shrink-0 place-items-center rounded border disabled:cursor-not-allowed ${done[c.id] ? 'border-north bg-north text-paper' : 'border-ink-3/50 hover:border-ink'}`}
+                      className={`press grid h-6 w-6 shrink-0 place-items-center rounded-full border disabled:cursor-not-allowed ${done[c.id] ? 'border-north bg-north text-paper' : 'border-ink-3/50 hover:border-ink'}`}
                     >
                       <Check size={14} strokeWidth={2.5} className={`transition-all duration-500 ${done[c.id] ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`} />
                     </button>
@@ -277,13 +277,13 @@ export default function Demo() {
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <span className="eyebrow text-ink-3">Notes libres</span>
-                  <button id="ai-view" onClick={() => setShowAiView(!showAiView)} className="press inline-flex items-center gap-1.5 rounded border border-rule px-2.5 py-1 text-xs text-ink-2 hover:border-north hover:text-north">
+                  <button id="ai-view" onClick={() => setShowAiView(!showAiView)} className="press inline-flex items-center gap-1.5 rounded-full border border-rule px-2.5 py-1 text-xs text-ink-2 hover:border-north hover:text-north">
                     {showAiView ? <EyeOff size={13} strokeWidth={1.75} /> : <Eye size={13} strokeWidth={1.75} />}
                     {showAiView ? 'Notes originales' : 'Ce que l’IA voit'}
                   </button>
                 </div>
                 {showAiView ? (
-                  <div className="rise h-80 overflow-auto rounded-lg border border-north/40 bg-north-soft p-4 text-[15px] leading-relaxed whitespace-pre-wrap" id="ai-view-panel">
+                  <div className="rise h-80 overflow-auto rounded-2xl border border-north/40 bg-north-soft p-4 text-[15px] leading-relaxed whitespace-pre-wrap" id="ai-view-panel">
                     <div className="mb-3 flex items-center gap-1.5 text-xs font-medium text-north">
                       <Fingerprint size={14} strokeWidth={1.75} /> Texte réellement envoyé au modèle · {pseudo.count} identifiants masqués
                     </div>
@@ -296,27 +296,27 @@ export default function Demo() {
                     )}
                   </div>
                 ) : (
-                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="h-80 w-full resize-none rounded-lg border border-rule bg-paper p-4 text-[15px] leading-relaxed outline-none transition-colors duration-500 focus:border-ink" />
+                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="h-80 w-full resize-none rounded-2xl border border-rule bg-paper p-4 text-[15px] leading-relaxed outline-none transition-colors duration-500 focus:border-ink" />
                 )}
-                <button id="generate" onClick={generate} disabled={loading} className="press mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink py-3.5 text-[15px] font-medium text-paper hover:bg-north disabled:opacity-60">
+                <button id="generate" onClick={generate} disabled={loading} className="press mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3.5 text-[15px] font-medium text-paper hover:bg-north disabled:opacity-60">
                   <Sparkles size={16} strokeWidth={1.75} className={loading ? 'animate-pulse' : ''} />
                   {loading ? 'Structuration en cours…' : 'Générer la chronologie'}
                 </button>
               </div>
               <div id="timeline">
                 {!timeline && !loading && (
-                  <div className="grid h-full min-h-80 place-items-center rounded-lg border border-dashed border-rule p-6 text-center text-sm text-ink-3">
+                  <div className="grid h-full min-h-80 place-items-center rounded-2xl border border-dashed border-rule p-6 text-center text-sm text-ink-3">
                     La chronologie proposée apparaîtra ici,<br />ligne par ligne, avec ses sources.
                   </div>
                 )}
                 {loading && (
                   <div className="space-y-3">
-                    {[0, 1, 2, 3, 4].map((i) => <div key={i} className="skeleton h-14 rounded-md" />)}
+                    {[0, 1, 2, 3, 4].map((i) => <div key={i} className="skeleton h-14 rounded-xl" />)}
                   </div>
                 )}
                 {timeline && !loading && (
                   <div className="space-y-4">
-                    <div className={`inline-flex items-center gap-1.5 rounded border px-2 py-1 text-xs ${source === 'live' ? 'border-north/30 bg-north-soft text-north' : 'border-rule bg-panel text-ink-2'}`}>
+                    <div className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-xs ${source === 'live' ? 'border-north/30 bg-north-soft text-north' : 'border-rule bg-panel text-ink-2'}`}>
                       <Sparkles size={13} strokeWidth={1.75} />
                       {source === 'live' ? 'Réponse IA en direct (Claude)' : 'Réponse IA pré-enregistrée (démo hors ligne), même format que la réponse en direct'}
                     </div>
@@ -327,7 +327,7 @@ export default function Demo() {
                         return (
                           <li key={key} className="rise relative ml-5" style={{ animationDelay: `${i * 80}ms` }}>
                             <span className={`absolute -left-[26px] top-4 h-2.5 w-2.5 rounded-full border-2 border-paper transition-colors duration-500 ${d === 'ok' ? 'bg-north' : d === 'rejected' ? 'bg-alert' : 'bg-ink-3'}`} />
-                            <div className={`flex justify-between gap-3 rounded-md border px-4 py-3 transition-all duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : d === 'rejected' ? 'border-alert/30 bg-alert-soft opacity-60' : 'border-rule bg-paper'}`}>
+                            <div className={`flex justify-between gap-3 rounded-xl border px-4 py-3 transition-all duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : d === 'rejected' ? 'border-alert/30 bg-alert-soft opacity-60' : 'border-rule bg-paper'}`}>
                               <div className="min-w-0">
                                 <div className="font-mono text-[11px] text-ink-3">{ev.time}</div>
                                 <div className={`text-[15px] font-medium ${d === 'rejected' ? 'line-through' : ''}`}>{ev.description}</div>
@@ -340,7 +340,7 @@ export default function Demo() {
                       })}
                     </ol>
                     {timeline.gaps.map((g, i) => (
-                      <div key={`gap-${i}`} id={`gap-${i}`} className="rise rounded-md border border-dashed border-ink-3/50 bg-panel px-4 py-3 text-[14px]">
+                      <div key={`gap-${i}`} id={`gap-${i}`} className="rise rounded-xl border border-dashed border-ink-3/50 bg-panel px-4 py-3 text-[14px]">
                         <div className="flex items-center gap-1.5 font-medium"><Clock size={15} strokeWidth={1.75} /> Information non disponible : {g.from} → {g.to}</div>
                         <div className="mt-1 text-ink-2">{g.note}</div>
                       </div>
@@ -349,7 +349,7 @@ export default function Demo() {
                       const key = `inc-${i}`
                       const d = decisions[key] ?? 'pending'
                       return (
-                        <div key={key} id={`inc-${i}`} className={`rise rounded-md border px-4 py-3 text-[14px] transition-colors duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : 'border-warn/40 bg-warn-soft'}`}>
+                        <div key={key} id={`inc-${i}`} className={`rise rounded-xl border px-4 py-3 text-[14px] transition-colors duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : 'border-warn/40 bg-warn-soft'}`}>
                           <div className="flex justify-between gap-3">
                             <span className="flex items-center gap-1.5 font-medium text-warn"><ShieldAlert size={15} strokeWidth={1.75} /> Incohérence du dossier (pas du récit)</span>
                             <Validate d={d} okLabel="Corrigé" onOk={() => decide(key, c.description, 'ok')} onNo={() => decide(key, c.description, 'rejected')} />
@@ -416,13 +416,13 @@ function ExportView(props: {
 
   return (
     <Section n="05" title="Export du dossier" lead="Résumé pour l'équipe et journal de chaîne de conservation. Rien n'est transmis à la police sans consentement explicite.">
-      <div id="integrity-badge" className={`rise flex items-center gap-3 rounded-lg border px-5 py-4 ${integrity.ok ? 'border-north/40 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}>
+      <div id="integrity-badge" className={`rise flex items-center gap-3 rounded-2xl border px-5 py-4 ${integrity.ok ? 'border-north/40 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}>
         {integrity.ok ? <ShieldCheck size={22} strokeWidth={1.75} /> : <ShieldAlert size={22} strokeWidth={1.75} />}
         <span className="text-[17px] font-medium">
           {integrity.ok ? `Intégrité du journal vérifiée : ${log.length} entrées chaînées par SHA-256` : `Journal altéré à l'entrée ${integrity.brokenAt}`}
         </span>
       </div>
-      <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
+      <div className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule md:grid-cols-2">
         <div className="bg-paper p-6">
           <div className="eyebrow text-ink-3">Résumé</div>
           <dl className="mt-4 space-y-3 text-[15px]">
@@ -431,7 +431,7 @@ function ExportView(props: {
             <Row k="Prélèvements effectués" v={checklist.filter((c) => done[c.id]).map((c) => c.label).join(', ') || 'aucun'} />
             <Row k="Événements validés" v={`${validated.length} / ${timeline?.events.length ?? 0}`} />
           </dl>
-          <div className={`mt-5 flex items-start gap-2 rounded-md px-3 py-2.5 text-sm ${consent.transmission ? 'bg-north-soft text-north' : 'bg-alert-soft text-alert'}`}>
+          <div className={`mt-5 flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm ${consent.transmission ? 'bg-north-soft text-north' : 'bg-alert-soft text-alert'}`}>
             <Lock size={15} strokeWidth={1.75} className="mt-0.5 shrink-0" />
             {consent.transmission ? 'Transmission à la police autorisée par la personne.' : 'Transmission à la police non autorisée : le dossier reste au centre désigné.'}
           </div>
@@ -449,18 +449,18 @@ function ExportView(props: {
         </div>
       </div>
       <div className="no-print mt-6 flex flex-wrap gap-2">
-        <button onClick={download} className="press inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-paper hover:bg-north">
+        <button onClick={download} className="press inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-medium text-paper hover:bg-north">
           <Download size={15} strokeWidth={1.75} /> Exporter (JSON)
         </button>
-        <button onClick={() => { props.onExport(); window.print() }} className="press inline-flex items-center gap-2 rounded-md border border-ink px-4 py-2.5 text-sm font-medium hover:bg-panel">
+        <button onClick={() => { props.onExport(); window.print() }} className="press inline-flex items-center gap-2 rounded-xl border border-ink px-4 py-2.5 text-sm font-medium hover:bg-panel">
           <Printer size={15} strokeWidth={1.75} /> Imprimer / PDF
         </button>
-        <button id="tamper" onClick={simulateTamper} className="press inline-flex items-center gap-2 rounded-md border border-alert/50 px-4 py-2.5 text-sm font-medium text-alert hover:bg-alert-soft">
+        <button id="tamper" onClick={simulateTamper} className="press inline-flex items-center gap-2 rounded-xl border border-alert/50 px-4 py-2.5 text-sm font-medium text-alert hover:bg-alert-soft">
           <ShieldAlert size={15} strokeWidth={1.75} /> Simuler une modification après coup
         </button>
       </div>
       {tamper && (
-        <div id="tamper-result" className="rise mt-4 flex items-start gap-2 rounded-md border border-alert/40 bg-alert-soft px-4 py-3 text-sm text-alert">
+        <div id="tamper-result" className="rise mt-4 flex items-start gap-2 rounded-xl border border-alert/40 bg-alert-soft px-4 py-3 text-sm text-alert">
           <ShieldAlert size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" />
           {tamper.ok ? 'Aucune altération détectée.' : `Altération détectée à l'entrée #${tamper.brokenAt} : la chaîne d'empreintes ne correspond plus. Le dossier original reste intact.`}
         </div>
@@ -493,7 +493,7 @@ function YesNo({ id, q, v, set }: { id: string; q: string; v: boolean; set: (v: 
   return (
     <div id={id} className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
       <span className="text-[16px]">{q}</span>
-      <div className="relative inline-grid grid-cols-3 rounded-md border border-rule bg-panel p-0.5 text-sm">
+      <div className="relative inline-grid grid-cols-3 rounded-xl border border-rule bg-panel p-0.5 text-sm">
         <span className={`absolute inset-y-0.5 w-[calc(33.333%-2px)] rounded bg-ink transition-transform duration-500 ease-[var(--ease-out-soft)] ${v ? 'translate-x-0.5' : 'translate-x-[calc(100%+2px)]'}`} />
         {(['Oui', 'Non', 'Ne sait pas'] as const).map((l) => {
           const active = (l === 'Oui' && v) || (l === 'Non' && !v)
@@ -515,7 +515,7 @@ function Badge({ status, remaining }: { status: Status; remaining: number | null
     depasse: ['border-rule bg-panel text-ink-3', `Dépassé de ${remaining !== null ? -remaining : 0} h`],
     'sans-delai': ['border-rule bg-paper text-ink-2', 'Dès que possible'],
   }
-  return <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded border px-2 py-1 font-mono text-[11px] ${map[status][0]}`}><Clock size={12} strokeWidth={1.75} />{map[status][1]}</span>
+  return <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-1 font-mono text-[11px] ${map[status][0]}`}><Clock size={12} strokeWidth={1.75} />{map[status][1]}</span>
 }
 
 function Validate({ d, onOk, onNo, okLabel = 'Valider' }: { d: Decision; onOk: () => void; onNo: () => void; okLabel?: string }) {
@@ -527,10 +527,10 @@ function Validate({ d, onOk, onNo, okLabel = 'Valider' }: { d: Decision; onOk: (
     )
   return (
     <span className="flex h-fit shrink-0 gap-1">
-      <button onClick={onOk} aria-label={okLabel} className="validate press inline-flex items-center gap-1 rounded border border-north/40 px-2 py-1 text-xs font-medium text-north hover:bg-north hover:text-paper">
+      <button onClick={onOk} aria-label={okLabel} className="validate press inline-flex items-center gap-1 rounded-full border border-north/40 px-2 py-1 text-xs font-medium text-north hover:bg-north hover:text-paper">
         <Check size={13} strokeWidth={2.25} /> {okLabel}
       </button>
-      <button onClick={onNo} aria-label="Rejeter" className="press inline-flex items-center rounded border border-rule px-1.5 py-1 text-xs text-ink-3 hover:border-alert hover:text-alert">
+      <button onClick={onNo} aria-label="Rejeter" className="press inline-flex items-center rounded-full border border-rule px-1.5 py-1 text-xs text-ink-3 hover:border-alert hover:text-alert">
         <X size={13} strokeWidth={2.25} />
       </button>
     </span>

@@ -1,5 +1,7 @@
-import { ArrowRight, ArrowUpRight, Clock, Fingerprint, Link2, Lock, ScrollText, ShieldCheck, Sparkles, UserCheck } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, ArrowUpRight, Clock, Route, Stethoscope, Fingerprint, Link2, Lock, ScrollText, ShieldCheck, Sparkles, UserCheck } from 'lucide-react'
 import { Mark, Wordmark } from './Logo'
+import Parcours from './Parcours'
 
 const NB = ' '
 
@@ -24,8 +26,10 @@ const PRIVACY = [
 ]
 
 export default function Landing() {
+  const [parcours, setParcours] = useState(false)
   return (
     <div className="min-h-screen">
+      <Parcours open={parcours} onClose={() => setParcours(false)} onStart={() => { window.location.hash = '#/espace' }} />
       <header className="sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-stretch">
           <a href="#/" className="press flex items-center border-r border-rule px-6 py-4"><Wordmark animate /></a>
@@ -34,8 +38,8 @@ export default function Landing() {
               <a key={h} href={h} className="press flex items-center border-r border-rule px-6 text-sm text-ink-2 hover:bg-panel hover:text-ink">{l}</a>
             ))}
           </nav>
-          <a href="#/demo" className="press group ml-auto flex items-center gap-2 bg-ink px-6 text-sm font-medium text-paper hover:bg-north">
-            Essayer la démo <ArrowRight size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
+          <a href="#/espace" className="press group ml-auto flex items-center gap-2 bg-ink px-6 text-sm font-medium text-paper hover:bg-north">
+            Ouvrir mon espace <ArrowRight size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
           </a>
         </div>
       </header>
@@ -54,19 +58,15 @@ export default function Landing() {
               Un seul récit, des consentements respectés, des délais de preuve tenus, un dossier qui tient devant un juge.
             </p>
             <p className="rise rise-3 mt-6 text-[19px] font-medium">L'IA guide. L'humain décide.</p>
-            <div className="rise rise-4 mt-6 eyebrow text-ink-3">Prototype · données 100 % fictives</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Le moment spectaculaire unique : le produit réel */}
-      <section className="border-b border-rule bg-panel">
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-28">
-          <div className="overflow-hidden rounded-lg border border-rule bg-ink">
-            <video src={`${import.meta.env.BASE_URL}boussole-15s.mp4`} autoPlay muted loop playsInline className="block w-full" />
-          </div>
-          <div className="mt-3 flex justify-between eyebrow text-ink-3">
-            <span>Enregistrement réel du prototype</span><span>Réponse IA pré-enregistrée</span>
+            <div className="rise rise-4 mt-8 flex flex-wrap gap-2">
+              <button onClick={() => setParcours(true)} className="press group inline-flex items-center gap-2 rounded-full bg-north px-5 py-3 font-medium text-paper hover:bg-ink">
+                <Route size={17} strokeWidth={1.75} /> Voir les étapes
+              </button>
+              <a href="#/demo" className="press inline-flex items-center gap-2 rounded-full border border-rule px-5 py-3 font-medium hover:border-ink">
+                <Stethoscope size={17} strokeWidth={1.75} /> Outil soignant
+              </a>
+            </div>
+            <div className="rise rise-4 mt-6 eyebrow text-ink-3">Bêta de test · données fictives uniquement</div>
           </div>
         </div>
       </section>
@@ -121,7 +121,7 @@ export default function Landing() {
             <div className="eyebrow text-paper/50">03 · Confidentialité</div>
             <h2 className="display mt-5 text-[clamp(2.25rem,4.5vw,4rem)]">Des données parmi les plus sensibles qui soient.</h2>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-lg border border-paper/15 bg-paper/15 sm:grid-cols-2">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-paper/15 bg-paper/15 sm:grid-cols-2">
             {PRIVACY.map(({ icon: Icon, t, d }) => (
               <div key={t} className="bg-ink p-6">
                 <Icon size={20} strokeWidth={1.5} className="text-[#6FC3AE]" />
@@ -162,8 +162,8 @@ export default function Landing() {
               Mesures : récits répétés, prélèvements dans les délais, dossiers incomplets, temps administratif.
             </p>
           </div>
-          <a href="#/demo" className="press group flex items-center justify-between rounded-lg bg-ink px-7 py-6 text-lg font-medium text-paper hover:bg-north">
-            Voir le prototype
+          <a href="#/espace" className="press group flex items-center justify-between rounded-3xl bg-ink px-7 py-6 text-lg font-medium text-paper hover:bg-north">
+            Ouvrir mon espace
             <ArrowUpRight size={22} strokeWidth={1.5} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:-translate-y-1 group-hover:translate-x-1" />
           </a>
         </div>

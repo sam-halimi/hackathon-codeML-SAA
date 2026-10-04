@@ -41,6 +41,27 @@ body { @apply bg-paper text-ink antialiased; font-feature-settings: "ss01", "cv1
 @keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
 .skeleton { background: linear-gradient(90deg, var(--color-panel) 0%, #F9F7F2 50%, var(--color-panel) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
 
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.fade-in { animation: fade 500ms var(--ease-out-soft) both; }
+@keyframes sheet { from { opacity: 0; transform: translateY(40px) scale(0.98); } to { opacity: 1; transform: none; } }
+.sheet-in { animation: sheet 650ms var(--ease-out-soft) both; }
+@keyframes slideL { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes slideR { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+.slide-l { animation: slideL 550ms var(--ease-out-soft) both; }
+.slide-r { animation: slideR 550ms var(--ease-out-soft) both; }
+
+/* Champs de saisie */
+.input { width: 100%; border-radius: 16px; border: 1px solid var(--color-rule); background: var(--color-paper); padding: 12px 16px; font-size: 16px; line-height: 1.55; outline: none; transition: border-color 400ms var(--ease-out-soft), box-shadow 400ms var(--ease-out-soft); }
+.input:focus { border-color: var(--color-north); box-shadow: 0 0 0 4px var(--color-north-soft); }
+.input::placeholder { color: var(--color-ink-3); }
+
+/* Carte Leaflet dans la DA */
+.leaflet-container { font-family: var(--font-sans); background: var(--color-panel); }
+.leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: 0 20px 50px -20px rgba(22,24,29,.4); }
+.pin { width: 30px; height: 30px; border-radius: 999px 999px 999px 4px; transform: rotate(-45deg); display: grid; place-items: center; border: 2px solid #F7F5F0; box-shadow: 0 6px 16px -6px rgba(22,24,29,.5); transition: transform 300ms var(--ease-out-soft); }
+.pin.active { transform: rotate(-45deg) scale(1.25); }
+.pin span { transform: rotate(45deg); color: #F7F5F0; font: 600 11px var(--font-mono); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
