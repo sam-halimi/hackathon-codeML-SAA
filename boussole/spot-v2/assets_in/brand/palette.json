@@ -1,0 +1,23 @@
+{
+  "_source": "boussole/app/src/index.css (branche claude/sweet-dijkstra-828unj, commit 40b81a5)",
+  "paper": "#FFF9F3",
+  "panel": "#F6EFE8",
+  "rule": "#EADFD4",
+  "ink": "#2D2440",
+  "ink2": "#5E5670",
+  "ink3": "#948BA3",
+  "violet": "#6A4CE0",
+  "violetSoft": "#EEE8FF",
+  "coral": "#FF8A65",
+  "coralSoft": "#FFE6DC",
+  "sage": "#2F9E78",
+  "sageSoft": "#DDF3E8",
+  "sky": "#3D86D6",
+  "skySoft": "#E1EEFB",
+  "sun": "#E9A23B",
+  "sunSoft": "#FFF1D6",
+  "warn": "#C2701A",
+  "_never": { "alert": "#D64545", "alertSoft": "#FDE4E4" },
+  "easeOutSoft": "cubic-bezier(0.22, 1, 0.36, 1)",
+  "font": "Nunito Variable (400 à 800), @fontsource-variable/nunito"
+}
