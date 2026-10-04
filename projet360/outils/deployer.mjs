@@ -31,6 +31,29 @@ async function appel(methode, chemin, corps, entetes) {
   return json;
 }
 
+// Page de lecture du spot : sobre, aux couleurs de NOVA, sans dépendance.
+function pageVideo(videos) {
+  const lecteur = (n) => `<figure class="${n.includes('9x16') ? 'v' : 'h'}"><video src="${n}" controls playsinline preload="metadata"></video>
+    <figcaption>${n.includes('9x16') ? 'Format vertical 9:16' : 'Format 16:9'} · <a href="${n}" download>Télécharger</a></figcaption></figure>`;
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA · Spot</title><meta name="robots" content="noindex">
+<style>
+:root{--fond:#16132F;--encre:#F6F3EC;--doux:#A9A4D0;--accent:#8B7CFF}
+*{box-sizing:border-box}body{margin:0;background:var(--fond);color:var(--encre);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:40px 16px 64px}
+h1{font:600 clamp(30px,5vw,48px)/1.1 Georgia,serif;margin:0 0 8px;letter-spacing:-.02em}
+p{color:var(--doux);margin:0 0 28px;max-width:62ch}
+.grille{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr);gap:24px;align-items:start}
+figure{margin:0}video{width:100%;border-radius:18px;background:#000;box-shadow:0 30px 70px -30px #000}
+figcaption{font-size:14px;color:var(--doux);margin-top:8px}a{color:var(--accent)}
+@media (max-width:760px){.grille{grid-template-columns:1fr}.v{max-width:360px}}
+</style></head><body><main>
+<h1>NOVA · Reprenez n'importe quel projet en cinq minutes.</h1>
+<p>Spot de présentation du défi Projet 360 : la douleur, puis NOVA, ses vraies interfaces et son assistant. Musique et bruitages originaux, voix ElevenLabs. <a href="/">Ouvrir l'application</a></p>
+<div class="grille">${videos.map(lecteur).join('')}</div>
+</main></body></html>`;
+}
+
 try {
   console.log('1/4  Construction du rendu à jour…');
   execFileSync(process.execPath, [path.join(RACINE, 'outils', 'construire.mjs')], { stdio: 'inherit' });
@@ -43,6 +66,11 @@ try {
   ];
   const brief = path.join(RACINE, 'dist', 'NOVA_brief_de_reprise.pdf');
   if (fs.existsSync(brief)) fichiers.push({ chemin: 'NOVA_brief_de_reprise.pdf', contenu: fs.readFileSync(brief) });
+  // Spot vidéo (facultatif) : copies web produites par video/outils/finaliser.mjs, lues sur /video/.
+  const dossierVideo = path.resolve(RACINE, '..', 'video', 'out', 'web');
+  const videos = ['NOVA_spot_16x9.mp4', 'NOVA_spot_9x16.mp4'].filter((n) => fs.existsSync(path.join(dossierVideo, n)));
+  for (const n of videos) fichiers.push({ chemin: 'video/' + n, contenu: fs.readFileSync(path.join(dossierVideo, n)) });
+  if (videos.length) fichiers.push({ chemin: 'video/index.html', contenu: Buffer.from(pageVideo(videos)) });
 
   const { user } = await appel('GET', '/v2/user');
   const equipe = user.defaultTeamId ? `teamId=${user.defaultTeamId}` : '';

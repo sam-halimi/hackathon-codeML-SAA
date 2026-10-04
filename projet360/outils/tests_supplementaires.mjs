@@ -463,6 +463,23 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await Promise.all([page.waitForEvent('load'), page.click('[data-version-action="effacer-vierge"]')]);
   await page.waitForSelector('main#contenu > *');
   ok('Versions : « Effacer le dossier vierge » repart de zéro', /Date à définir/.test(await texte('main')) && !/Atlas/.test(await texte('.entete')));
+  {
+    const defauts = [];
+    for (const [w, h] of [[1920, 1080], [1366, 768], [390, 844], [360, 640]]) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.evaluate(() => window.NOVA_GUIDE.ouvrir(0));
+      for (let i = 0; i < 6; i++) {
+        await page.waitForTimeout(60);
+        const m = await page.evaluate(() => { const d = document.getElementById('guide'); return { sh: d.scrollHeight, ch: d.clientHeight, t: parseFloat(d.style.fontSize) }; });
+        if (m.sh > m.ch + 1) defauts.push(`${w}×${h} écran ${i + 1}`);
+        if (m.t < 13) defauts.push(`${w}×${h} écran ${i + 1} : ${m.t} px`);
+        if (i < 5) await page.keyboard.press('ArrowRight');
+      }
+      await page.evaluate(() => window.NOVA_GUIDE.fermer());
+    }
+    ok(`Dossier vierge : guide sans défilement, 6 écrans × 4 tailles${defauts.length ? ' : ' + defauts.slice(0, 3).join(', ') : ''}`, defauts.length === 0);
+    await page.setViewportSize({ width: 1366, height: 900 });
+  }
 
   // Nettoyage du stockage local.
   await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });

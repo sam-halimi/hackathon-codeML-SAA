@@ -655,7 +655,7 @@ def main():
     mus_parle = mus[parle] * gain_ducking[parle][:, None]
     lm = mesure.integrated_loudness(mus_parle) if len(mus_parle) > SR else -70
     lv2 = mesure.integrated_loudness(voix_st[parle])
-    cible_musique = lv2 - 17.0  # marge : 17 LU sous la voix pendant la parole (exigence : ≥ 15)
+    cible_musique = lv2 - 16.0  # marge : 16 LU sous la voix pendant la parole (exigence : ≥ 15)
     gain_m = 10 ** ((cible_musique - lm) / 20)
     mus = mus * gain_m * gain_ducking[:, None]
     # Bruitages : pointes sous la voix

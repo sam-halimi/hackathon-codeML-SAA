@@ -35,6 +35,14 @@ for (const f of formats) {
   resume.push({ format: f.id, fichier: f.final, duree: duree.toFixed(2), taille_mo: (parseInt(s.format.size, 10) / 1048576).toFixed(1), video: `${v.width}×${v.height}, ${v.r_frame_rate.split('/')[0]} i/s, H.264`, audio: `AAC ${Math.round(parseInt(a.bit_rate || '320000', 10) / 1000)} kb/s, ${a.sample_rate} Hz, stéréo` });
   console.log(`  ✓ ${f.final} (${duree.toFixed(2)} s) et planche_contact_${f.id}.jpg`);
 }
+// Copies web (plus légères) pour la mise en ligne : video/out/web/.
+fs.mkdirSync(path.join(OUT, 'web'), { recursive: true });
+for (const f of formats) {
+  const src = path.join(OUT, f.final);
+  if (!fs.existsSync(src)) continue;
+  ff(['-i', src, '-c:v', 'libx264', '-preset', 'slow', '-crf', '23', '-maxrate', '3.5M', '-bufsize', '7M', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', path.join(OUT, 'web', f.final)]);
+  console.log(`  ✓ web/${f.final} (${(fs.statSync(path.join(OUT, 'web', f.final)).size / 1048576).toFixed(1)} Mo)`);
+}
 // Pistes séparées (WAV 24 bits, 48 kHz).
 fs.mkdirSync(path.join(OUT, 'pistes'), { recursive: true });
 for (const p of ['voix', 'musique', 'bruitages', 'mix_master']) fs.copyFileSync(path.join(AUDIO, p + '.wav'), path.join(OUT, 'pistes', p + '.wav'));
@@ -54,6 +62,7 @@ ${lignes}
 
 - \`planche_contact_16x9.jpg\`, \`planche_contact_9x16.jpg\` : 24 images régulières, horodatées.
 - \`pistes/\` : \`voix.wav\`, \`musique.wav\`, \`bruitages.wav\` (pistes séparées, avant mastering) et \`mix_master.wav\` (WAV 24 bits, 48 kHz).
+- \`web/\` : copies allégées pour la mise en ligne (H.264 CRF 23, AAC 192 kb/s), publiées sur https://nova-projet360.vercel.app/video/.
 
 ## Son
 
