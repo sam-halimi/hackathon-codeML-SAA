@@ -30,7 +30,7 @@ export const RESOURCES: Resource[] = [
     name: 'Centre pour les victimes d’agression sexuelle de Montréal (CVASM), jour',
     what: 'Clinique Médic-Elle. Examen médical et médicolégal, suivi. Adultes, services en anglais.',
     address: '1980, rue Sherbrooke Ouest, bureau 500, Montréal (QC) H3H 1E8',
-    phone: '5147318531', phoneLabel: '514 731-8531, poste 47455',
+    phone: '+15147318531', phoneLabel: '+1 514 731-8531, poste 47455',
     hours: 'Lundi au vendredi, 8 h à 17 h', lat: 45.4957, lng: -73.5807,
   },
   {
@@ -38,14 +38,14 @@ export const RESOURCES: Resource[] = [
     name: 'Hôpital général de Montréal (CVASM), soir et fin de semaine',
     what: 'Urgence du CUSM. Examen médical et médicolégal en dehors des heures de bureau. Adultes, services en anglais.',
     address: '1650, avenue Cedar, Montréal (QC) H3G 1A4',
-    phone: '5149348090', phoneLabel: '514 934-8090',
+    phone: '+15149348090', phoneLabel: '+1 514 934-8090',
     hours: 'Soirs, fins de semaine et jours fériés', lat: 45.4968, lng: -73.5884,
   },
   {
     id: 'ligne', kind: 'support',
     name: 'Ligne-ressource provinciale pour les victimes d’agression sexuelle',
     what: 'Écoute, information, orientation vers le centre désigné le plus proche. Gratuit, bilingue, confidentiel. Clavardage de midi à minuit.',
-    phone: '18889339007', phoneLabel: '1 888 933-9007',
+    phone: '+18889339007', phoneLabel: '+1 888 933-9007',
     hours: '24 h/24, 7 j/7', url: 'https://www.sexualviolencehelpline.ca',
   },
   {
@@ -53,7 +53,7 @@ export const RESOURCES: Resource[] = [
     name: 'CAVAC de Montréal',
     what: 'Centre d’aide aux victimes d’actes criminels : soutien psychologique, information sur les droits, accompagnement.',
     address: '6472, boulevard Saint-Laurent, Montréal (QC) H2S 3C4',
-    phone: '5142779860', phoneLabel: '514 277-9860',
+    phone: '+15142779860', phoneLabel: '+1 514 277-9860',
     hours: 'Lundi au vendredi, 9 h à 17 h', lat: 45.5306, lng: -73.6048,
   },
   {
@@ -61,7 +61,7 @@ export const RESOURCES: Resource[] = [
     name: 'CALACS Trêve pour Elles',
     what: 'Centre d’aide et de lutte contre les agressions à caractère sexuel : suivi individuel et de groupe. Femmes cis et trans, personnes non binaires, dès 14 ans.',
     address: '1805, rue Joliette, Montréal (QC)',
-    phone: '5142510323', phoneLabel: '514 251-0323',
+    phone: '+15142510323', phoneLabel: '+1 514 251-0323',
     hours: 'Lundi au jeudi, 9 h à 17 h', url: 'https://www.trevepourelles.org', lat: 45.5468, lng: -73.5459,
   },
   {
@@ -74,7 +74,7 @@ export const RESOURCES: Resource[] = [
     id: 'rebatir', kind: 'legal',
     name: 'Rebâtir',
     what: 'Service public de consultation juridique gratuite pour les victimes de violence sexuelle et conjugale : 4 heures de conseils, plus si nécessaire, sans condition de revenu. Interprète disponible.',
-    phone: '18337322847', phoneLabel: '1 833 REBÂTIR (732-2847)',
+    phone: '+18337322847', phoneLabel: '+1 833 REBÂTIR (732-2847)',
     hours: 'Lundi au vendredi, 8 h 30 à 16 h 30', url: 'https://rebatir.ca',
   },
 ]

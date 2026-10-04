@@ -8,7 +8,9 @@ import { Wordmark } from './Logo'
 import { Care, Choice, Folder, Space, Talk, Welcome } from './Illustrations'
 import { RESOURCES, type Resource } from '../lib/resources'
 import { computeChecklist } from '../lib/rules'
-import { createVault, openVault, saveVault, sealForTransfer, vaultExists, vaultInfo, wipeVault, type VaultSession } from '../lib/vault'
+import { anyAccount, createAccount, deleteAccount, isEmail, login, passwordStrength, saveVault, sealForTransfer, type VaultSession } from '../lib/vault'
+import Etapes from './Etapes'
+import Rappel from './Rappel'
 
 const ResourceMap = lazy(() => import('./ResourceMap'))
 const NB = ' '
@@ -40,11 +42,12 @@ const SLIDES = [
   { bg: 'bg-north-soft', accent: 'text-north', Art: Choice, title: 'Vous décidez de tout.', text: 'Chaque étape est un choix : vous pouvez dire non, faire une pause, revenir plus tard. Rien ne se fait sans vous.' },
   { bg: 'bg-sky-soft', accent: 'text-sky', Art: Care, title: 'Des soins près de chez vous.', text: 'On vous montre où aller à Montréal pour un examen, et ce qui est encore possible selon le temps écoulé.' },
   { bg: 'bg-sage-soft', accent: 'text-sage', Art: Talk, title: 'Quelqu’un pour vous écouter.', text: 'Des intervenantes et des psychologues formés, gratuits et confidentiels, à quelques minutes de vous.' },
-  { bg: 'bg-sun-soft', accent: 'text-sun', Art: Space, title: 'Un espace rien qu’à vous.', text: 'Votre récit est chiffré sur votre téléphone avec une phrase secrète. Personne d’autre ne peut le lire, pas même nous.' },
+  { bg: 'bg-sun-soft', accent: 'text-sun', Art: Space, title: 'Un espace rien qu’à vous.', text: 'Votre récit est chiffré avec votre mot de passe. Personne d’autre ne peut le lire, pas même nous.' },
 ]
 
 export default function Espace() {
-  const [stage, setStage] = useState<'intro' | 'account' | 'unlock' | 'app'>(() => (vaultExists() ? 'unlock' : 'intro'))
+  const [stage, setStage] = useState<'intro' | 'account' | 'unlock' | 'app'>(() => (anyAccount() ? 'unlock' : 'intro'))
+  const [etapes, setEtapes] = useState(false)
   const [tab, setTab] = useState<Tab>('accueil')
   const [session, setSession] = useState<VaultSession | null>(null)
   const [fiche, setFiche] = useState<Fiche>(EMPTY)
@@ -75,14 +78,15 @@ export default function Espace() {
     return h >= 0 ? h : null
   }, [fiche.quand, fiche.quandInconnu])
 
-  const open = (s: VaultSession, data: unknown) => {
-    setSession(s); setFiche({ ...EMPTY, ...(data as Partial<Fiche>) }); setSavedAt(vaultInfo()?.updatedAt ?? null); setTab('accueil'); setStage('app')
+  const open = (s: VaultSession, data: unknown, fresh: boolean) => {
+    setSession(s); setFiche({ ...EMPTY, ...(data as Partial<Fiche>) }); setSavedAt(fresh ? new Date().toISOString() : null); setTab('accueil'); setStage('app')
+    setEtapes(true) // la fenêtre des étapes s'ouvre à chaque arrivée dans le compte
   }
-  const lock = () => { setSession(null); setFiche(EMPTY); setSavedAt(null); setStage(vaultExists() ? 'unlock' : 'intro') }
+  const lock = () => { setSession(null); setFiche(EMPTY); setSavedAt(null); setEtapes(false); setStage(anyAccount() ? 'unlock' : 'intro') }
 
-  if (stage === 'intro') return <Intro onDone={() => setStage(session ? 'app' : vaultExists() ? 'unlock' : 'account')} onHave={() => setStage('unlock')} />
-  if (stage === 'account') return <Account onBack={() => setStage('intro')} onOpen={open} />
-  if (stage === 'unlock') return <Unlock onOpen={open} onIntro={() => setStage('intro')} onReset={() => { wipeVault(); setStage('intro') }} />
+  if (stage === 'intro') return <Intro onDone={() => setStage(session ? 'app' : 'account')} onHave={() => setStage(session ? 'app' : 'unlock')} />
+  if (stage === 'account') return <Account onBack={() => setStage('intro')} onLogin={() => setStage('unlock')} onOpen={open} />
+  if (stage === 'unlock') return <Unlock onOpen={open} onIntro={() => setStage('intro')} onCreate={() => setStage('account')} />
 
   return (
     <div className="min-h-screen pb-24 sm:pb-0">
@@ -107,12 +111,14 @@ export default function Espace() {
       </header>
 
       <main key={tab} className="mx-auto max-w-6xl px-5 py-8 sm:py-12">
-        {tab === 'accueil' && <Accueil fiche={fiche} hoursSince={hoursSince} go={setTab} onIntro={() => setStage('intro')} />}
-        {tab === 'recit' && <Recit fiche={fiche} update={update} savedAt={savedAt} hoursSince={hoursSince} onWipe={() => { wipeVault(); lock() }} onNext={() => setTab('aller')} />}
+        {tab === 'accueil' && <Accueil fiche={fiche} hoursSince={hoursSince} go={setTab} onIntro={() => setEtapes(true)} />}
+        {tab === 'recit' && <Recit fiche={fiche} update={update} savedAt={savedAt} hoursSince={hoursSince} onWipe={() => { if (session) deleteAccount(session); lock() }} onNext={() => setTab('aller')} />}
         {tab === 'aller' && <Aller hoursSince={hoursSince} substance={fiche.substance === 'oui'} />}
         {tab === 'dossier' && <Dossier fiche={fiche} hoursSince={hoursSince} onJournal={addJournal} />}
         {tab === 'vie-privee' && <ViePrivee />}
       </main>
+
+      <Etapes open={etapes} onClose={() => setEtapes(false)} prenom={fiche.prenom} go={(t) => { setEtapes(false); setTab(t as Tab) }} />
 
       {/* Barre d'onglets mobile, au pouce */}
       <nav className="fixed inset-x-3 bottom-3 z-30 grid grid-cols-5 rounded-[28px] bg-ink p-1.5 shadow-[0_20px_40px_-20px_rgba(45,36,64,.7)] sm:hidden">
@@ -172,79 +178,99 @@ function Intro({ onDone, onHave }: { onDone: () => void; onHave: () => void }) {
   )
 }
 
-function PassField({ value, onChange, show, label, autoFocus, id }: { value: string; onChange: (v: string) => void; show: boolean; label: string; autoFocus?: boolean; id?: string }) {
+function TextField({ id, label, hint, value, onChange, type = 'text', autoFocus, autoComplete, placeholder, right }: {
+  id: string; label: string; hint?: string; value: string; onChange: (v: string) => void; type?: string; autoFocus?: boolean; autoComplete?: string; placeholder?: string; right?: React.ReactNode
+}) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-bold text-ink-2">{label}</span>
-      <input id={id} autoFocus={autoFocus} type={show ? 'text' : 'password'} value={value} onChange={(e) => onChange(e.target.value)} className="input" autoComplete="off" />
+      <span className="mb-1.5 block text-sm font-bold text-ink-2">{label} {hint && <span className="font-normal text-ink-3">{hint}</span>}</span>
+      <span className="relative block">
+        <input id={id} autoFocus={autoFocus} type={type} value={value} onChange={(e) => onChange(e.target.value)} className={`input ${right ? 'pr-12' : ''}`} autoComplete={autoComplete} placeholder={placeholder} />
+        {right && <span className="absolute right-2 top-1/2 -translate-y-1/2">{right}</span>}
+      </span>
     </label>
   )
 }
 
-function Account({ onBack, onOpen }: { onBack: () => void; onOpen: (s: VaultSession, data: unknown) => void }) {
+function EyeToggle({ show, set }: { show: boolean; set: (v: boolean) => void }) {
+  return (
+    <button type="button" onClick={() => set(!show)} aria-label={show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} className="press grid h-9 w-9 place-items-center rounded-full text-ink-3 hover:bg-panel hover:text-ink">
+      {show ? <EyeOff size={18} strokeWidth={2} /> : <Eye size={18} strokeWidth={2} />}
+    </button>
+  )
+}
+
+function Account({ onBack, onLogin, onOpen }: { onBack: () => void; onLogin: () => void; onOpen: (s: VaultSession, data: unknown, fresh: boolean) => void }) {
   const [prenom, setPrenom] = useState('')
+  const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
   const [confirm, setConfirm] = useState('')
   const [show, setShow] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const strength = Math.min(3, Math.floor(pass.length / 6))
+  const strength = passwordStrength(pass)
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setError('')
-    if (pass.length < 8) return setError('Au moins 8 caractères. Trois mots que vous retiendrez, par exemple.')
-    if (pass !== confirm) return setError('Les deux phrases ne correspondent pas.')
+    if (!isEmail(email)) return setError('Adresse courriel invalide.')
+    if (pass.length < 8) return setError('Le mot de passe doit contenir au moins 8 caractères.')
+    if (pass !== confirm) return setError('Les deux mots de passe ne correspondent pas.')
     setBusy(true)
-    const s = await createVault(pass)
-    const data = { ...EMPTY, prenom: prenom.trim(), journal: [{ at: new Date().toISOString(), action: 'Espace créé' }] }
-    await saveVault(s, data)
-    onOpen(s, data)
+    try {
+      const data = { ...EMPTY, prenom: prenom.trim(), journal: [{ at: new Date().toISOString(), action: 'Compte créé' }] }
+      const s = await createAccount(email, pass, data)
+      onOpen(s, data, true)
+    } catch {
+      setError('Un compte existe déjà avec ce courriel sur cet appareil. Connectez-vous.')
+      setBusy(false)
+    }
   }
   return (
     <div className="flex min-h-screen flex-col bg-north-soft">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-5">
         <Wordmark />
-        <button onClick={onBack} className="press inline-flex items-center gap-1.5 rounded-full bg-white/70 px-4 py-2 text-sm font-bold text-ink-2 hover:bg-white"><ArrowLeft size={16} strokeWidth={2} /> Revoir les étapes</button>
+        <button onClick={onBack} className="press inline-flex items-center gap-1.5 rounded-full bg-white/70 px-4 py-2 text-sm font-bold text-ink-2 hover:bg-white"><ArrowLeft size={16} strokeWidth={2} /> Revoir la présentation</button>
       </div>
       <div className="mx-auto grid w-full max-w-5xl flex-1 items-center gap-8 px-5 pb-10 md:grid-cols-2">
         <Space className="slide-l mx-auto hidden w-full max-w-[400px] md:block" />
-        <form onSubmit={submit} className="sheet-in card-soft p-7 sm:p-9">
+        <form onSubmit={submit} className="sheet-in card-soft p-7 sm:p-9" noValidate>
           <div className="text-sm font-extrabold text-north">Dernière étape</div>
-          <h1 className="display mt-2 text-4xl">Créez votre espace</h1>
-          <p className="mt-3 text-[16px] leading-relaxed text-ink-2">Pas d’email, pas de numéro de téléphone. Juste une phrase secrète, qui chiffre tout sur cet appareil.</p>
+          <h1 className="display mt-2 text-4xl">Créez votre compte</h1>
+          <p className="mt-3 text-[16px] leading-relaxed text-ink-2">Votre récit sera chiffré avec votre mot de passe. Personne d’autre ne peut le lire.</p>
           <div className="mt-6 space-y-4">
-            <label className="block">
-              <span className="mb-1.5 block text-sm font-bold text-ink-2">Comment voulez-vous qu’on vous appelle ? <span className="font-normal text-ink-3">(facultatif)</span></span>
-              <input id="prenom" value={prenom} onChange={(e) => setPrenom(e.target.value)} className="input" placeholder="Un prénom, un surnom, ou rien" />
-            </label>
-            <PassField id="pass1" label="Phrase secrète" value={pass} onChange={setPass} show={show} />
-            <div className="flex gap-1.5" aria-hidden>
-              {[0, 1, 2].map((n) => <span key={n} className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${n < strength ? ['bg-coral', 'bg-sun', 'bg-sage'][strength - 1] : 'bg-panel'}`} />)}
+            <TextField id="prenom" label="Prénom ou surnom" hint="(facultatif)" value={prenom} onChange={setPrenom} placeholder="Comment voulez-vous qu’on vous appelle ?" autoComplete="nickname" />
+            <TextField id="email" label="Adresse courriel" type="email" value={email} onChange={setEmail} placeholder="vous@exemple.com" autoComplete="email" />
+            <TextField id="pass1" label="Mot de passe" type={show ? 'text' : 'password'} value={pass} onChange={setPass} autoComplete="new-password" right={<EyeToggle show={show} set={setShow} />} />
+            <div aria-live="polite">
+              <div className="flex gap-1.5">
+                {[1, 2, 3].map((n) => <span key={n} className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${n <= strength.score ? ['', 'bg-coral', 'bg-sun', 'bg-sage'][strength.score] : 'bg-panel'}`} />)}
+              </div>
+              {strength.label && <p className={`mt-1.5 text-xs font-bold ${['', 'text-coral', 'text-warn', 'text-sage'][strength.score]}`} id="strength">{strength.label}</p>}
             </div>
-            <PassField id="pass2" label="Confirmer la phrase" value={confirm} onChange={setConfirm} show={show} />
-            <button type="button" onClick={() => setShow(!show)} className="press inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-sm font-bold text-ink-2 hover:bg-panel">
-              {show ? <EyeOff size={16} strokeWidth={2} /> : <Eye size={16} strokeWidth={2} />} {show ? 'Masquer' : 'Afficher'}
-            </button>
+            <TextField id="pass2" label="Confirmer le mot de passe" type={show ? 'text' : 'password'} value={confirm} onChange={setConfirm} autoComplete="new-password" />
           </div>
           {error && <p className="fade-in mt-3 flex items-start gap-1.5 text-sm font-bold text-alert"><AlertTriangle size={16} strokeWidth={2} className="mt-0.5 shrink-0" /> {error}</p>}
           <button id="create" disabled={busy} className="press mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-north py-4 text-[16px] font-extrabold text-white hover:bg-ink disabled:opacity-60">
-            {busy ? 'Chiffrement…' : <><Lock size={18} strokeWidth={2.25} /> Créer mon espace</>}
+            {busy ? 'Création…' : <><Lock size={18} strokeWidth={2.25} /> Créer mon compte</>}
           </button>
-          <p className="mt-4 flex items-start gap-2 text-xs leading-relaxed text-ink-3"><AlertTriangle size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-warn" /> Bêta de test : n’entrez pas de vraies données. Phrase oubliée = espace illisible, c’est voulu.</p>
+          <button type="button" onClick={onLogin} className="press mt-3 w-full rounded-full py-2.5 text-sm font-bold text-ink-2 hover:bg-panel">J’ai déjà un compte · Se connecter</button>
+          <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-ink-3"><AlertTriangle size={14} strokeWidth={2} className="mt-0.5 shrink-0 text-warn" /> Bêta de test : n’entrez pas de vraies données. Le compte est stocké sur cet appareil uniquement ; un mot de passe oublié rend le récit illisible.</p>
         </form>
       </div>
     </div>
   )
 }
 
-function Unlock({ onOpen, onIntro, onReset }: { onOpen: (s: VaultSession, data: unknown) => void; onIntro: () => void; onReset: () => void }) {
+function Unlock({ onOpen, onIntro, onCreate }: { onOpen: (s: VaultSession, data: unknown, fresh: boolean) => void; onIntro: () => void; onCreate: () => void }) {
+  const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
   const [show, setShow] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const [reset, setReset] = useState(false)
   const submit = async (e: React.FormEvent) => {
-    e.preventDefault(); setError(''); setBusy(true)
-    try { const { session, data } = await openVault(pass); onOpen(session, data) } catch { setError('Phrase secrète incorrecte.') }
+    e.preventDefault(); setError('')
+    if (!isEmail(email)) return setError('Adresse courriel invalide.')
+    setBusy(true)
+    try { const { session, data } = await login(email, pass); onOpen(session, data, false) } catch { setError('Courriel ou mot de passe incorrect.') }
     setBusy(false)
   }
   return (
@@ -255,29 +281,19 @@ function Unlock({ onOpen, onIntro, onReset }: { onOpen: (s: VaultSession, data: 
       </div>
       <div className="mx-auto grid w-full max-w-5xl flex-1 items-center gap-8 px-5 pb-10 md:grid-cols-2">
         <Welcome className="slide-l mx-auto hidden w-full max-w-[400px] md:block" />
-        <form onSubmit={submit} className="sheet-in card-soft p-7 sm:p-9">
+        <form onSubmit={submit} className="sheet-in card-soft p-7 sm:p-9" noValidate>
           <div className="grid h-14 w-14 place-items-center rounded-2xl bg-sage-soft text-sage"><KeyRound size={26} strokeWidth={2} /></div>
           <h1 className="display mt-5 text-4xl">Content de vous revoir.</h1>
-          <p className="mt-3 text-[16px] leading-relaxed text-ink-2">Entrez votre phrase secrète pour ouvrir votre espace.</p>
-          <div className="mt-6"><PassField id="unlock-pass" label="Phrase secrète" value={pass} onChange={setPass} show={show} autoFocus /></div>
-          <button type="button" onClick={() => setShow(!show)} className="press mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-sm font-bold text-ink-2 hover:bg-panel">
-            {show ? <EyeOff size={16} strokeWidth={2} /> : <Eye size={16} strokeWidth={2} />} {show ? 'Masquer' : 'Afficher'}
-          </button>
-          {error && <p className="fade-in mt-3 flex items-center gap-1.5 text-sm font-bold text-alert"><AlertTriangle size={16} strokeWidth={2} /> {error}</p>}
-          <button id="unlock" disabled={busy} className="press mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sage py-4 text-[16px] font-extrabold text-white hover:bg-ink disabled:opacity-60">
-            {busy ? 'Déchiffrement…' : <><LockOpen size={18} strokeWidth={2.25} /> Ouvrir mon espace</>}
-          </button>
-          <div className="mt-5 text-center text-sm">
-            {reset ? (
-              <span className="fade-in inline-flex flex-wrap items-center justify-center gap-2">
-                <span className="text-alert">Effacer cet espace et recommencer ?</span>
-                <button type="button" onClick={onReset} className="press rounded-full bg-alert px-3 py-1.5 font-bold text-white">Effacer</button>
-                <button type="button" onClick={() => setReset(false)} className="press rounded-full px-3 py-1.5 font-bold text-ink-2 hover:bg-panel">Annuler</button>
-              </span>
-            ) : (
-              <button type="button" onClick={() => setReset(true)} className="press rounded-full px-3 py-1.5 font-bold text-ink-3 hover:bg-panel">Phrase oubliée ? Recommencer</button>
-            )}
+          <p className="mt-3 text-[16px] leading-relaxed text-ink-2">Connectez-vous pour retrouver votre espace.</p>
+          <div className="mt-6 space-y-4">
+            <TextField id="login-email" label="Adresse courriel" type="email" value={email} onChange={setEmail} autoFocus autoComplete="email" />
+            <TextField id="login-pass" label="Mot de passe" type={show ? 'text' : 'password'} value={pass} onChange={setPass} autoComplete="current-password" right={<EyeToggle show={show} set={setShow} />} />
           </div>
+          {error && <p className="fade-in mt-3 flex items-center gap-1.5 text-sm font-bold text-alert"><AlertTriangle size={16} strokeWidth={2} /> {error}</p>}
+          <button id="login" disabled={busy} className="press mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-sage py-4 text-[16px] font-extrabold text-white hover:bg-ink disabled:opacity-60">
+            {busy ? 'Connexion…' : <><LockOpen size={18} strokeWidth={2.25} /> Se connecter</>}
+          </button>
+          <button type="button" onClick={onCreate} className="press mt-3 w-full rounded-full py-2.5 text-sm font-bold text-ink-2 hover:bg-panel">Pas encore de compte · En créer un</button>
         </form>
       </div>
     </div>
@@ -300,11 +316,11 @@ function Accueil({ fiche, hoursSince, go, onIntro }: { fiche: Fiche; hoursSince:
       <h1 className="rise display text-4xl sm:text-5xl">{hello}{fiche.prenom ? ` ${fiche.prenom}` : ''}.</h1>
       <p className="rise rise-1 mt-3 max-w-xl text-[18px] leading-relaxed text-ink-2">Prenez le temps qu’il vous faut. Voici ce que vous pouvez faire, dans l’ordre que vous voulez.</p>
 
-      <a href="tel:18889339007" id="call-ligne" className="rise rise-2 press mt-7 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105">
+      <a href="tel:+18889339007" id="call-ligne" className="rise rise-2 press mt-7 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/25"><Phone size={22} strokeWidth={2.25} /></span>
         <span className="min-w-0">
           <span className="block text-sm font-bold text-white/85">Besoin de parler ? Gratuit, 24 h/24</span>
-          <span className="display block text-2xl sm:text-3xl">1 888 933-9007</span>
+          <span className="display block text-2xl sm:text-3xl">+1 888 933-9007</span>
         </span>
         <ArrowRight size={22} strokeWidth={2.25} className="ml-auto shrink-0" />
       </a>
@@ -321,7 +337,7 @@ function Accueil({ fiche, hoursSince, go, onIntro }: { fiche: Fiche; hoursSince:
           </button>
         ))}
       </div>
-      <button onClick={onIntro} className="press mt-8 inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-ink-3 hover:bg-panel"><Sparkles size={16} strokeWidth={2} /> Revoir la présentation</button>
+      <button onClick={onIntro} className="press mt-8 inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-ink-3 hover:bg-panel"><Sparkles size={16} strokeWidth={2} /> Revoir les étapes de la prise en charge</button>
     </div>
   )
 }
@@ -416,7 +432,9 @@ const FILTERS = [
 function Aller({ hoursSince, substance }: { hoursSince: number | null; substance: boolean }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('all')
   const [active, setActive] = useState<string | undefined>()
+  const [mapKind, setMapKind] = useState<'osm' | 'google'>('osm')
   const items = RESOURCES.filter((r) => filter === 'all' || r.kind === filter)
+  const gTarget = items.find((r) => r.id === active && r.address) ?? items.find((r) => r.address && !active)
   const urgent = hoursSince !== null ? computeChecklist({ hoursSince, substance, exposure: true, pregnancyRisk: true, injuries: false, showered: false }).filter((c) => c.status === 'urgent' || c.status === 'possible') : []
 
   useEffect(() => {
@@ -441,11 +459,11 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
         </div>
       )}
 
-      <a href="tel:18889339007" className="press mt-6 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105" id="call-ligne-aller">
+      <a href="tel:+18889339007" className="press mt-6 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105" id="call-ligne-aller">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/25"><Phone size={22} strokeWidth={2.25} /></span>
         <span className="min-w-0">
           <span className="block text-sm font-bold text-white/85">Ligne-ressource · gratuit · confidentiel · 24 h/24</span>
-          <span className="display block text-2xl sm:text-3xl">1 888 933-9007</span>
+          <span className="display block text-2xl sm:text-3xl">+1 888 933-9007</span>
         </span>
         <ArrowRight size={20} strokeWidth={1.75} className="ml-auto" />
       </a>
@@ -462,13 +480,32 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
         <ul className="order-2 space-y-3 lg:order-1 lg:max-h-[640px] lg:overflow-auto lg:pr-1">
           {items.map((r, n) => <ResourceCard key={r.id} r={r} n={n + 1} active={r.id === active} onSelect={() => setActive(r.id)} />)}
         </ul>
-        <div className="order-1 h-[340px] overflow-hidden rounded-[28px] border-4 border-white shadow-[0_20px_40px_-28px_rgba(45,36,64,.5)] lg:sticky lg:top-36 lg:order-2 lg:h-[640px]" id="map">
-          <Suspense fallback={<div className="skeleton h-full w-full" />}>
-            <ResourceMap items={items} active={active} onSelect={setActive} />
-          </Suspense>
+        <div className="order-1 lg:sticky lg:top-36 lg:order-2">
+          <div className="mb-3 inline-grid grid-cols-2 rounded-full bg-panel p-1 text-sm font-bold" role="tablist" aria-label="Type de carte">
+            {(['osm', 'google'] as const).map((k) => (
+              <button key={k} id={`map-${k}`} onClick={() => setMapKind(k)} className={`press rounded-full px-4 py-2 transition-colors duration-500 ${mapKind === k ? 'bg-ink text-white' : 'text-ink-2'}`}>{k === 'osm' ? 'Plan' : 'Google Maps'}</button>
+            ))}
+          </div>
+          <div className="h-[340px] overflow-hidden rounded-[28px] border-4 border-white shadow-[0_20px_40px_-28px_rgba(45,36,64,.5)] lg:h-[590px]" id="map">
+            {mapKind === 'osm' ? (
+              <Suspense fallback={<div className="skeleton h-full w-full" />}>
+                <ResourceMap items={items} active={active} onSelect={setActive} />
+              </Suspense>
+            ) : (
+              <iframe
+                key={gTarget?.id ?? 'all'}
+                title="Google Maps"
+                className="fade-in h-full w-full"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(gTarget?.address ?? 'centre désigné agression sexuelle Montréal')}&z=${gTarget ? 15 : 12}&output=embed`}
+              />
+            )}
+          </div>
+          {mapKind === 'google' && <p className="mt-2 text-xs text-ink-3">Google Maps ne se charge que si vous le choisissez. {gTarget ? `Affiché : ${gTarget.name}.` : 'Touchez une adresse pour l’afficher.'}</p>}
         </div>
       </div>
-      <p className="mt-4 text-xs text-ink-3">Fond de carte OpenStreetMap. Sources : CIUSSS du Centre-Sud-de-l’Île-de-Montréal, 211 Québec, rebatir.ca. Vérifiez les horaires par téléphone.</p>
+      <p className="mt-4 text-xs text-ink-3">Plan OpenStreetMap ou Google Maps. Sources : CIUSSS du Centre-Sud-de-l’Île-de-Montréal, 211 Québec, rebatir.ca. Vérifiez les horaires par téléphone.</p>
     </div>
   )
 }
@@ -488,8 +525,8 @@ function ResourceCard({ r, n, active, onSelect }: { r: Resource; n: number; acti
             {r.note && <div className="flex gap-1.5 text-warn"><AlertTriangle size={14} strokeWidth={1.75} className="mt-0.5 shrink-0" /> {r.note}</div>}
           </div>
           <div className="mt-4 flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
-            {r.phone && <a href={`tel:${r.phone}`} className="press inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-[13px] text-paper hover:bg-north"><Phone size={14} strokeWidth={1.75} /> {r.phoneLabel}</a>}
-            {r.lat && <a href={`https://www.openstreetmap.org/directions?to=${r.lat}%2C${r.lng}`} target="_blank" rel="noreferrer" className="press inline-flex items-center gap-1.5 rounded-full border border-rule px-3.5 py-2 text-[13px] hover:border-ink"><Navigation size={14} strokeWidth={1.75} /> Itinéraire</a>}
+            {r.phone && <a href={`tel:${r.phone}`} className="press inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-[13px] font-bold text-white hover:bg-north"><Phone size={14} strokeWidth={2} /> {r.phoneLabel}</a>}
+            {r.address && <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.address)}`} target="_blank" rel="noreferrer" className="press inline-flex items-center gap-1.5 rounded-full bg-sky-soft px-3.5 py-2 text-[13px] font-bold text-sky hover:bg-sky hover:text-white"><Navigation size={14} strokeWidth={2} /> Itinéraire Google Maps</a>}
             {r.url && <a href={r.url} target="_blank" rel="noreferrer" className="press inline-flex items-center gap-1.5 rounded-full border border-rule px-3.5 py-2 text-[13px] hover:border-ink"><ExternalLink size={14} strokeWidth={1.75} /> Site</a>}
           </div>
         </div>
@@ -611,6 +648,7 @@ function Dossier({ fiche, hoursSince, onJournal }: { fiche: Fiche; hoursSince: n
                   <div className="mt-2 text-ink-2">En production : transmission chiffrée de bout en bout, clé remise séparément, accusé signé.</div>
                 </div>
               )}
+              {packet && <Rappel onConfirm={(b) => onJournal(`Rappel choisi : ${new Date(b.at).toLocaleString('fr-CA')} (${b.mode === 'tel' ? 'téléphone' : 'vidéo'})`)} />}
             </div>
           )}
         </div>
@@ -639,7 +677,7 @@ function Dossier({ fiche, hoursSince, onJournal }: { fiche: Fiche; hoursSince: n
 function ViePrivee() {
   const promises = [
     { icon: ServerOff, t: 'Vos données restent sur votre appareil', d: 'En bêta, la fiche est stockée uniquement dans votre navigateur. Aucun serveur Boussole ne la reçoit.' },
-    { icon: Fingerprint, t: 'Chiffrement avec votre phrase secrète', d: 'AES-256-GCM, clé dérivée par PBKDF2 (310 000 itérations). Sans votre phrase, la fiche est illisible, y compris pour nous.' },
+    { icon: Fingerprint, t: 'Chiffrement avec votre mot de passe', d: 'AES-256-GCM, clé dérivée de votre mot de passe par PBKDF2 (310 000 itérations). Sans lui, la fiche est illisible, y compris pour nous.' },
     { icon: ShieldCheck, t: 'Rien ne part sans vous', d: 'Chaque transmission demande un consentement explicite et une double confirmation. Vous choisissez les sections.' },
     { icon: EyeOff, t: 'Votre nom n’est jamais montré à l’IA', d: 'Côté soignant, les identifiants sont masqués avant tout traitement par l’IA, et c’est visible à l’écran.' },
     { icon: Trash2, t: 'Effacement en un clic', d: '« Tout effacer » supprime la fiche de l’appareil immédiatement et définitivement.' },
