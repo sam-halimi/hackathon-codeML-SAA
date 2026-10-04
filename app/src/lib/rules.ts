@@ -20,8 +20,8 @@ export type Rule = {
 }
 
 export const RULES: Rule[] = [
-  { id: 'tox-sang', label: 'Toxicologie — prélèvement sanguin', windowH: 24, why: 'La plupart des substances ne sont plus détectables dans le sang après ~24 h.', applies: (i) => i.substance },
-  { id: 'tox-urine', label: 'Toxicologie — prélèvement urinaire', windowH: 120, why: "L'urine peut prolonger la détection jusqu'à ~120 h.", applies: (i) => i.substance },
+  { id: 'tox-sang', label: 'Toxicologie, prélèvement sanguin', windowH: 24, why: 'La plupart des substances ne sont plus détectables dans le sang après ~24 h.', applies: (i) => i.substance },
+  { id: 'tox-urine', label: 'Toxicologie, prélèvement urinaire', windowH: 120, why: "L'urine peut prolonger la détection jusqu'à ~120 h.", applies: (i) => i.substance },
   { id: 'ppe-vih', label: 'Évaluation prophylaxie post-exposition (VIH)', windowH: 72, why: 'À débuter le plus tôt possible, au plus tard ~72 h.', applies: (i) => i.exposure },
   { id: 'cutane', label: 'Prélèvements cutanés (trousse)', windowH: 48, why: 'Fenêtre courte, surtout si douche.', applies: (i) => !i.showered },
   { id: 'trousse', label: 'Trousse médicolégale complète', windowH: 120, why: 'Au Québec : faits datant de 5 jours ou moins (révision en cours).', applies: () => true },

@@ -1,115 +1,189 @@
-import { Logo } from './Demo'
+import { ArrowRight, ArrowUpRight, Clock, Fingerprint, Link2, Lock, ScrollText, ShieldCheck, Sparkles, UserCheck } from 'lucide-react'
+import { Mark, Wordmark } from './Logo'
+
+const NB = ' '
 
 const LEAKS = [
-  { step: 'Où aller ?', stat: '3 hôpitaux', text: "Une victime francophone a été réorientée trois fois à Montréal avant d'obtenir une trousse (2020).", src: 'Noovo' },
-  { step: 'La première nuit', stat: '< 24 h', text: 'La plupart des drogues ne sont plus détectables dans le sang après 24 h. La trousse : 5 jours au plus.', src: 'ANSI/ASB 121 · protocole QC' },
-  { step: 'La police', stat: '1 sur 5', text: 'plaintes pour agression sexuelle classées « non fondées », près de deux fois plus que les voies de fait.', src: 'Globe and Mail, 2017' },
-  { step: 'Le tribunal', stat: '1 sur 7', text: "causes d'agression sexuelle arrêtées ou retirées pour délais déraisonnables (arrêt Jordan), 2022-2023.", src: 'Ombudsman fédéral des victimes' },
+  { step: 'Où aller', stat: '3', unit: 'hôpitaux', text: `avant d'obtenir une trousse, pour une victime réorientée à Montréal (2020).`, src: 'Noovo' },
+  { step: 'La première nuit', stat: '24', unit: 'heures', text: 'après, le sang ne révèle plus la plupart des drogues.', src: 'ANSI/ASB 121' },
+  { step: 'La police', stat: '1/5', unit: 'plaintes', text: `classées «${NB}non fondées${NB}», près de deux fois plus que les voies de fait.`, src: 'The Globe and Mail' },
+  { step: 'Le tribunal', stat: '1/3', unit: 'causes', text: `au-delà des délais Jordan en 2022-2023.`, src: 'Ombudsman fédéral des victimes' },
+]
+
+const LAYERS = [
+  { icon: ScrollText, t: 'Règles', d: `Délais et prélèvements prioritaires calculés par des règles écrites, validées et versionnées par l'établissement. Aucune IA dans une décision médicale.` },
+  { icon: Sparkles, t: 'IA', d: `Range les notes libres en chronologie. Chaque ligne cite sa phrase source. Signale les trous et les incohérences du dossier, jamais de la mémoire de la victime.` },
+  { icon: UserCheck, t: 'Humain', d: `Le soignant valide ou rejette chaque suggestion. La victime décide de chaque étape. Le juge tranche.` },
+]
+
+const PRIVACY = [
+  { icon: Fingerprint, t: `Pseudonymisation avant l'IA`, d: `Nom, date de naissance, adresse et téléphone masqués avant tout envoi, et visibles à l'écran.` },
+  { icon: Lock, t: 'Consentement par finalité', d: `Révocable. Rien vers la police sans décision explicite de la personne.` },
+  { icon: Link2, t: 'Journal infalsifiable', d: `Chaque action chaînée par SHA-256 : toute modification est détectée.` },
+  { icon: ShieldCheck, t: 'En production', d: `Hébergement au Canada, chiffrement, évaluation Loi${NB}25, aucun entraînement sur les données.` },
 ]
 
 export default function Landing() {
   return (
     <div className="min-h-screen">
-      <div className="bg-alert text-white text-center text-xs font-semibold py-1">PROTOTYPE · HACKATHON CODEML 2026 · DÉMONSTRATION SUR DONNÉES 100 % FICTIVES</div>
+      <header className="sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-stretch">
+          <a href="#/" className="press flex items-center border-r border-rule px-6 py-4"><Wordmark animate /></a>
+          <nav className="hidden flex-1 items-stretch md:flex">
+            {[['Problème', '#probleme'], ['Fonctionnement', '#fonctionnement'], ['Confidentialité', '#confidentialite'], ['Pilote', '#pilote']].map(([l, h]) => (
+              <a key={h} href={h} className="press flex items-center border-r border-rule px-6 text-sm text-ink-2 hover:bg-panel hover:text-ink">{l}</a>
+            ))}
+          </nav>
+          <a href="#/demo" className="press group ml-auto flex items-center gap-2 bg-ink px-6 text-sm font-medium text-paper hover:bg-north">
+            Essayer la démo <ArrowRight size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
+          </a>
+        </div>
+      </header>
 
-      <section className="bg-navy text-cream">
-        <div className="max-w-5xl mx-auto px-4 py-16 sm:py-24">
-          <div className="flex items-center gap-2 text-xl font-bold mb-10">
-            <Logo /> Boussole
+      {/* Hero : une seule idée, en grille apparente */}
+      <section className="border-b border-rule">
+        <div className="mx-auto grid max-w-7xl md:grid-cols-[1.5fr_1fr]">
+          <div className="flex min-h-[70vh] flex-col justify-end border-rule px-6 pb-14 pt-24 md:border-r">
+            <div className="rise eyebrow text-north">Copilote des centres désignés</div>
+            <h1 className="rise rise-1 display mt-6 text-[clamp(3.25rem,8vw,7rem)]">
+              On répare<br />la première nuit.
+            </h1>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-bold leading-tight max-w-3xl">
-            L'IA guide.<br />
-            <span className="text-amber">L'humain décide.</span>
-          </h1>
-          <p className="mt-6 text-lg text-cream/80 max-w-2xl">
-            Le copilote des soignants qui accueillent une victime d'agression sexuelle : un seul récit, des consentements respectés, des délais de preuve tenus, un dossier qui tient devant un juge.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#/demo" className="px-6 py-3 rounded-lg bg-amber text-navy font-bold">Essayer la démo →</a>
-            <a href="#pilote" className="px-6 py-3 rounded-lg border border-cream/40 font-semibold">Devenir centre pilote</a>
+          <div className="flex flex-col justify-end px-6 pb-14 pt-10">
+            <p className="rise rise-2 text-[19px] leading-relaxed text-ink-2">
+              Un seul récit, des consentements respectés, des délais de preuve tenus, un dossier qui tient devant un juge.
+            </p>
+            <p className="rise rise-3 mt-6 text-[19px] font-medium">L'IA guide. L'humain décide.</p>
+            <div className="rise rise-4 mt-6 eyebrow text-ink-3">Prototype · données 100 % fictives</div>
           </div>
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 pt-16">
-        <video src={`${import.meta.env.BASE_URL}boussole-15s.mp4`} autoPlay muted loop playsInline controls className="w-full rounded-xl shadow-lg border border-navy/10" />
-        <p className="text-xs text-navy/50 mt-2">Enregistrement réel du prototype · données fictives · réponse IA pré-enregistrée</p>
+      {/* Le moment spectaculaire unique : le produit réel */}
+      <section className="border-b border-rule bg-panel">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-28">
+          <div className="overflow-hidden rounded-lg border border-rule bg-ink">
+            <video src={`${import.meta.env.BASE_URL}boussole-15s.mp4`} autoPlay muted loop playsInline className="block w-full" />
+          </div>
+          <div className="mt-3 flex justify-between eyebrow text-ink-3">
+            <span>Enregistrement réel du prototype</span><span>Réponse IA pré-enregistrée</span>
+          </div>
+        </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-4 py-16">
-        <p className="text-sm font-semibold text-alert uppercase tracking-wide">Le problème</p>
-        <h2 className="text-3xl font-bold mt-1 max-w-3xl">Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.</h2>
-        <p className="mt-3 text-navy/70">Au Canada, seulement <b>6 %</b> des agressions sexuelles sont signalées à la police (StatCan, 2019). Et le dossier fuit à chaque étape :</p>
-        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section id="probleme" className="border-b border-rule">
+        <div className="mx-auto max-w-7xl px-6 py-28 sm:py-36">
+          <div className="eyebrow text-ink-3">01 · Le problème</div>
+          <h2 className="display mt-5 max-w-4xl text-[clamp(2.25rem,4.5vw,4rem)]">
+            Le problème n'est pas la parole des victimes. C'est le dossier qui se construit mal, trop tard, au mauvais endroit.
+          </h2>
+          <p className="mt-6 max-w-2xl text-[18px] leading-relaxed text-ink-2">
+            Au Canada, seulement <span className="font-medium text-ink">6 %</span> des agressions sexuelles sont signalées à la police (StatCan, 2019). Et le dossier fuit à chaque étape.
+          </p>
+        </div>
+        <div className="mx-auto grid max-w-7xl border-t border-rule sm:grid-cols-2 lg:grid-cols-4">
           {LEAKS.map((l, i) => (
-            <div key={l.step} className="bg-white rounded-xl p-5 border border-navy/10">
-              <div className="text-xs font-semibold text-navy/50">FUITE {i + 1} · {l.step}</div>
-              <div className="text-3xl font-bold text-alert mt-2">{l.stat}</div>
-              <p className="text-sm mt-2">{l.text}</p>
-              <p className="text-xs text-navy/40 mt-2">{l.src}</p>
+            <div key={l.step} className="border-b border-rule px-6 py-10 sm:border-r lg:border-b-0 lg:last:border-r-0">
+              <div className="eyebrow text-ink-3">Fuite {i + 1} · {l.step}</div>
+              <div className="display mt-6 text-7xl tabular-nums">{l.stat}<span className="ml-2 text-xl font-normal tracking-normal text-ink-3">{l.unit}</span></div>
+              <p className="mt-4 text-[16px] leading-relaxed text-ink-2">{l.text}</p>
+              <p className="mt-4 font-mono text-[11px] text-ink-3">{l.src}</p>
             </div>
           ))}
         </div>
-        <p className="mt-6 font-semibold">On ne répare pas les tribunaux. On répare la première nuit, celle où tout commence et où la preuve se perd.</p>
       </section>
 
-      <section className="bg-white border-y border-navy/10">
-        <div className="max-w-5xl mx-auto px-4 py-16">
-          <p className="text-sm font-semibold text-amber uppercase tracking-wide">Comment ça marche</p>
-          <h2 className="text-3xl font-bold mt-1">Trois briques, trois responsabilités</h2>
-          <div className="mt-8 grid md:grid-cols-3 gap-4">
-            {[
-              ['Règles', 'Délais et prélèvements prioritaires calculés par des règles écrites, validées et versionnées par l’établissement. Aucune IA dans une décision médicale.'],
-              ['IA', 'Range les notes libres en chronologie. Chaque ligne cite sa phrase source. Signale les trous et les incohérences du dossier, jamais de la mémoire de la victime.'],
-              ['Humain', 'Le soignant valide ou rejette chaque suggestion. La victime décide de chaque étape. Le juge tranche.'],
-            ].map(([t, d]) => (
-              <div key={t} className="rounded-xl p-5 bg-cream">
-                <div className="text-xl font-bold">{t}</div>
-                <p className="text-sm mt-2 text-navy/80">{d}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-sm text-navy/70">
+      <section id="fonctionnement" className="border-b border-rule">
+        <div className="mx-auto max-w-7xl px-6 py-28 sm:py-36">
+          <div className="eyebrow text-ink-3">02 · Fonctionnement</div>
+          <h2 className="display mt-5 max-w-3xl text-[clamp(2.25rem,4.5vw,4rem)]">Trois couches, trois responsabilités.</h2>
+          <p className="mt-6 max-w-2xl text-[18px] leading-relaxed text-ink-2">
             L'IA fait le travail de secrétaire, jamais celui de juge : aucune désignation de coupable, aucun score de crédibilité, aucune reconnaissance faciale.
           </p>
         </div>
-      </section>
-
-      <section className="max-w-5xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10">
-        <div>
-          <p className="text-sm font-semibold text-ok uppercase tracking-wide">Confidentialité</p>
-          <h2 className="text-3xl font-bold mt-1">Des données parmi les plus sensibles qui soient</h2>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li>🔒 <b>Pseudonymisation avant l'IA</b> : nom, date de naissance, adresse, téléphone masqués avant tout envoi. Visible à l'écran.</li>
-            <li>✍ <b>Consentement par finalité</b>, révocable. Rien vers la police sans décision explicite de la personne.</li>
-            <li>⛓ <b>Journal infalsifiable</b> : chaque action chaînée par SHA-256, toute modification est détectée.</li>
-            <li>🇨🇦 <b>En production</b> : hébergement au Canada, chiffrement, évaluation des facteurs relatifs à la vie privée (Loi 25), aucun entraînement sur les données.</li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-navy/60 uppercase tracking-wide">Pour qui</p>
-          <h2 className="text-3xl font-bold mt-1">Pensé pour le soin, pas pour la poursuite</h2>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li><b>Établissements de santé</b> (centres désignés des CISSS/CIUSSS) : licence annuelle par centre.</li>
-            <li><b>Équipes médicosociales</b> : infirmières, médecins, intervenantes.</li>
-            <li><b>Victimes</b> : gratuit, toujours.</li>
-            <li><b>Police et DPCP</b> : reçoivent un dossier complet, avec consentement. Ils ne pilotent pas l'outil.</li>
-          </ul>
+        <div className="mx-auto grid max-w-7xl border-t border-rule md:grid-cols-3">
+          {LAYERS.map(({ icon: Icon, t, d }, i) => (
+            <div key={t} className="border-b border-rule px-6 py-12 md:border-b-0 md:border-r md:last:border-r-0">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-sm text-ink-3">0{i + 1}</span>
+                <Icon size={22} strokeWidth={1.5} className={i === 1 ? 'text-north' : 'text-ink'} />
+              </div>
+              <div className="display mt-10 text-4xl">{t}</div>
+              <p className="mt-4 text-[16px] leading-relaxed text-ink-2">{d}</p>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section id="pilote" className="bg-navy text-cream">
-        <div className="max-w-5xl mx-auto px-4 py-16 text-center">
-          <h2 className="text-3xl font-bold">On cherche un centre désigné pour un pilote de 3 mois.</h2>
-          <p className="mt-3 text-cream/70">Mesures : récits répétés, prélèvements dans les délais, dossiers incomplets, temps administratif.</p>
-          <a href="#/demo" className="inline-block mt-6 px-6 py-3 rounded-lg bg-amber text-navy font-bold">Voir le prototype →</a>
-          <p className="mt-10 text-lg italic text-cream/90">« On ne remplace pas l'humain auprès de la victime. On lui rend le temps de l'être. »</p>
+      <section id="confidentialite" className="border-b border-rule bg-ink text-paper">
+        <div className="mx-auto grid max-w-7xl gap-16 px-6 py-28 sm:py-36 lg:grid-cols-[1fr_1.3fr]">
+          <div>
+            <div className="eyebrow text-paper/50">03 · Confidentialité</div>
+            <h2 className="display mt-5 text-[clamp(2.25rem,4.5vw,4rem)]">Des données parmi les plus sensibles qui soient.</h2>
+          </div>
+          <div className="grid gap-px overflow-hidden rounded-lg border border-paper/15 bg-paper/15 sm:grid-cols-2">
+            {PRIVACY.map(({ icon: Icon, t, d }) => (
+              <div key={t} className="bg-ink p-6">
+                <Icon size={20} strokeWidth={1.5} className="text-[#6FC3AE]" />
+                <div className="mt-6 text-[17px] font-medium">{t}</div>
+                <p className="mt-2 text-[15px] leading-relaxed text-paper/70">{d}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <footer className="max-w-5xl mx-auto px-4 py-8 text-xs text-navy/50">
-        Prototype de hackathon (Propolys · Startup Challenge Sécurité & IA). Délais affichés : prototype, à valider par sources médicales. Sources : Statistique Canada, INSPQ, Globe and Mail, Bureau de l'ombudsman fédéral des victimes d'actes criminels, ANSI/ASB 121.
-        Si vous avez besoin d'aide : CAVAC, CALACS, ou la ligne-ressource provinciale pour les victimes d'agression sexuelle.
+      <section className="border-b border-rule">
+        <div className="mx-auto max-w-7xl px-6 py-28 sm:py-36">
+          <div className="eyebrow text-ink-3">04 · Pour qui</div>
+          <h2 className="display mt-5 max-w-3xl text-[clamp(2.25rem,4.5vw,4rem)]">Pensé pour le soin, pas pour la poursuite.</h2>
+        </div>
+        <div className="mx-auto grid max-w-7xl border-t border-rule sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ['Paie', `Établissements de santé (CISSS, CIUSSS) qui hébergent les centres désignés. Licence annuelle par centre.`],
+            ['Utilise', 'Infirmières, médecins et intervenantes des équipes médicosociales.'],
+            ['Bénéficie', 'Les victimes. Gratuit, toujours.'],
+            ['Reçoit', `Police et DPCP : un dossier complet, avec consentement. Ils ne pilotent pas l'outil.`],
+          ].map(([k, v]) => (
+            <div key={k} className="border-b border-rule px-6 py-10 sm:border-r lg:border-b-0 lg:last:border-r-0">
+              <div className="eyebrow text-north">{k}</div>
+              <p className="mt-5 text-[17px] leading-relaxed">{v}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="pilote" className="border-b border-rule bg-panel">
+        <div className="mx-auto grid max-w-7xl items-end gap-10 px-6 py-28 sm:py-36 md:grid-cols-[1.5fr_1fr]">
+          <div>
+            <div className="eyebrow text-ink-3">05 · Pilote</div>
+            <h2 className="display mt-5 text-[clamp(2.5rem,5.5vw,5rem)]">On cherche un centre désigné pour un pilote de 3 mois.</h2>
+            <p className="mt-6 max-w-xl text-[18px] leading-relaxed text-ink-2">
+              Mesures : récits répétés, prélèvements dans les délais, dossiers incomplets, temps administratif.
+            </p>
+          </div>
+          <a href="#/demo" className="press group flex items-center justify-between rounded-lg bg-ink px-7 py-6 text-lg font-medium text-paper hover:bg-north">
+            Voir le prototype
+            <ArrowUpRight size={22} strokeWidth={1.5} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:-translate-y-1 group-hover:translate-x-1" />
+          </a>
+        </div>
+      </section>
+
+      <footer className="overflow-hidden">
+        <div className="mx-auto max-w-7xl px-6 pt-20">
+          <p className="max-w-2xl text-[19px] italic leading-relaxed text-ink-2">
+            «{NB}On ne remplace pas l'humain auprès de la victime. On lui rend le temps de l'être.{NB}»
+          </p>
+          <div className="mt-16 flex items-end gap-5 border-t border-rule pt-10">
+            <Mark size={64} />
+            <span className="display text-[clamp(4rem,14vw,12rem)] leading-[0.8] text-ink">Boussole</span>
+          </div>
+          <div className="flex flex-wrap justify-between gap-4 border-t border-rule py-6 font-mono text-[11px] text-ink-3">
+            <span>Prototype de hackathon · Propolys, Startup Challenge Sécurité &amp; IA · 2026</span>
+            <span className="flex items-center gap-1.5"><Clock size={12} strokeWidth={1.75} /> Délais affichés : prototype, à valider par sources médicales</span>
+            <span>Besoin d'aide : CAVAC, CALACS, ligne-ressource provinciale</span>
+          </div>
+        </div>
       </footer>
     </div>
   )

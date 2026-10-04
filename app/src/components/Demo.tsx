@@ -1,18 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ArrowLeft, ArrowRight, Check, ClipboardList, Clock, Download, Eye, EyeOff, FileText, Fingerprint,
+  Link2, Lock, Printer, ShieldAlert, ShieldCheck, Sparkles, Stethoscope, X,
+} from 'lucide-react'
 import { appendEntry, verifyLog, type Entry } from '../lib/custody'
 import { computeChecklist, RULES_VERSION, type Intake, type Status } from '../lib/rules'
 import { DEMO_NOTES } from '../lib/demoCase'
 import { pseudonymize } from '../lib/pseudonymize'
 import { TIMELINE_FIXTURE, type TimelineResult } from '../lib/timelineFixture'
+import { Wordmark } from './Logo'
 
-const STEPS = ['Consentement', 'Dossier guidé', 'Prélèvements', 'Chronologie', 'Export'] as const
+const STEPS = [
+  { label: 'Consentement', icon: ShieldCheck },
+  { label: 'Dossier guidé', icon: Stethoscope },
+  { label: 'Prélèvements', icon: Clock },
+  { label: 'Chronologie', icon: Sparkles },
+  { label: 'Export', icon: FileText },
+] as const
 const ACTOR = 'Inf. M. Roy (fictif)'
 
 type Consent = { examen: boolean; prelevements: boolean; conservation: boolean; transmission: boolean }
 const CONSENT_LABELS: Record<keyof Consent, [string, string]> = {
   examen: ['Examen médical', 'Soins et évaluation médicale.'],
   prelevements: ['Prélèvements médicolégaux', 'Chaque prélèvement peut être refusé individuellement.'],
-  conservation: ['Conservation de la trousse', 'Les preuves sont conservées ; la décision de porter plainte peut venir plus tard.'],
+  conservation: ['Conservation de la trousse', 'Les preuves sont conservées ; la décision de porter plainte peut venir plus tard.'],
   transmission: ['Transmission à la police', 'Seulement si la personne le décide. Peut être accordée plus tard.'],
 }
 
@@ -41,6 +52,9 @@ export default function Demo() {
   useEffect(() => {
     verifyLog(log).then(setIntegrity)
   }, [log])
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [step])
 
   const checklist = useMemo(() => computeChecklist(intake), [intake])
   const pseudo = useMemo(() => pseudonymize(notes), [notes])
@@ -61,7 +75,7 @@ export default function Demo() {
       setTimeline(j.result)
       setSource('live')
     } catch {
-      await new Promise((res) => setTimeout(res, 1200))
+      await new Promise((res) => setTimeout(res, 1400))
       setTimeline(TIMELINE_FIXTURE)
       setSource('fixture')
     }
@@ -70,193 +84,254 @@ export default function Demo() {
   }
 
   const decide = async (key: string, label: string, d: Decision) => {
-    setDecisions({ ...decisions, [key]: d })
+    setDecisions((prev) => ({ ...prev, [key]: d }))
     await log_(d === 'ok' ? 'Suggestion IA validée' : 'Suggestion IA rejetée', label)
   }
 
   const canProceed = consent.examen
+  const next = (label: string, onClick?: () => void | Promise<void>, disabled?: boolean) => (
+    <div className="mt-10 flex items-center justify-between border-t border-rule pt-6">
+      <button
+        onClick={() => setStep(Math.max(0, step - 1))}
+        className={`press inline-flex items-center gap-2 text-sm text-ink-2 hover:text-ink ${step === 0 ? 'invisible' : ''}`}
+      >
+        <ArrowLeft size={16} strokeWidth={1.75} /> Retour
+      </button>
+      <button
+        id="next"
+        disabled={disabled}
+        onClick={async () => {
+          await onClick?.()
+          setStep(step + 1)
+        }}
+        className="press group inline-flex items-center gap-3 rounded-md bg-ink px-5 py-3 text-[15px] font-medium text-paper hover:bg-north disabled:cursor-not-allowed disabled:opacity-30"
+      >
+        {label}
+        <ArrowRight size={16} strokeWidth={1.75} className="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
+      </button>
+    </div>
+  )
 
   return (
     <div className="min-h-screen">
-      <div className="bg-alert text-white text-center text-sm font-semibold py-1.5 tracking-wide no-print" id="banner">
-        DONNÉES 100 % FICTIVES · PROTOTYPE DE DÉMONSTRATION · NE PAS UTILISER EN SOINS RÉELS
+      <div className="no-print border-b border-alert/20 bg-alert-soft py-1.5 text-center text-alert">
+        <span className="eyebrow">Données 100 % fictives · prototype de démonstration · ne pas utiliser en soins réels</span>
       </div>
-      <header className="bg-navy text-cream no-print">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-          <a href="#/" className="flex items-center gap-2 font-bold text-lg">
-            <Logo /> Boussole
+
+      <header className="no-print sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-stretch">
+          <a href="#/" className="press flex items-center border-r border-rule px-5 py-3">
+            <Wordmark />
           </a>
-          <div className="flex items-center gap-3 text-xs">
-            <span className="px-2 py-1 rounded bg-amber/20 text-amber border border-amber/40">L'IA suggère · l'humain valide</span>
-            <span className={`px-2 py-1 rounded border ${integrity.ok ? 'border-ok/60 text-[#8fd3ad]' : 'border-alert text-alert'}`} id="integrity-chip">
-              Journal : {log.length} entrées · {integrity.ok ? 'intègre ✓' : `ALTÉRÉ à l'entrée ${integrity.brokenAt}`}
+          <div className="hidden flex-1 items-center px-5 text-sm text-ink-2 md:flex">
+            Dossier <span className="mx-1.5 font-mono text-ink">#DEMO-0042</span> · cas fictif « Léa » · centre désigné (fictif)
+          </div>
+          <div className="flex items-center gap-2 border-l border-rule px-5">
+            <span className="hidden items-center gap-1.5 rounded border border-rule px-2 py-1 text-xs text-ink-2 sm:inline-flex">
+              <Sparkles size={13} strokeWidth={1.75} className="text-north" /> L'IA suggère, l'humain valide
+            </span>
+            <span
+              id="integrity-chip"
+              className={`inline-flex items-center gap-1.5 rounded border px-2 py-1 font-mono text-[11px] transition-colors duration-500 ${integrity.ok ? 'border-north/30 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}
+            >
+              <Link2 size={13} strokeWidth={1.75} />
+              {log.length} · {integrity.ok ? 'intègre' : `altéré #${integrity.brokenAt}`}
             </span>
           </div>
         </div>
-        <nav className="max-w-6xl mx-auto px-4 flex gap-1 overflow-x-auto">
-          {STEPS.map((s, i) => (
-            <button
-              key={s}
-              id={`tab-${i}`}
-              disabled={i > 0 && !canProceed}
-              onClick={() => setStep(i)}
-              className={`px-4 py-2 text-sm rounded-t-md whitespace-nowrap ${step === i ? 'bg-cream text-navy font-semibold' : 'text-cream/70 hover:text-cream disabled:opacity-30'}`}
-            >
-              {i + 1}. {s}
-            </button>
-          ))}
+        <nav className="mx-auto grid max-w-6xl grid-cols-5 border-t border-rule">
+          {STEPS.map(({ label, icon: Icon }, i) => {
+            const active = step === i
+            const reached = i < step
+            return (
+              <button
+                key={label}
+                id={`tab-${i}`}
+                disabled={i > 0 && !canProceed}
+                onClick={() => setStep(i)}
+                className={`press relative flex items-center gap-2 border-r border-rule px-3 py-3 text-left text-sm last:border-r-0 disabled:cursor-not-allowed disabled:opacity-35 sm:px-4 ${active ? 'text-ink' : 'text-ink-3 hover:bg-panel hover:text-ink'}`}
+              >
+                <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border font-mono text-[11px] transition-colors duration-500 ${active ? 'border-ink bg-ink text-paper' : reached ? 'border-north bg-north text-paper' : 'border-rule'}`}>
+                  {reached ? <Check size={12} strokeWidth={2.5} /> : i + 1}
+                </span>
+                <span className="hidden truncate md:inline">{label}</span>
+                <Icon size={15} strokeWidth={1.75} className="ml-auto hidden text-ink-3 lg:block" />
+                <span className={`absolute inset-x-0 -bottom-px h-0.5 origin-left bg-north transition-transform duration-700 ease-[var(--ease-out-soft)] ${active ? 'scale-x-100' : 'scale-x-0'}`} />
+              </button>
+            )
+          })}
         </nav>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
-        <div className="mb-4 text-sm text-navy/70">
-          Dossier <b>#DEMO-0042</b> · Patiente : <b>[cas fictif « Léa »]</b> · Centre désigné (fictif)
-        </div>
-
+      <main key={step} className="mx-auto max-w-6xl px-5 py-12 sm:py-16">
         {step === 0 && (
-          <Card title="Consentement, étape par étape" subtitle="La personne garde le contrôle. Chaque choix est horodaté dans le journal.">
-            <div className="grid sm:grid-cols-2 gap-3">
-              {(Object.keys(CONSENT_LABELS) as (keyof Consent)[]).map((k) => (
-                <label key={k} id={`consent-${k}`} className={`flex gap-3 p-4 rounded-lg border cursor-pointer transition ${consent[k] ? 'border-ok bg-ok/10' : 'border-navy/15 bg-white'}`}>
-                  <input type="checkbox" className="mt-1 accent-[#3E8E63] w-5 h-5" checked={consent[k]} onChange={() => toggleConsent(k)} />
+          <Section n="01" title="Consentement, étape par étape" lead="La personne garde le contrôle. Chaque choix est horodaté dans le journal de conservation.">
+            <div className="grid gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
+              {(Object.keys(CONSENT_LABELS) as (keyof Consent)[]).map((k, i) => (
+                <label
+                  key={k}
+                  id={`consent-${k}`}
+                  className={`rise rise-${i + 1} press group flex cursor-pointer gap-4 p-6 ${consent[k] ? 'bg-north-soft' : 'bg-paper hover:bg-panel'}`}
+                >
+                  <input type="checkbox" className="peer sr-only" checked={consent[k]} onChange={() => toggleConsent(k)} />
+                  <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded border transition-all duration-500 ease-[var(--ease-out-soft)] ${consent[k] ? 'border-north bg-north text-paper' : 'border-ink-3/50 bg-paper group-hover:border-ink'}`}>
+                    <Check size={14} strokeWidth={2.5} className={`transition-all duration-500 ${consent[k] ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`} />
+                  </span>
                   <span>
-                    <span className="font-semibold block">{CONSENT_LABELS[k][0]}</span>
-                    <span className="text-sm text-navy/70">{CONSENT_LABELS[k][1]}</span>
+                    <span className="block text-[17px] font-medium">{CONSENT_LABELS[k][0]}</span>
+                    <span className="mt-1 block text-[15px] leading-relaxed text-ink-2">{CONSENT_LABELS[k][1]}</span>
                   </span>
                 </label>
               ))}
             </div>
-            <p className="mt-4 text-sm text-navy/70">
-              💬 Rappel au soignant : proposer l'intervenante psychosociale du centre désigné, le CAVAC et le CALACS. Aucune décision n'est requise ce soir.
+            <p className="mt-6 flex items-start gap-2 text-[15px] text-ink-2">
+              <ShieldCheck size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-north" />
+              Rappel au soignant : proposer l'intervenante psychosociale du centre désigné, le CAVAC et le CALACS. Aucune décision n'est requise ce soir.
             </p>
-            <div className="mt-4 flex justify-end">
-              <Next disabled={!canProceed} onClick={() => setStep(1)} label={canProceed ? 'Continuer' : "Consentement à l'examen requis"} />
-            </div>
-          </Card>
+            {next(canProceed ? 'Continuer' : "Consentement à l'examen requis", undefined, !canProceed)}
+          </Section>
         )}
 
         {step === 1 && (
-          <Card title="Dossier guidé" subtitle="Les questions s'adaptent aux réponses. Les trous de mémoire sont acceptés sans jugement.">
-            <div className="space-y-5">
-              <div>
-                <label className="font-semibold block mb-1">Combien de temps s'est écoulé depuis les faits ?</label>
-                <div className="flex items-center gap-3">
-                  <input id="hours" type="range" min={1} max={168} value={intake.hoursSince} onChange={(e) => setIntake({ ...intake, hoursSince: +e.target.value })} className="w-64 accent-[#E8A33D]" />
-                  <span className="text-2xl font-bold tabular-nums">{intake.hoursSince} h</span>
-                  <span className="text-sm text-navy/60">(estimation acceptée : « je ne sais pas exactement » est une réponse valide)</span>
+          <Section n="02" title="Dossier guidé" lead="Les questions s'adaptent aux réponses. « Je ne sais pas » est une réponse valide.">
+            <div className="rise rounded-lg border border-rule p-6">
+              <div className="eyebrow text-ink-3">Temps écoulé depuis les faits</div>
+              <div className="mt-3 flex flex-wrap items-end gap-6">
+                <span className="display text-6xl tabular-nums sm:text-7xl">{intake.hoursSince}<span className="ml-1 text-3xl text-ink-3">h</span></span>
+                <input
+                  id="hours"
+                  type="range"
+                  min={1}
+                  max={168}
+                  value={intake.hoursSince}
+                  onChange={(e) => setIntake({ ...intake, hoursSince: +e.target.value })}
+                  className="mb-3 h-1 w-full max-w-md cursor-pointer accent-[#0F7A64]"
+                />
+              </div>
+            </div>
+            <div className="mt-6 divide-y divide-rule rounded-lg border border-rule">
+              <YesNo id="q-substance" q="Une substance est-elle soupçonnée (drogue, médicament, alcool à son insu) ?" v={intake.substance} set={(v) => setIntake({ ...intake, substance: v })} />
+              <div className={`grid transition-all duration-700 ease-[var(--ease-out-soft)] ${intake.substance ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                <div className="overflow-hidden">
+                  <div className="flex items-start gap-3 bg-north-soft px-6 py-4 text-[15px] text-ink-2">
+                    <Sparkles size={16} strokeWidth={1.75} className="mt-0.5 shrink-0 text-north" />
+                    Question ajoutée : symptômes observés (étourdissement, amnésie, somnolence), à noter sans interpréter. Les deux prélèvements toxicologiques entrent dans la checklist.
+                  </div>
                 </div>
               </div>
-              <YesNo id="q-substance" q="Une substance (drogue, médicament, alcool à son insu) est-elle soupçonnée ?" v={intake.substance} set={(v) => setIntake({ ...intake, substance: v })} />
-              {intake.substance && (
-                <div className="ml-4 pl-4 border-l-2 border-amber text-sm text-navy/80">
-                  ↳ Question ajoutée : <b>Symptômes observés</b> (étourdissement, amnésie, somnolence) — noter sans interpréter. Les deux prélèvements toxicologiques sont ajoutés à la checklist.
-                </div>
-              )}
-              <YesNo id="q-exposure" q="Exposition possible à des liquides biologiques ?" v={intake.exposure} set={(v) => setIntake({ ...intake, exposure: v })} />
-              <YesNo id="q-pregnancy" q="Risque de grossesse ?" v={intake.pregnancyRisk} set={(v) => setIntake({ ...intake, pregnancyRisk: v })} />
-              <YesNo id="q-showered" q="Douche ou bain depuis les faits ?" v={intake.showered} set={(v) => setIntake({ ...intake, showered: v })} />
-              <YesNo id="q-injuries" q="Lésions visibles ?" v={intake.injuries} set={(v) => setIntake({ ...intake, injuries: v })} />
+              <YesNo id="q-exposure" q="Exposition possible à des liquides biologiques ?" v={intake.exposure} set={(v) => setIntake({ ...intake, exposure: v })} />
+              <YesNo id="q-pregnancy" q="Risque de grossesse ?" v={intake.pregnancyRisk} set={(v) => setIntake({ ...intake, pregnancyRisk: v })} />
+              <YesNo id="q-showered" q="Douche ou bain depuis les faits ?" v={intake.showered} set={(v) => setIntake({ ...intake, showered: v })} />
+              <YesNo id="q-injuries" q="Lésions visibles ?" v={intake.injuries} set={(v) => setIntake({ ...intake, injuries: v })} />
             </div>
-            <div className="mt-6 flex justify-end">
-              <Next
-                onClick={async () => {
-                  await log_('Dossier guidé complété', `${intake.hoursSince} h depuis les faits · substance : ${intake.substance ? 'oui' : 'non'}`)
-                  setStep(2)
-                }}
-                label="Voir les prélèvements prioritaires"
-              />
-            </div>
-          </Card>
+            {next('Voir les prélèvements prioritaires', () => log_('Dossier guidé complété', `${intake.hoursSince} h depuis les faits · substance : ${intake.substance ? 'oui' : 'non'}`))}
+          </Section>
         )}
 
         {step === 2 && (
-          <Card
-            title={`Prélèvements prioritaires — ${intake.hoursSince} h depuis les faits`}
-            subtitle="Calculé par un moteur de règles (pas d'IA). Triés par urgence."
-          >
-            <div className="mb-4 text-xs font-semibold px-3 py-2 rounded bg-amber/15 border border-amber/50">
-              ⚠ Délais PROTOTYPE, à valider par sources médicales et par le protocole de l'établissement · {RULES_VERSION}
+          <Section n="03" title={`Prélèvements prioritaires, ${intake.hoursSince} h après les faits`} lead="Calculé par un moteur de règles, sans IA. Trié par urgence.">
+            <div className="mb-5 flex items-start gap-2 rounded-md border border-warn/30 bg-warn-soft px-4 py-3 text-sm text-warn">
+              <ClipboardList size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" />
+              <span>
+                Délais prototype, à valider par sources médicales et par le protocole de l'établissement. <span className="font-mono text-xs opacity-80">{RULES_VERSION}</span>
+              </span>
             </div>
             {!consent.prelevements && (
-              <div className="mb-4 text-sm px-3 py-2 rounded bg-alert/10 border border-alert/40">
-                Consentement aux prélèvements non accordé : la liste est informative, aucun prélèvement ne peut être coché.
+              <div className="mb-5 flex items-center gap-2 rounded-md border border-alert/30 bg-alert-soft px-4 py-3 text-sm text-alert">
+                <Lock size={16} strokeWidth={1.75} /> Consentement aux prélèvements non accordé : liste informative, rien ne peut être coché.
               </div>
             )}
-            <ul className="space-y-2" id="checklist">
-              {checklist.map((c) => (
-                <li key={c.id} className={`flex items-center gap-4 p-3 rounded-lg border bg-white ${c.status === 'depasse' ? 'opacity-60' : ''}`}>
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 accent-[#3E8E63]"
-                    disabled={!consent.prelevements || c.status === 'depasse'}
-                    checked={!!done[c.id]}
-                    onChange={async () => {
-                      setDone({ ...done, [c.id]: !done[c.id] })
-                      await log_(done[c.id] ? 'Prélèvement décoché' : 'Prélèvement effectué et scellé', c.label)
-                    }}
-                  />
-                  <div className="flex-1">
-                    <div className="font-semibold">{c.label}</div>
-                    <div className="text-xs text-navy/60">{c.why}</div>
-                  </div>
-                  <Badge status={c.status} remaining={c.remainingH} />
-                </li>
-              ))}
+            <ul className="divide-y divide-rule overflow-hidden rounded-lg border border-rule" id="checklist">
+              {checklist.map((c, i) => {
+                const disabled = !consent.prelevements || c.status === 'depasse'
+                return (
+                  <li key={c.id} className={`rise flex items-center gap-4 px-5 py-4 transition-colors duration-500 ${done[c.id] ? 'bg-north-soft' : 'bg-paper'} ${c.status === 'depasse' ? 'opacity-55' : ''}`} style={{ animationDelay: `${i * 70}ms` }}>
+                    <button
+                      disabled={disabled}
+                      aria-pressed={!!done[c.id]}
+                      aria-label={`Marquer ${c.label}`}
+                      onClick={async () => {
+                        setDone((d) => ({ ...d, [c.id]: !d[c.id] }))
+                        await log_(done[c.id] ? 'Prélèvement décoché' : 'Prélèvement effectué et scellé', c.label)
+                      }}
+                      className={`press grid h-6 w-6 shrink-0 place-items-center rounded border disabled:cursor-not-allowed ${done[c.id] ? 'border-north bg-north text-paper' : 'border-ink-3/50 hover:border-ink'}`}
+                    >
+                      <Check size={14} strokeWidth={2.5} className={`transition-all duration-500 ${done[c.id] ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`} />
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[16px] font-medium">{c.label}</div>
+                      <div className="text-sm text-ink-3">{c.why}</div>
+                    </div>
+                    <Badge status={c.status} remaining={c.remainingH} />
+                  </li>
+                )
+              })}
             </ul>
-            <div className="mt-6 flex justify-end">
-              <Next onClick={() => setStep(3)} label="Construire la chronologie" />
-            </div>
-          </Card>
+            {next('Construire la chronologie')}
+          </Section>
         )}
 
         {step === 3 && (
-          <Card title="Chronologie assistée par IA" subtitle="L'IA range les notes ; elle ne juge pas, ne désigne personne. Chaque ligne cite sa source et attend votre validation.">
-            <div className="grid lg:grid-cols-2 gap-4">
+          <Section n="04" title="Chronologie assistée par IA" lead="L'IA range les notes. Elle ne juge pas, ne désigne personne. Chaque ligne cite sa source et attend votre validation.">
+            <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="font-semibold text-sm">Notes libres (récit, triage, notes infirmières)</label>
-                  <button id="ai-view" onClick={() => setShowAiView(!showAiView)} className="text-xs underline text-navy/70">
-                    {showAiView ? 'Voir les notes originales' : '🔒 Ce que l’IA voit'}
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="eyebrow text-ink-3">Notes libres</span>
+                  <button id="ai-view" onClick={() => setShowAiView(!showAiView)} className="press inline-flex items-center gap-1.5 rounded border border-rule px-2.5 py-1 text-xs text-ink-2 hover:border-north hover:text-north">
+                    {showAiView ? <EyeOff size={13} strokeWidth={1.75} /> : <Eye size={13} strokeWidth={1.75} />}
+                    {showAiView ? 'Notes originales' : 'Ce que l’IA voit'}
                   </button>
                 </div>
                 {showAiView ? (
-                  <div className="h-72 overflow-auto p-3 rounded-lg border-2 border-ok bg-ok/5 text-sm whitespace-pre-wrap" id="ai-view-panel">
-                    <div className="text-xs font-semibold text-ok mb-2">
-                      Texte réellement envoyé au modèle · {pseudo.count} identifiants masqués avant envoi
+                  <div className="rise h-80 overflow-auto rounded-lg border border-north/40 bg-north-soft p-4 text-[15px] leading-relaxed whitespace-pre-wrap" id="ai-view-panel">
+                    <div className="mb-3 flex items-center gap-1.5 text-xs font-medium text-north">
+                      <Fingerprint size={14} strokeWidth={1.75} /> Texte réellement envoyé au modèle · {pseudo.count} identifiants masqués
                     </div>
                     {pseudo.text.split(/(\[[A-ZÉ]+\])/g).map((part, i) =>
                       /^\[[A-ZÉ]+\]$/.test(part) ? (
-                        <mark key={i} className="bg-ok text-white rounded px-1">{part}</mark>
+                        <mark key={i} className="rounded bg-north px-1 font-mono text-[12px] text-paper">{part}</mark>
                       ) : (
                         <span key={i}>{part}</span>
                       ),
                     )}
                   </div>
                 ) : (
-                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full h-72 p-3 rounded-lg border border-navy/20 bg-white text-sm" />
+                  <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="h-80 w-full resize-none rounded-lg border border-rule bg-paper p-4 text-[15px] leading-relaxed outline-none transition-colors duration-500 focus:border-ink" />
                 )}
-                <button id="generate" onClick={generate} disabled={loading} className="mt-3 w-full py-3 rounded-lg bg-navy text-cream font-semibold hover:bg-navy-2 disabled:opacity-60">
-                  {loading ? 'Structuration en cours…' : '✦ Générer la chronologie'}
+                <button id="generate" onClick={generate} disabled={loading} className="press mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink py-3.5 text-[15px] font-medium text-paper hover:bg-north disabled:opacity-60">
+                  <Sparkles size={16} strokeWidth={1.75} className={loading ? 'animate-pulse' : ''} />
+                  {loading ? 'Structuration en cours…' : 'Générer la chronologie'}
                 </button>
               </div>
               <div id="timeline">
-                {!timeline && <div className="h-full grid place-items-center text-navy/40 text-sm border border-dashed border-navy/20 rounded-lg p-6">La chronologie proposée apparaîtra ici.</div>}
-                {timeline && (
+                {!timeline && !loading && (
+                  <div className="grid h-full min-h-80 place-items-center rounded-lg border border-dashed border-rule p-6 text-center text-sm text-ink-3">
+                    La chronologie proposée apparaîtra ici,<br />ligne par ligne, avec ses sources.
+                  </div>
+                )}
+                {loading && (
                   <div className="space-y-3">
-                    <div className={`text-xs px-2 py-1 rounded inline-block ${source === 'live' ? 'bg-ok/15 text-ok' : 'bg-amber/20 text-navy'}`}>
-                      {source === 'live' ? 'Réponse IA en direct (Claude)' : 'Réponse IA pré-enregistrée (démo hors ligne) — même format que la réponse en direct'}
+                    {[0, 1, 2, 3, 4].map((i) => <div key={i} className="skeleton h-14 rounded-md" />)}
+                  </div>
+                )}
+                {timeline && !loading && (
+                  <div className="space-y-4">
+                    <div className={`inline-flex items-center gap-1.5 rounded border px-2 py-1 text-xs ${source === 'live' ? 'border-north/30 bg-north-soft text-north' : 'border-rule bg-panel text-ink-2'}`}>
+                      <Sparkles size={13} strokeWidth={1.75} />
+                      {source === 'live' ? 'Réponse IA en direct (Claude)' : 'Réponse IA pré-enregistrée (démo hors ligne), même format que la réponse en direct'}
                     </div>
-                    <ol className="relative border-l-2 border-navy/20 ml-2 space-y-2">
+                    <ol className="relative ml-2 space-y-2 border-l border-rule">
                       {timeline.events.map((ev, i) => {
                         const key = `ev-${i}`
                         const d = decisions[key] ?? 'pending'
                         return (
-                          <li key={key} className={`ml-4 p-2 rounded-md bg-white border ${d === 'ok' ? 'border-ok' : d === 'rejected' ? 'border-alert opacity-50 line-through' : 'border-navy/10'}`}>
-                            <span className="absolute -left-[7px] mt-1.5 w-3 h-3 rounded-full bg-navy" />
-                            <div className="flex justify-between gap-2">
-                              <div>
-                                <span className="text-xs font-mono text-navy/60">{ev.time}</span> <b className="text-sm">{ev.description}</b>
-                                <div className="text-xs text-navy/60 italic">« {ev.source} » — {ev.origin}</div>
+                          <li key={key} className="rise relative ml-5" style={{ animationDelay: `${i * 80}ms` }}>
+                            <span className={`absolute -left-[26px] top-4 h-2.5 w-2.5 rounded-full border-2 border-paper transition-colors duration-500 ${d === 'ok' ? 'bg-north' : d === 'rejected' ? 'bg-alert' : 'bg-ink-3'}`} />
+                            <div className={`flex justify-between gap-3 rounded-md border px-4 py-3 transition-all duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : d === 'rejected' ? 'border-alert/30 bg-alert-soft opacity-60' : 'border-rule bg-paper'}`}>
+                              <div className="min-w-0">
+                                <div className="font-mono text-[11px] text-ink-3">{ev.time}</div>
+                                <div className={`text-[15px] font-medium ${d === 'rejected' ? 'line-through' : ''}`}>{ev.description}</div>
+                                <div className="mt-0.5 text-[13px] italic text-ink-3">« {ev.source} » · {ev.origin}</div>
                               </div>
                               <Validate d={d} onOk={() => decide(key, ev.description, 'ok')} onNo={() => decide(key, ev.description, 'rejected')} />
                             </div>
@@ -265,22 +340,22 @@ export default function Demo() {
                       })}
                     </ol>
                     {timeline.gaps.map((g, i) => (
-                      <div key={`gap-${i}`} className="p-3 rounded-md border border-dashed border-navy/40 bg-navy/5 text-sm" id={`gap-${i}`}>
-                        <b>◌ Information non disponible : {g.from} → {g.to}</b>
-                        <div className="text-navy/70">{g.note}</div>
+                      <div key={`gap-${i}`} id={`gap-${i}`} className="rise rounded-md border border-dashed border-ink-3/50 bg-panel px-4 py-3 text-[14px]">
+                        <div className="flex items-center gap-1.5 font-medium"><Clock size={15} strokeWidth={1.75} /> Information non disponible : {g.from} → {g.to}</div>
+                        <div className="mt-1 text-ink-2">{g.note}</div>
                       </div>
                     ))}
                     {timeline.inconsistencies.map((c, i) => {
                       const key = `inc-${i}`
                       const d = decisions[key] ?? 'pending'
                       return (
-                        <div key={key} className="p-3 rounded-md border-2 border-alert/70 bg-alert/5 text-sm" id={`inc-${i}`}>
-                          <div className="flex justify-between gap-2">
-                            <b>⚠ Incohérence du dossier (pas du récit)</b>
+                        <div key={key} id={`inc-${i}`} className={`rise rounded-md border px-4 py-3 text-[14px] transition-colors duration-500 ${d === 'ok' ? 'border-north/40 bg-north-soft' : 'border-warn/40 bg-warn-soft'}`}>
+                          <div className="flex justify-between gap-3">
+                            <span className="flex items-center gap-1.5 font-medium text-warn"><ShieldAlert size={15} strokeWidth={1.75} /> Incohérence du dossier (pas du récit)</span>
                             <Validate d={d} okLabel="Corrigé" onOk={() => decide(key, c.description, 'ok')} onNo={() => decide(key, c.description, 'rejected')} />
                           </div>
-                          <div>{c.description}</div>
-                          <div className="text-navy/70 mt-1">→ {c.suggestion}</div>
+                          <div className="mt-1">{c.description}</div>
+                          <div className="mt-1 text-ink-2">→ {c.suggestion}</div>
                         </div>
                       )
                     })}
@@ -288,10 +363,8 @@ export default function Demo() {
                 )}
               </div>
             </div>
-            <div className="mt-6 flex justify-end">
-              <Next onClick={() => setStep(4)} label="Préparer l'export" />
-            </div>
-          </Card>
+            {next("Préparer l'export")}
+          </Section>
         )}
 
         {step === 4 && (
@@ -342,76 +415,90 @@ function ExportView(props: {
   }
 
   return (
-    <Card title="Export du dossier" subtitle="Résumé pour l'équipe et journal de chaîne de conservation. Rien n'est transmis à la police sans consentement explicite.">
-      <div className={`p-4 rounded-lg mb-4 text-white font-semibold ${integrity.ok ? 'bg-ok' : 'bg-alert'}`} id="integrity-badge">
-        {integrity.ok ? `✓ Intégrité du journal vérifiée — ${log.length} entrées chaînées par SHA-256` : `✗ Journal altéré à l'entrée ${integrity.brokenAt}`}
+    <Section n="05" title="Export du dossier" lead="Résumé pour l'équipe et journal de chaîne de conservation. Rien n'est transmis à la police sans consentement explicite.">
+      <div id="integrity-badge" className={`rise flex items-center gap-3 rounded-lg border px-5 py-4 ${integrity.ok ? 'border-north/40 bg-north-soft text-north' : 'border-alert/40 bg-alert-soft text-alert'}`}>
+        {integrity.ok ? <ShieldCheck size={22} strokeWidth={1.75} /> : <ShieldAlert size={22} strokeWidth={1.75} />}
+        <span className="text-[17px] font-medium">
+          {integrity.ok ? `Intégrité du journal vérifiée : ${log.length} entrées chaînées par SHA-256` : `Journal altéré à l'entrée ${integrity.brokenAt}`}
+        </span>
       </div>
-      <div className="grid md:grid-cols-2 gap-4 text-sm">
-        <div className="bg-white rounded-lg border p-4">
-          <h3 className="font-bold mb-2">Résumé</h3>
-          <ul className="space-y-1">
-            <li>Délai depuis les faits : <b>{intake.hoursSince} h</b></li>
-            <li>Consentements : {Object.entries(consent).map(([k, v]) => `${CONSENT_LABELS[k as keyof Consent][0]} ${v ? '✓' : '✗'}`).join(' · ')}</li>
-            <li>Prélèvements effectués : {checklist.filter((c) => done[c.id]).map((c) => c.label).join(', ') || '—'}</li>
-            <li>Événements validés par le soignant : <b>{validated.length}</b> / {timeline?.events.length ?? 0}</li>
-            <li className={consent.transmission ? '' : 'text-alert font-semibold'}>
-              Transmission à la police : {consent.transmission ? 'autorisée par la personne' : 'NON autorisée — le dossier reste au centre désigné'}
-            </li>
-          </ul>
+      <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
+        <div className="bg-paper p-6">
+          <div className="eyebrow text-ink-3">Résumé</div>
+          <dl className="mt-4 space-y-3 text-[15px]">
+            <Row k="Délai depuis les faits" v={`${intake.hoursSince} h`} />
+            <Row k="Consentements" v={Object.entries(consent).map(([k, v]) => `${CONSENT_LABELS[k as keyof Consent][0]} ${v ? '✓' : '✗'}`).join(' · ')} />
+            <Row k="Prélèvements effectués" v={checklist.filter((c) => done[c.id]).map((c) => c.label).join(', ') || 'aucun'} />
+            <Row k="Événements validés" v={`${validated.length} / ${timeline?.events.length ?? 0}`} />
+          </dl>
+          <div className={`mt-5 flex items-start gap-2 rounded-md px-3 py-2.5 text-sm ${consent.transmission ? 'bg-north-soft text-north' : 'bg-alert-soft text-alert'}`}>
+            <Lock size={15} strokeWidth={1.75} className="mt-0.5 shrink-0" />
+            {consent.transmission ? 'Transmission à la police autorisée par la personne.' : 'Transmission à la police non autorisée : le dossier reste au centre désigné.'}
+          </div>
         </div>
-        <div className="bg-white rounded-lg border p-4 max-h-72 overflow-auto">
-          <h3 className="font-bold mb-2">Journal de conservation</h3>
-          <ol className="space-y-1 font-mono text-[11px]" id="custody-log">
+        <div className="max-h-96 overflow-auto bg-paper p-6">
+          <div className="eyebrow text-ink-3">Journal de conservation</div>
+          <ol className="mt-4 space-y-2.5 font-mono text-[11px]" id="custody-log">
             {log.map((e) => (
-              <li key={e.index}>
-                <span className="text-navy/50">#{e.index} {e.timestamp.slice(11, 19)}</span> {e.action} — {e.details}
-                <div className="text-navy/40">sha256 {e.hash.slice(0, 16)}… ← {e.prevHash.slice(0, 8)}…</div>
+              <li key={e.index} className="border-l border-rule pl-3">
+                <span className="text-ink-3">#{e.index} {e.timestamp.slice(11, 19)}</span> <span className="text-ink">{e.action}</span> · {e.details}
+                <div className="text-ink-3">sha256 {e.hash.slice(0, 16)}… ← {e.prevHash.slice(0, 8)}…</div>
               </li>
             ))}
           </ol>
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap gap-2 no-print">
-        <button onClick={download} className="px-4 py-2 rounded-lg bg-navy text-cream font-semibold">⬇ Exporter (JSON)</button>
-        <button onClick={() => { props.onExport(); window.print() }} className="px-4 py-2 rounded-lg border border-navy font-semibold">🖨 Imprimer / PDF</button>
-        <button id="tamper" onClick={simulateTamper} className="px-4 py-2 rounded-lg border border-alert text-alert font-semibold">Simuler une modification après coup</button>
+      <div className="no-print mt-6 flex flex-wrap gap-2">
+        <button onClick={download} className="press inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-paper hover:bg-north">
+          <Download size={15} strokeWidth={1.75} /> Exporter (JSON)
+        </button>
+        <button onClick={() => { props.onExport(); window.print() }} className="press inline-flex items-center gap-2 rounded-md border border-ink px-4 py-2.5 text-sm font-medium hover:bg-panel">
+          <Printer size={15} strokeWidth={1.75} /> Imprimer / PDF
+        </button>
+        <button id="tamper" onClick={simulateTamper} className="press inline-flex items-center gap-2 rounded-md border border-alert/50 px-4 py-2.5 text-sm font-medium text-alert hover:bg-alert-soft">
+          <ShieldAlert size={15} strokeWidth={1.75} /> Simuler une modification après coup
+        </button>
       </div>
       {tamper && (
-        <div className="mt-3 p-3 rounded-lg bg-alert/10 border border-alert text-sm" id="tamper-result">
-          {tamper.ok ? 'Aucune altération détectée.' : `✗ Altération détectée à l'entrée #${tamper.brokenAt} : la chaîne d'empreintes ne correspond plus. Le dossier original reste intact.`}
+        <div id="tamper-result" className="rise mt-4 flex items-start gap-2 rounded-md border border-alert/40 bg-alert-soft px-4 py-3 text-sm text-alert">
+          <ShieldAlert size={16} strokeWidth={1.75} className="mt-0.5 shrink-0" />
+          {tamper.ok ? 'Aucune altération détectée.' : `Altération détectée à l'entrée #${tamper.brokenAt} : la chaîne d'empreintes ne correspond plus. Le dossier original reste intact.`}
         </div>
       )}
-    </Card>
+    </Section>
   )
 }
 
-function Card({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function Section({ n, title, lead, children }: { n: string; title: string; lead: string; children: React.ReactNode }) {
   return (
-    <section className="bg-cream rounded-xl">
-      <h2 className="text-2xl font-bold">{title}</h2>
-      {subtitle && <p className="text-navy/70 mb-4">{subtitle}</p>}
-      {children}
+    <section>
+      <div className="rise eyebrow text-north">{n} / 05</div>
+      <h1 className="rise rise-1 display mt-3 max-w-3xl text-4xl sm:text-5xl">{title}</h1>
+      <p className="rise rise-2 mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-2">{lead}</p>
+      <div className="mt-10">{children}</div>
     </section>
   )
 }
 
-function Next({ onClick, label, disabled }: { onClick: () => void; label: string; disabled?: boolean }) {
+function Row({ k, v }: { k: string; v: string }) {
   return (
-    <button id="next" onClick={onClick} disabled={disabled} className="px-5 py-2.5 rounded-lg bg-amber text-navy font-bold hover:brightness-105 disabled:opacity-40">
-      {label} →
-    </button>
+    <div className="grid grid-cols-[10rem_1fr] gap-3">
+      <dt className="text-ink-3">{k}</dt>
+      <dd>{v}</dd>
+    </div>
   )
 }
 
 function YesNo({ id, q, v, set }: { id: string; q: string; v: boolean; set: (v: boolean) => void }) {
   return (
-    <div id={id} className="flex items-center justify-between gap-4 flex-wrap">
-      <span className="font-semibold">{q}</span>
-      <div className="flex gap-1">
+    <div id={id} className="flex flex-wrap items-center justify-between gap-4 px-6 py-4">
+      <span className="text-[16px]">{q}</span>
+      <div className="relative inline-grid grid-cols-3 rounded-md border border-rule bg-panel p-0.5 text-sm">
+        <span className={`absolute inset-y-0.5 w-[calc(33.333%-2px)] rounded bg-ink transition-transform duration-500 ease-[var(--ease-out-soft)] ${v ? 'translate-x-0.5' : 'translate-x-[calc(100%+2px)]'}`} />
         {(['Oui', 'Non', 'Ne sait pas'] as const).map((l) => {
           const active = (l === 'Oui' && v) || (l === 'Non' && !v)
           return (
-            <button key={l} onClick={() => set(l !== 'Non')} className={`px-3 py-1 rounded-md text-sm border ${active ? 'bg-navy text-cream border-navy' : 'bg-white border-navy/20'}`}>
+            <button key={l} onClick={() => set(l !== 'Non')} className={`press relative z-10 px-3 py-1.5 transition-colors duration-500 ${active ? 'text-paper' : 'text-ink-2 hover:text-ink'}`}>
               {l}
             </button>
           )
@@ -423,29 +510,29 @@ function YesNo({ id, q, v, set }: { id: string; q: string; v: boolean; set: (v: 
 
 function Badge({ status, remaining }: { status: Status; remaining: number | null }) {
   const map: Record<Status, [string, string]> = {
-    urgent: ['bg-amber text-navy', `URGENT · ${remaining} h restantes`],
-    possible: ['bg-ok text-white', `Possible · ${remaining} h restantes`],
-    depasse: ['bg-navy/20 text-navy', `Délai dépassé (${remaining !== null ? -remaining : 0} h)`],
-    'sans-delai': ['bg-white border text-navy', 'Dès que possible'],
+    urgent: ['border-warn/40 bg-warn-soft text-warn', `Urgent · ${remaining} h`],
+    possible: ['border-north/30 bg-north-soft text-north', `Possible · ${remaining} h`],
+    depasse: ['border-rule bg-panel text-ink-3', `Dépassé de ${remaining !== null ? -remaining : 0} h`],
+    'sans-delai': ['border-rule bg-paper text-ink-2', 'Dès que possible'],
   }
-  return <span className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${map[status][0]}`}>{map[status][1]}</span>
+  return <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded border px-2 py-1 font-mono text-[11px] ${map[status][0]}`}><Clock size={12} strokeWidth={1.75} />{map[status][1]}</span>
 }
 
 function Validate({ d, onOk, onNo, okLabel = 'Valider' }: { d: Decision; onOk: () => void; onNo: () => void; okLabel?: string }) {
-  if (d !== 'pending') return <span className={`text-xs font-bold ${d === 'ok' ? 'text-ok' : 'text-alert'}`}>{d === 'ok' ? '✓ validé' : '✗ rejeté'}</span>
+  if (d !== 'pending')
+    return (
+      <span className={`rise inline-flex h-fit shrink-0 items-center gap-1 text-xs font-medium ${d === 'ok' ? 'text-north' : 'text-alert'}`}>
+        {d === 'ok' ? <Check size={13} strokeWidth={2.25} /> : <X size={13} strokeWidth={2.25} />} {d === 'ok' ? 'validé' : 'rejeté'}
+      </span>
+    )
   return (
-    <span className="flex gap-1 shrink-0">
-      <button onClick={onOk} className="validate text-xs px-2 py-0.5 rounded bg-ok text-white">{okLabel}</button>
-      <button onClick={onNo} className="text-xs px-2 py-0.5 rounded border border-alert text-alert">Rejeter</button>
+    <span className="flex h-fit shrink-0 gap-1">
+      <button onClick={onOk} aria-label={okLabel} className="validate press inline-flex items-center gap-1 rounded border border-north/40 px-2 py-1 text-xs font-medium text-north hover:bg-north hover:text-paper">
+        <Check size={13} strokeWidth={2.25} /> {okLabel}
+      </button>
+      <button onClick={onNo} aria-label="Rejeter" className="press inline-flex items-center rounded border border-rule px-1.5 py-1 text-xs text-ink-3 hover:border-alert hover:text-alert">
+        <X size={13} strokeWidth={2.25} />
+      </button>
     </span>
-  )
-}
-
-export function Logo() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden>
-      <circle cx="16" cy="16" r="14" fill="none" stroke="#E8A33D" strokeWidth="2" />
-      <path d="M16 5 L20 16 L16 27 L12 16 Z" fill="#E8A33D" />
-    </svg>
   )
 }

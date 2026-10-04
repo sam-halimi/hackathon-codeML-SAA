@@ -1,16 +1,49 @@
 @import "tailwindcss";
 
+/* Boussole · DA « Tech institutionnelle » : papier chaud, encre teintée,
+   filets 1px, un seul accent (le nord de la boussole). */
 @theme {
-  --color-navy: #0F1B2D;
-  --color-navy-2: #1B2B44;
-  --color-cream: #F6F1EA;
-  --color-amber: #E8A33D;
-  --color-alert: #C8553D;
-  --color-ok: #3E8E63;
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-paper: #F7F5F0;
+  --color-panel: #EFECE5;
+  --color-rule: #DFDAD0;
+  --color-ink: #16181D;
+  --color-ink-2: #4A4D55;
+  --color-ink-3: #7C7F87;
+  --color-north: #0F7A64;       /* accent unique : marque + action */
+  --color-north-soft: #E3EFEA;
+  --color-warn: #A85A00;        /* délai urgent */
+  --color-warn-soft: #F6EAD8;
+  --color-alert: #B3261E;       /* altération, refus */
+  --color-alert-soft: #F6E3E1;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body { @apply bg-cream text-navy antialiased; }
+html { scroll-behavior: smooth; }
+body { @apply bg-paper text-ink antialiased; font-feature-settings: "ss01", "cv11"; }
+
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+.display { letter-spacing: -0.025em; line-height: 1; font-weight: 500; }
+
+/* Interactions : retour tactile précis, jamais décoratif */
+.press { transition: transform 160ms var(--ease-out-soft), background-color 300ms var(--ease-out-soft), border-color 300ms var(--ease-out-soft), color 300ms var(--ease-out-soft), opacity 300ms var(--ease-out-soft); }
+.press:active:not(:disabled) { transform: scale(0.975); }
+.press:focus-visible { outline: 2px solid var(--color-north); outline-offset: 2px; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 700ms var(--ease-out-soft) both; }
+.rise-1 { animation-delay: 80ms; } .rise-2 { animation-delay: 160ms; } .rise-3 { animation-delay: 240ms; } .rise-4 { animation-delay: 320ms; }
+
+@keyframes needle { from { transform: rotate(-38deg); } 60% { transform: rotate(6deg); } to { transform: rotate(0); } }
+.needle { transform-origin: 50% 50%; animation: needle 900ms var(--ease-out-soft) both; }
+
+@keyframes shimmer { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+.skeleton { background: linear-gradient(90deg, var(--color-panel) 0%, #F9F7F2 50%, var(--color-panel) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
 
 @media print {
   .no-print { display: none !important; }
