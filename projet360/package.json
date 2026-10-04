@@ -7,7 +7,8 @@
   "scripts": {
     "verifier": "node outils/verifier.mjs",
     "construire": "node outils/construire.mjs",
-    "tester": "node outils/tester_navigateur.mjs"
+    "tester": "node outils/tester_navigateur.mjs",
+    "deployer": "node outils/deployer.mjs"
   },
   "engines": { "node": ">=18" }
 }

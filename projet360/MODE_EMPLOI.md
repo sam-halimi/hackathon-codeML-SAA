@@ -9,6 +9,8 @@ Ouvrez `dist/NOVA_Projet360.html` par double-clic dans Chrome, Edge ou Firefox.
 - C'est un seul fichier autonome : il contient l'application, nos données et les 64 documents du corpus.
 - Il fonctionne sans Internet, sans compte, sans abonnement et sans clé API.
 
+**Version en ligne** : https://nova-projet360.vercel.app (même fichier, hébergé sur Vercel ; le brief est aussi à `/NOVA_brief_de_reprise.pdf`). L'adresse est publique, mais elle est exclue des moteurs de recherche (`noindex`).
+
 ## 2. Naviguer
 
 | Espace | Ce qu'on y trouve |
@@ -93,9 +95,22 @@ Pour répéter avant le jour J, utilisez le bouton « S'entraîner avec l'exempl
 - **Plan préliminaire** : il est daté « juin » sans jour ; il est placé au 15 juin pour le tri de la chronologie.
 - **CR-01** : elle a été approuvée par le « comité de projet ». Le corpus ne contient pas d'avenant au contrat ; nous la considérons comme l'approbation écrite prévue au contrat.
 - **PDF** : le surlignage se fait dans le texte extrait de la page, pas directement sur l'image de la page.
-- **Mises à jour saisies dans le navigateur** : elles restent dans ce navigateur (stockage local). Exportez-les pour les conserver ou les partager.
-- **Testé** : Chromium, hors connexion. **Non testé** : Firefox, Safari, Edge réel, lecteurs d'écran, impression sur papier.
+- **Mises à jour saisies dans le navigateur** : elles restent dans ce navigateur (stockage local), y compris sur la version en ligne : les autres visiteurs ne les voient pas. Pour les publier, rendez-les permanentes (section 4C) puis redéployez (section 8).
+- **Testé** : Chromium, hors connexion et sur la version en ligne. **Non testé** : Firefox, Safari, Edge réel, lecteurs d'écran, impression sur papier.
 
 ## 7. Données et git
 
 La règle du dépôt interdit de committer les données des défis Loto-Québec. Par prudence, `corpus/` (documents bruts) et `dist/` (rendu, qui embarque le corpus) sont exclus de git (`.gitignore`). Le code, nos données (`donnees/`) et la documentation sont versionnés. Le README du kit indique que toutes les données NOVA sont fictives. Si l'équipe confirme que ce défi n'est pas visé par la règle, il suffit de retirer ces deux lignes du `.gitignore`.
+
+## 8. Mettre en ligne (Vercel)
+
+Depuis le dossier `projet360`, avec un jeton Vercel (Vercel → Account Settings → Tokens) :
+
+```
+VERCEL_TOKEN=votre_jeton node outils/deployer.mjs                 # macOS / Linux
+$env:VERCEL_TOKEN="votre_jeton"; node outils/deployer.mjs         # Windows PowerShell
+```
+
+Le script reconstruit le rendu, l'envoie et affiche l'adresse ; l'adresse de production reste https://nova-projet360.vercel.app. Le jeton n'est jamais enregistré : ne l'écrivez dans aucun fichier du dépôt.
+
+Pour tester la version en ligne dans un navigateur : `node outils/tester_navigateur.mjs --url https://nova-projet360.vercel.app/`.

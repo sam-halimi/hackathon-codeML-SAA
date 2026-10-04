@@ -2,7 +2,7 @@
 // Test automatique du rendu autonome dans un vrai navigateur (Chromium), HORS CONNEXION.
 // Facultatif : nécessite Playwright (npm install -g playwright).
 //
-// Usage : node outils/tester_navigateur.mjs [--captures]
+// Usage : node outils/tester_navigateur.mjs [--captures] [--url https://adresse-en-ligne]
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,7 +19,9 @@ const pw = chargerPlaywright();
 if (!pw) { console.log('Playwright absent : test navigateur ignoré (npm install -g playwright).'); process.exit(0); }
 
 const fichier = path.join(RACINE, 'dist', 'NOVA_Projet360.html');
-if (!fs.existsSync(fichier)) { console.error('Construisez d\'abord : node outils/construire.mjs'); process.exit(1); }
+const iUrl = process.argv.indexOf('--url');
+const urlEnLigne = iUrl > 0 ? process.argv[iUrl + 1] : null;
+if (!urlEnLigne && !fs.existsSync(fichier)) { console.error('Construisez d\'abord : node outils/construire.mjs'); process.exit(1); }
 const captures = process.argv.includes('--captures');
 const dossierCaptures = path.join(RACINE, 'dist', 'captures');
 if (captures) fs.mkdirSync(dossierCaptures, { recursive: true });
@@ -34,11 +36,18 @@ if (fs.existsSync('/opt/pw-browsers/chromium')) {
 }
 const navigateur = await pw.chromium.launch(options);
 const contexte = await navigateur.newContext({ viewport: { width: 1366, height: 900 }, locale: 'fr-CA', timezoneId: 'Europe/Paris' });
-await contexte.setOffline(true);
+if (!urlEnLigne) await contexte.setOffline(true);
+const origine = urlEnLigne ? new URL(urlEnLigne).origin : null;
 const requetesReseau = [];
 await contexte.route('**/*', (route) => {
   const url = route.request().url();
   if (url.startsWith('file:') || url.startsWith('data:') || url.startsWith('blob:')) return route.continue();
+  if (origine && url.startsWith(origine)) {
+    // Site en ligne : la page est téléchargée par Node (TLS vérifié), puis remise telle quelle
+    // au navigateur (statut, en-têtes, contenu). Utile si le navigateur de test ne reconnaît
+    // pas l'autorité de certification d'un proxy d'entreprise.
+    return fetch(url).then(async (r) => route.fulfill({ status: r.status, headers: Object.fromEntries(r.headers), body: Buffer.from(await r.arrayBuffer()) }), () => route.abort());
+  }
   requetesReseau.push(url);
   return route.abort();
 });
@@ -47,11 +56,11 @@ const erreursJs = [];
 page.on('pageerror', (e) => erreursJs.push(e.message));
 page.on('console', (m) => { if (m.type() === 'error') erreursJs.push(m.text()); });
 
-console.log('\nTEST NAVIGATEUR — hors connexion, fuseau Europe/Paris (pour vérifier que la date de situation ne dépend pas de l\'ordinateur)\n');
-await page.goto('file://' + fichier);
+console.log(`\nTEST NAVIGATEUR — ${urlEnLigne ? 'en ligne : ' + urlEnLigne : 'hors connexion'}, fuseau Europe/Paris (pour vérifier que la date de situation ne dépend pas de l'ordinateur)\n`);
+await page.goto(urlEnLigne || 'file://' + fichier);
 await page.waitForSelector('main#contenu > *');
 
-ok('La page s\'ouvre hors connexion', true);
+ok(urlEnLigne ? 'La page en ligne s\'ouvre' : 'La page s\'ouvre hors connexion', true);
 const situation = await page.textContent('#situation');
 ok('Date de situation fixe (30 septembre 2026, 09 h 00)', /30 septembre 2026, 09 h 00/.test(situation), situation.trim());
 
@@ -130,7 +139,7 @@ if (fs.existsSync(supp)) {
 }
 
 ok('Aucune erreur JavaScript', erreursJs.length === 0, erreursJs.slice(0, 3).join(' | '));
-ok('Aucune requête réseau externe', requetesReseau.length === 0, requetesReseau.slice(0, 3).join(' | '));
+ok(urlEnLigne ? 'Aucune requête vers un autre site' : 'Aucune requête réseau externe', requetesReseau.length === 0, requetesReseau.slice(0, 3).join(' | '));
 
 await navigateur.close();
 const echecs = resultats.filter((r) => !r.ok);
