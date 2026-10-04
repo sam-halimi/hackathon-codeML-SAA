@@ -432,9 +432,7 @@ const FILTERS = [
 function Aller({ hoursSince, substance }: { hoursSince: number | null; substance: boolean }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('all')
   const [active, setActive] = useState<string | undefined>()
-  const [mapKind, setMapKind] = useState<'osm' | 'google'>('osm')
-  const items = RESOURCES.filter((r) => filter === 'all' || r.kind === filter)
-  const gTarget = items.find((r) => r.id === active && r.address) ?? items.find((r) => r.address && !active)
+  const items = useMemo(() => RESOURCES.filter((r) => filter === 'all' || r.kind === filter), [filter])
   const urgent = hoursSince !== null ? computeChecklist({ hoursSince, substance, exposure: true, pregnancyRisk: true, injuries: false, showered: false }).filter((c) => c.status === 'urgent' || c.status === 'possible') : []
 
   useEffect(() => {
@@ -481,31 +479,19 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
           {items.map((r, n) => <ResourceCard key={r.id} r={r} n={n + 1} active={r.id === active} onSelect={() => setActive(r.id)} />)}
         </ul>
         <div className="order-1 lg:sticky lg:top-36 lg:order-2">
-          <div className="mb-3 inline-grid grid-cols-2 rounded-full bg-panel p-1 text-sm font-bold" role="tablist" aria-label="Type de carte">
-            {(['osm', 'google'] as const).map((k) => (
-              <button key={k} id={`map-${k}`} onClick={() => setMapKind(k)} className={`press rounded-full px-4 py-2 transition-colors duration-500 ${mapKind === k ? 'bg-ink text-white' : 'text-ink-2'}`}>{k === 'osm' ? 'Plan' : 'Google Maps'}</button>
-            ))}
+          <div className="h-[360px] overflow-hidden rounded-[28px] border-4 border-white shadow-[0_20px_40px_-28px_rgba(45,36,64,.5)] lg:h-[640px]" id="map">
+            <Suspense fallback={<div className="skeleton h-full w-full" />}>
+              <ResourceMap items={items} active={active} onSelect={setActive} />
+            </Suspense>
           </div>
-          <div className="h-[340px] overflow-hidden rounded-[28px] border-4 border-white shadow-[0_20px_40px_-28px_rgba(45,36,64,.5)] lg:h-[590px]" id="map">
-            {mapKind === 'osm' ? (
-              <Suspense fallback={<div className="skeleton h-full w-full" />}>
-                <ResourceMap items={items} active={active} onSelect={setActive} />
-              </Suspense>
-            ) : (
-              <iframe
-                key={gTarget?.id ?? 'all'}
-                title="Google Maps"
-                className="fade-in h-full w-full"
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                src={`https://www.google.com/maps?q=${encodeURIComponent(gTarget?.address ?? 'centre désigné agression sexuelle Montréal')}&z=${gTarget ? 15 : 12}&output=embed`}
-              />
-            )}
+          <div className="mt-3 flex flex-wrap gap-3 text-xs font-bold text-ink-2">
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sky" /> Examens</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sage" /> Soutien</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sun" /> Juridique</span>
           </div>
-          {mapKind === 'google' && <p className="mt-2 text-xs text-ink-3">Google Maps ne se charge que si vous le choisissez. {gTarget ? `Affiché : ${gTarget.name}.` : 'Touchez une adresse pour l’afficher.'}</p>}
         </div>
       </div>
-      <p className="mt-4 text-xs text-ink-3">Plan OpenStreetMap ou Google Maps. Sources : CIUSSS de Montréal, CVASM, SPVM (2026), sites officiels des organismes. Adresses confidentielles non affichées. Vérifiez les horaires par téléphone.</p>
+      <p className="mt-4 text-xs text-ink-3">Carte : OpenStreetMap et CARTO. Sources : CIUSSS de Montréal, CVASM, SPVM (2026), sites officiels des organismes. Adresses confidentielles non affichées. Vérifiez les horaires par téléphone.</p>
     </div>
   )
 }

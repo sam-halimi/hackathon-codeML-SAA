@@ -1,19 +1,25 @@
 import { useEffect } from 'react'
-import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet'
+import { MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { Resource } from '../lib/resources'
 
-const COLORS: Record<Resource['kind'], string> = { exam: '#16181D', support: '#0F7A64', legal: '#A85A00' }
+const COLORS: Record<Resource['kind'], string> = { exam: '#3D86D6', support: '#2F9E78', legal: '#E9A23B' }
 
 function pin(r: Resource, n: number, active: boolean) {
-  return L.divIcon({ className: '', iconSize: [30, 30], iconAnchor: [15, 30], html: `<div class="pin ${active ? 'active' : ''}" style="background:${COLORS[r.kind]}"><span>${n}</span></div>` })
+  return L.divIcon({ className: '', iconSize: [34, 34], iconAnchor: [17, 34], tooltipAnchor: [0, -30], html: `<div class="pin ${active ? 'active' : ''}" style="background:${COLORS[r.kind]}"><span>${n}</span></div>` })
 }
 
-function Fly({ target }: { target?: Resource }) {
+// Cadre la carte sur tous les points visibles, puis glisse doucement vers celui choisi.
+function Camera({ items, target }: { items: Resource[]; target?: Resource }) {
   const map = useMap()
   useEffect(() => {
-    if (target?.lat && target.lng) map.flyTo([target.lat, target.lng], 15, { duration: 0.9 })
+    const pts = items.filter((r) => r.lat && r.lng).map((r) => [r.lat!, r.lng!] as [number, number])
+    if (pts.length) map.flyToBounds(L.latLngBounds(pts), { padding: [48, 48], maxZoom: 14, duration: 0.8 })
+  }, [items, map])
+  useEffect(() => {
+    // On glisse vers le lieu choisi sans zoomer : tous les autres points restent visibles.
+    if (target?.lat && target.lng) map.panTo([target.lat, target.lng], { animate: true, duration: 0.8, easeLinearity: 0.2 })
   }, [target, map])
   return null
 }
@@ -21,12 +27,30 @@ function Fly({ target }: { target?: Resource }) {
 export default function ResourceMap({ items, active, onSelect }: { items: Resource[]; active?: string; onSelect: (id: string) => void }) {
   const placed = items.filter((r) => r.lat && r.lng)
   return (
-    <MapContainer center={[45.515, -73.58]} zoom={12} scrollWheelZoom={false} className="h-full w-full">
-      <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    <MapContainer
+      center={[45.515, -73.58]}
+      zoom={12}
+      scrollWheelZoom
+      zoomSnap={0.25}
+      zoomDelta={0.5}
+      wheelPxPerZoomLevel={90}
+      wheelDebounceTime={20}
+      inertia
+      className="h-full w-full"
+    >
+      {/* Fond « plan de rues » clair (CARTO Voyager, données OpenStreetMap) */}
+      <TileLayer
+        attribution='&copy; OpenStreetMap &copy; CARTO'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
+        maxZoom={20}
+      />
       {placed.map((r) => (
-        <Marker key={r.id} position={[r.lat!, r.lng!]} icon={pin(r, items.indexOf(r) + 1, r.id === active)} eventHandlers={{ click: () => onSelect(r.id) }} />
+        <Marker key={r.id} position={[r.lat!, r.lng!]} icon={pin(r, items.indexOf(r) + 1, r.id === active)} zIndexOffset={r.id === active ? 1000 : 0} eventHandlers={{ click: () => onSelect(r.id) }}>
+          <Tooltip direction="top" className="pin-label" opacity={1} permanent={r.id === active}>{r.name.split(',')[0].split(' (')[0]}</Tooltip>
+        </Marker>
       ))}
-      <Fly target={items.find((r) => r.id === active)} />
+      <Camera items={items} target={items.find((r) => r.id === active)} />
     </MapContainer>
   )
 }
