@@ -37,6 +37,8 @@ if (fs.existsSync('/opt/pw-browsers/chromium')) {
 const navigateur = await pw.chromium.launch(options);
 const contexte = await navigateur.newContext({ viewport: { width: 1366, height: 900 }, locale: 'fr-CA', timezoneId: 'Europe/Paris' });
 if (!urlEnLigne) await contexte.setOffline(true);
+// Le tutoriel d'accueil est testé à part (tests_supplementaires) : on le marque comme déjà vu.
+await contexte.addInitScript(() => { try { if (!sessionStorage.getItem('tester-guide')) localStorage.setItem('nova360.guide.vu', '1'); } catch (e) { /* ignoré */ } });
 const origine = urlEnLigne ? new URL(urlEnLigne).origin : null;
 const requetesReseau = [];
 await contexte.route('**/*', (route) => {

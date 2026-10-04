@@ -170,6 +170,50 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
     await page.click('[data-onglet="vue"]');
     await page.screenshot({ path: path.join(dossierCaptures, 'vue_apres_maj.png'), fullPage: false });
   }
+  // ---------- Tutoriel d'accueil (première visite) ----------
+  await page.evaluate(() => { localStorage.clear(); sessionStorage.setItem('tester-guide', '1'); });
+  await page.reload();
+  await page.waitForSelector('#guide[open]', { timeout: 5000 });
+  const accueil = await texte('#guide');
+  ok('Tutoriel : s\'ouvre à la première visite, dans la peau du PDG', /PDG/.test(accueil) && /Lundi/.test(accueil));
+  ok('Tutoriel : liste les six douleurs', (await page.locator('#guide .guide-promesses li').count()) === 6);
+  await page.click('#guide [data-guide="suivant"]');
+  const etape1 = await texte('#guide');
+  ok('Tutoriel : chaque étape oppose le problème et la réponse de NOVA', /Le problème/.test(etape1) && /Avec NOVA/.test(etape1));
+  ok('Tutoriel : les chiffres viennent de l\'état réel (22 octobre, 0 sur 3)', /22 octobre 2026/.test(etape1) && /0\s*sur 3/.test(etape1));
+  ok('Tutoriel : chaque douleur nomme le risque concret', /Le risque/.test(etape1) && (await page.locator('#guide .guide-risque').count()) === 1);
+  for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight');
+  ok('Tutoriel : navigation au clavier jusqu\'à la fin (8 étapes)', /Étape 8 sur 8/.test(await texte('#guide')));
+  if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'guide_fin.png') });
+  await page.click('#guide .guide-bas [data-guide="fermer"]');
+  ok('Tutoriel : se ferme avec « Commencer »', (await page.locator('#guide[open]').count()) === 0);
+  await page.reload();
+  await page.waitForSelector('main#contenu > *');
+  await page.waitForTimeout(600);
+  ok('Tutoriel : ne revient pas après avoir été vu', (await page.locator('#guide[open]').count()) === 0);
+  await page.click('#ouvrir-guide');
+  await page.waitForSelector('#guide[open]');
+  await page.click('#guide [data-guide="suivant"]');
+  await page.click('#guide [data-guide="aller"]');
+  await page.waitForTimeout(400);
+  ok('Tutoriel : « Comment ça marche ? » le rouvre et « Voir l\'accueil » mène à la page', (await page.locator('#guide[open]').count()) === 0 && (await page.locator('main .hero-date').count()) === 1);
+  if (captures) {
+    await page.evaluate(() => { localStorage.removeItem('nova360.guide.vu'); });
+    await page.click('#ouvrir-guide'); await page.waitForSelector('#guide[open]');
+    await page.screenshot({ path: path.join(dossierCaptures, 'guide_accueil.png') });
+    await page.click('#guide [data-guide="suivant"]'); await page.waitForTimeout(600);
+    await page.screenshot({ path: path.join(dossierCaptures, 'guide_etape.png') });
+    await page.keyboard.press('Escape');
+  }
+
+  // ---------- Téléphone : rien ne déborde, la recherche et l'aide restent visibles ----------
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => { location.hash = '#vue'; });
+  await page.waitForTimeout(700);
+  const debord = await page.evaluate(() => ['#champ-question', '#form-question button', '#ouvrir-guide', '.hero-date'].map((s) => document.querySelector(s).getBoundingClientRect()).every((r) => r.left >= 0 && r.right <= window.innerWidth + 1));
+  ok('Téléphone (390 px) : en-tête et carte principale tiennent dans l\'écran', debord && (await page.evaluate(() => window.scrollX)) === 0);
+  await page.setViewportSize({ width: 1366, height: 900 });
+
   // Nettoyage du stockage local.
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
 }

@@ -1,0 +1,322 @@
+[
+  {
+    "file": "01_Courriels/E01_Lancement_NOVA.eml",
+    "bytes": 735,
+    "sha256": "16d41dcca06f62c1542d694cd80f3146d64ba98d44d48bae1a168dc36117885e"
+  },
+  {
+    "file": "01_Courriels/E02_Question_hebergement.eml",
+    "bytes": 32535,
+    "sha256": "de9da47af28142b5e033ef467c2bd932020f88d57112a724b5b822d98c4ef1a5"
+  },
+  {
+    "file": "01_Courriels/E03_Confirmation_Canada_Central.eml",
+    "bytes": 32692,
+    "sha256": "0a35012f106e1bb673fbd1b674052038a86cf426f44817bd85ddff4a36dbde73"
+  },
+  {
+    "file": "01_Courriels/E04_Corrections_accessibilite.eml",
+    "bytes": 745,
+    "sha256": "87cee73a04d819808b90a985b4a4f7f43baac05fa17db73f9b3f5cbf7a4c154d"
+  },
+  {
+    "file": "01_Courriels/E05_Retard_integration.eml",
+    "bytes": 794,
+    "sha256": "633c8d1c96a5eedc154dcbaa73d4fef79fea99984f6e47c8563d7df02f6b3f39"
+  },
+  {
+    "file": "01_Courriels/E06_Transition_charge_projet.eml",
+    "bytes": 648,
+    "sha256": "ed6b53e0165bf6228370b54c37b12ea52649c2a29db530f89297c1038279747a"
+  },
+  {
+    "file": "01_Courriels/E07_Facture_003_question.eml",
+    "bytes": 33006,
+    "sha256": "60b9a373d7c51fb44b6018518a52ba93d6f8fc9ed985182fae61f57d08328c93"
+  },
+  {
+    "file": "01_Courriels/E08_Correctif_journalisation.eml",
+    "bytes": 627,
+    "sha256": "84dbdb541a8411dbaafc0d47f1cb75cfe3075f16e5bf9c8abc97bfad52f7df87"
+  },
+  {
+    "file": "01_Courriels/E09_Rappel_mise_en_production.eml",
+    "bytes": 840,
+    "sha256": "fc41345262e7c6855a08a6843772102aa9572c3ac0ba1e6f66f1b63cf826021b"
+  },
+  {
+    "file": "01_Courriels/E10_Fonction_mobile.eml",
+    "bytes": 32600,
+    "sha256": "b986e175dcba9d85386a5ee0498a1e2c49326ee93656fa2e6e39edcba27671f1"
+  },
+  {
+    "file": "01_Courriels/E11_Communication_statut.eml",
+    "bytes": 33071,
+    "sha256": "972082b171043093e629265d5096119369bf0dcee9987fc6b1a9038cf9b508d6"
+  },
+  {
+    "file": "01_Courriels/E12_Resolution_integration.eml",
+    "bytes": 722,
+    "sha256": "cc160700b60236dd105f051ba1ab6aa16f222bdadb31d7f29f7ea7151edf1398"
+  },
+  {
+    "file": "02_Reunions/M01_CR_Demarrage_07juillet.txt",
+    "bytes": 818,
+    "sha256": "4474bf0189f6ba64b081c5ee9640186f9950497d37f0610bcdb3db74ae06c6ac"
+  },
+  {
+    "file": "02_Reunions/M02_Transcript_Architecture_23juillet.txt",
+    "bytes": 2528,
+    "sha256": "ee3018d95bbd502a2d9fa5ddd66bd1b06bb0f5bb2cee9fdfa43a19ee4676977e"
+  },
+  {
+    "file": "02_Reunions/M03_CR_Comite_27aout.txt",
+    "bytes": 1074,
+    "sha256": "bc8177355a020cc5fae7775349e8f7ceed7fde9d08b01c3d3127554f2a4daa60"
+  },
+  {
+    "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+    "bytes": 3101,
+    "sha256": "31a14e3025d62998254ad23b59e34b7e70475425615f30b9f2bde2f6695788d7"
+  },
+  {
+    "file": "02_Reunions/M05_CR_Suivi_18sept.txt",
+    "bytes": 877,
+    "sha256": "132e8360b2e8c9964a9f40db2dc8376d726b55d4755b990d55868483769c5c8e"
+  },
+  {
+    "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+    "bytes": 1934,
+    "sha256": "09cdadc67eba6ef2bffdd8d7bf2c00b6108719135a622b69f6994bd030aa3165"
+  },
+  {
+    "file": "03_Tickets/ACC-301.txt",
+    "bytes": 591,
+    "sha256": "11bd40b7a7cf42342436dced3304752fcc0772314ea52bece07c77531698266b"
+  },
+  {
+    "file": "03_Tickets/ACC-301_labels.png",
+    "bytes": 21858,
+    "sha256": "99c7b0fbb963388ed3f355dfde2582ff8101ce8c5936ab943d432569ffa72024"
+  },
+  {
+    "file": "03_Tickets/ACC-302.txt",
+    "bytes": 493,
+    "sha256": "9b4d3ae78df8626cb039837659b137f1d39b7bbae2c26934ef42c50b440c1cdd"
+  },
+  {
+    "file": "03_Tickets/ACC-302_contraste.png",
+    "bytes": 21911,
+    "sha256": "f5120af24153a3f5214eb4e1125c7883781063964f950c75b17defe26c62359b"
+  },
+  {
+    "file": "03_Tickets/ACC-303.txt",
+    "bytes": 710,
+    "sha256": "b980eea7c7f8f1a199e91fa0a6cadcd54d9de2b06c558dec7a6a72999066e808"
+  },
+  {
+    "file": "03_Tickets/ACC-303_focus.png",
+    "bytes": 27160,
+    "sha256": "f1826330adb78af6d715f3457744fc3f4fe279bbb7875f4a1bee9f9cdcbbc6c8"
+  },
+  {
+    "file": "03_Tickets/DATA-401.txt",
+    "bytes": 725,
+    "sha256": "c233516d6dbf47795b7cffb468bef848c04987ee1dceff559fc161d5e0f1918c"
+  },
+  {
+    "file": "03_Tickets/DATA-401_doublons.png",
+    "bytes": 34647,
+    "sha256": "4846ea9ec37fd22432d455ddaa2d743aa22d760ffc80945ac41eb9da5aa68924"
+  },
+  {
+    "file": "03_Tickets/DATA-401_echantillon.csv",
+    "bytes": 215,
+    "sha256": "4ade73d37e16d176c6fe2f62314e0c0cfc86dc03b9ac6294a37b53fd379d3bbd"
+  },
+  {
+    "file": "03_Tickets/INT-101.txt",
+    "bytes": 979,
+    "sha256": "21e03dfe972989a4cf2deb60c110ddd9ad413afefd6d5ff3763b29be925dcf76"
+  },
+  {
+    "file": "03_Tickets/INT-101_aucun_resultat.png",
+    "bytes": 21845,
+    "sha256": "6698505f8a823ced7845162355dbd194e219edb7ab5b8f0be09424529b08da95"
+  },
+  {
+    "file": "03_Tickets/INT-101_extrait_logs.txt",
+    "bytes": 245,
+    "sha256": "4ce14420b2774498343a04be5eb3b8ac2685ff21bec6cec506eb5b0a9b0f907a"
+  },
+  {
+    "file": "03_Tickets/OPS-601.txt",
+    "bytes": 628,
+    "sha256": "31023bfb2fb2e74359d41359de5a3fb36ad5109a17b7b578e5ce97b026d0a29d"
+  },
+  {
+    "file": "03_Tickets/OPS-601_runbook.png",
+    "bytes": 33973,
+    "sha256": "b09373c9eeab8aea1e2828fe1a632596f2b031f2ad7258149d796cc6e3775400"
+  },
+  {
+    "file": "03_Tickets/PERF-501.txt",
+    "bytes": 640,
+    "sha256": "1d72e151a2dee710a358b89ab14101aa3ebd2e7a3dc71e97ddef79bbfdd5d29b"
+  },
+  {
+    "file": "03_Tickets/PERF-501_lenteur.png",
+    "bytes": 33583,
+    "sha256": "532e550592df6ad0e4c693566039983d6befe40b5605d39efb4d1334ae74c58e"
+  },
+  {
+    "file": "03_Tickets/SEC-210.txt",
+    "bytes": 1267,
+    "sha256": "1dceb92346fd7fa9f9b9ef1919da91d460f79d22088b7136bcbeb496265c7c47"
+  },
+  {
+    "file": "03_Tickets/SEC-210_audit.png",
+    "bytes": 44408,
+    "sha256": "6698e1094331dadfd1c0920157913f213702be865a8752ef8ce47c6b2e963811"
+  },
+  {
+    "file": "04_Documents_projet/Charte_Projet_NOVA_v1.txt",
+    "bytes": 632,
+    "sha256": "fa4705d47bbee91dd8f675ead36aa8005bd6e9e63f281a24647fe052da5803d2"
+  },
+  {
+    "file": "04_Documents_projet/Note_transition_Elodie_16sept.txt",
+    "bytes": 416,
+    "sha256": "cf44c6b2a98737eabf50798f87a5b0b49b35384f10371f90fe5d7e00f05f36d5"
+  },
+  {
+    "file": "04_Documents_projet/Plan_Projet_NOVA_v2.xlsx",
+    "bytes": 4520,
+    "sha256": "6f842390174d8603529a600ac80936d122eec00bf99f30c224cf2df1247faf9a"
+  },
+  {
+    "file": "04_Documents_projet/Plan_Projet_NOVA_v3_12sept.xlsx",
+    "bytes": 4569,
+    "sha256": "ff7530fdda7bd922cbe7aeda86009a79e4857a6f6d3f9209aa19444096e92aa7"
+  },
+  {
+    "file": "04_Documents_projet/Rapport_Statut_21sept.pdf",
+    "bytes": 23729,
+    "sha256": "78fe43e6769c4e8284620282526b5313da427e9f22c1b55aeaf7a31848651537"
+  },
+  {
+    "file": "04_Documents_projet/Registre_Risques_29sept.xlsx",
+    "bytes": 4540,
+    "sha256": "aa9b4f76885fcd7911472e0dc9fb8b00f5b8f022820601341796a6ad3a525b97"
+  },
+  {
+    "file": "05_Contrats_et_finances/CONTRAT_Boreal_NOVA.pdf",
+    "bytes": 23752,
+    "sha256": "3ea0027f44bd3c7e1dcc4d53fdcc2083359bb4e3b54af2929deb254e0632eab0"
+  },
+  {
+    "file": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf",
+    "bytes": 23541,
+    "sha256": "c92dcd6d60ad73f2b2d376bbb15a2e52c2906e9637bd3c3c2d6c5415d61b8ebf"
+  },
+  {
+    "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+    "bytes": 23365,
+    "sha256": "190ebc7f862023592d80cfa4c3bb3ebebc2ea8e5613d2af26ea2fc412ee9d29d"
+  },
+  {
+    "file": "05_Contrats_et_finances/INV-001.pdf",
+    "bytes": 23376,
+    "sha256": "972552f75b29af3059557b183eb689185923e5d3f6d443ce60e55bd12555f736"
+  },
+  {
+    "file": "05_Contrats_et_finances/INV-002.pdf",
+    "bytes": 23396,
+    "sha256": "09a6fcdf88f3d29a798daf199a5e039ae473dcad09f30050b0bd2a90da7a91ed"
+  },
+  {
+    "file": "05_Contrats_et_finances/INV-003.pdf",
+    "bytes": 23639,
+    "sha256": "cf664b7caf782ccfbfd1d84428a4a0df7212b9fadacc69caff0192e0ba053d05"
+  },
+  {
+    "file": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md",
+    "bytes": 680,
+    "sha256": "49df032a0f1ca7fbcf6e576c20b6f4ff1c5678d68d5f8bc7706192103518ca2e"
+  },
+  {
+    "file": "06_Architecture_et_decisions/Architecture_NOVA_v1.pdf",
+    "bytes": 23340,
+    "sha256": "a7610ddc9b988a9f2c521deecc1583ce7193247b2956d491b8ae02c6eb1b5896"
+  },
+  {
+    "file": "06_Architecture_et_decisions/Architecture_NOVA_v2.pdf",
+    "bytes": 23423,
+    "sha256": "ba22b0f3376d11cb538df93ca89138ae99f3a317d00d50d97c5261bd1998e801"
+  },
+  {
+    "file": "06_Architecture_et_decisions/Decision_Portee_Phase2.md",
+    "bytes": 465,
+    "sha256": "a40891b2324cbd8041d8f7cecc4cc3638d8b2ae3bae1c3ba791b106748b851b5"
+  },
+  {
+    "file": "07_Conversations_Teams/Teams_15sept_ProjetNOVA.txt",
+    "bytes": 344,
+    "sha256": "b2d3e858d099cb932eaaaa88822755515783307c6db0ab40326709dad1ab4308"
+  },
+  {
+    "file": "07_Conversations_Teams/Teams_16sept_Transition.txt",
+    "bytes": 325,
+    "sha256": "397803af2ef9cea12956556a44ad00e57dd619cf8b49baa95462ad01e567dbfe"
+  },
+  {
+    "file": "07_Conversations_Teams/Teams_19sept_Securite.txt",
+    "bytes": 282,
+    "sha256": "5eae0d5d720d452834bf31b480a6a6d017a04a39816764ca5c7b8a70f0323e31"
+  },
+  {
+    "file": "07_Conversations_Teams/Teams_22sept_Mobile.txt",
+    "bytes": 338,
+    "sha256": "0b8594a1ad14d50cc41405f9a742872a55e6a2db23ad489aed8f563705cbdafd"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/Courriel_archive_17sept.eml",
+    "bytes": 722,
+    "sha256": "cc160700b60236dd105f051ba1ab6aa16f222bdadb31d7f29f7ea7151edf1398"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/INV-778_Projet_ORION.pdf",
+    "bytes": 23435,
+    "sha256": "5c8bee08bbd341c085fbbe76b4366276028c45ddba13516c2c07e97a501f7c60"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/Invitation_Formation_Excel.txt",
+    "bytes": 184,
+    "sha256": "3bbe5937cbf5fc191132b8285098488f4da1272212275cf801bc55c4a047da92"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/Newsletter_Boreal_Septembre.txt",
+    "bytes": 201,
+    "sha256": "78821603c570403ae5a20ee8ad624e445a60fe8617ee6fda8fb00b27802724b6"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/Notes_personnelles_quelquun.txt",
+    "bytes": 199,
+    "sha256": "15e3fefe673dac02c92a7ffcf53d06f1813c0833266c6e88b0b07ca197402ba6"
+  },
+  {
+    "file": "08_Archives_et_documents_connexes/Plan_NOVA_preliminaire_juin.xlsx",
+    "bytes": 4197,
+    "sha256": "f7ab237ccc6278e291295634635a3fce9637cd6d0ccbe0dbe4d4914d9c236109"
+  },
+  {
+    "file": "MANIFEST.csv",
+    "bytes": 3412,
+    "sha256": "ad3ed0709f2bd6eec1763afb6c63ca23e30c0005cb4551e7bebb3333ee697dce"
+  },
+  {
+    "file": "README.txt",
+    "bytes": 5741,
+    "sha256": "034101b02eddd8a27ccf974ddc19948d503c1c5f5b37169ca08f37223d464a86"
+  }
+]

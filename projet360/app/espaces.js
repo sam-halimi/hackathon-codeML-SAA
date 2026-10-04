@@ -2,7 +2,9 @@
 (function () {
   'use strict';
   const A = window.NOVA_APP;
-  const { etat, BASE, C, $, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves } = A;
+  const { etat, BASE, C, $, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, icone, tuile, iconeDoc } = A;
+  const ICONE_CONDITION = { C1: 'shield-check', C2: 'accessibility', C3: 'server' };
+  const etoile = '<svg class="hero-etoile" aria-hidden="true" focusable="false"><use href="#i-nova"/></svg>';
 
   const SUJETS = {
     date: 'Date', gouvernance: 'Gouvernance', hebergement: 'Hébergement', securite: 'Sécurité', accessibilite: 'Accessibilité',
@@ -21,7 +23,7 @@
   const dateReference = (e) => (e !== BASE && e.meta.date_situation_maj) || BASE.meta.date_situation;
 
   function badgeResponsable(statut) {
-    return statut === 'confirme' ? badge('vert', 'Confirmé', '✓') : badge('bleu', 'Proposé par l\'équipe', '?');
+    return statut === 'confirme' ? badge('vert', 'Confirmé', 'circle-check') : badge('bleu', 'Proposé par l\'équipe', 'pencil-line');
   }
   function badgeType(type) {
     return type === 'engagement' ? badge('violet', 'Engagement documenté') : badge('bleu', 'Recommandation de l\'équipe');
@@ -64,21 +66,22 @@
       <h1>Brief de reprise · Projet NOVA</h1>
       <p class="imp-sous">Situation au ${esc(BASE.meta.date_situation_texte)}${versionTxt}. Préparé par l'équipe (analyse humaine assistée par Claude, vérifiée dans le corpus).</p>
       <h2>1. Responsable</h2>
-      <p><strong>${esc(s.responsable.nom)}</strong>, ${esc(s.responsable.role.toLowerCase())} depuis le ${fmtDate(s.responsable.depuis, true)}. Avant : ${esc(s.responsable.avant)}. ${src(s.responsable.preuves)}</p>
+      <p><strong>${esc(s.responsable.nom)}</strong>, ${esc(s.responsable.role.toLowerCase())} depuis le ${fmtDate(s.responsable.depuis, true)}. Avant : ${esc(s.responsable.avant)}.${s.fournisseur ? ` Fournisseur : ${esc(s.fournisseur)}.` : ''} ${src(s.responsable.preuves)}</p>
       <h2>2. Date approuvée et conditions</h2>
-      <p><strong>${esc(d.texte)}</strong>, approuvée par le ${esc(autoriteTxt)} le ${fmtDate(d.date_decision, true)}${decisionInitiale ? ' (proposée par Boréal le 8 septembre), sous conditions' : ''}. ${decisionInitiale ? esc(d.reserve) : 'Vérifier si les conditions de go-live restent valables.'} ${src(d.preuves, decisionInitiale ? ['M06', 'E09'] : [])}</p>
+      <p><strong>${esc(d.texte)}</strong>, approuvée par le ${esc(autoriteTxt)} le ${fmtDate(d.date_decision, true)}${decisionInitiale ? ' (proposée par Boréal le 8 septembre), sous conditions' : ''}. ${decisionInitiale ? esc(d.reserve) + ' Le report venait du connecteur INT-101, fermé le 17 septembre : cette fermeture ne rétablit pas le 15 octobre.' : 'Vérifier si les conditions de go-live restent valables.'} ${src(d.preuves, decisionInitiale ? ['M06', 'E09', 'INT-101'] : [])}</p>
       ${props ? `<ul>${props}</ul>` : ''}
       <table><thead><tr><th>Condition de go-live</th><th>État</th><th>Action et responsable</th><th>Échéance</th></tr></thead><tbody>${condLignes}</tbody></table>
       <h2>3. Portée</h2>
-      <p>Phase 1 : SSO, création et suivi de demandes, pièces jointes, workflow, tableau de suivi, rapports standards, plus rapports avancés et export (CR-01, approuvée le 14 août). <strong>Hors portée :</strong> optimisations mobiles avancées (CR-04, 18 000 $), reportées à la phase 2 le 24 septembre ; aucune dépense sans nouvelle approbation. ${src(s.portee.preuves, ['E10'])}</p>
+      <p>Phase 1 : SSO, création et suivi de demandes, pièces jointes, workflow, tableau de suivi, rapports standards, plus rapports avancés et export (CR-01, approuvée le 14 août). <strong>Hors portée :</strong> optimisations mobiles avancées (CR-04, 18 000 $), reportées à la phase 2 le 24 septembre ; aucune dépense sans nouvelle approbation.${s.hebergement ? ` <strong>Hébergement :</strong> ${esc(s.hebergement)}` : ''} ${src(s.portee.preuves, ['E10', 'ADR-007', 'M03'])}</p>
       <h2>4. Budget et factures (CAD, hors taxes)</h2>
-      <p><strong>Autorisé : ${fmtMontant(f.autorise)}</strong> (${esc(f.calcul)}). <strong>Facturé : ${fmtMontant(f.facture)}</strong> ; payé : ${fmtMontant(f.paye)} (INV-001, INV-002) ; en validation : ${fmtMontant(f.en_validation)} (INV-003). <strong>INV-003 :</strong> libérer au plus le jalon 3 (36 000 $) et bloquer la ligne CR-04 de ${fmtMontant(f.a_contester)}, non approuvée (facture corrigée ou note de crédit). INV-778 (projet ORION) est exclue. ${src(f.preuves, ['INV-001', 'INV-002', 'E07'])}</p>
+      <p><strong>Autorisé : ${fmtMontant(f.autorise)}</strong> (${esc(f.calcul)}). <strong>Facturé : ${fmtMontant(f.facture)}</strong>, dont ${fmtMontant(f.a_contester)} contestés ; payé documenté : ${fmtMontant(f.paye)} (INV-001, INV-002) ; en validation : ${fmtMontant(f.en_validation)} (INV-003). <strong>INV-003 :</strong> libérer au plus le jalon 3 (36 000 $) et bloquer la ligne CR-04 de ${fmtMontant(f.a_contester)}, non approuvée (facture corrigée ou note de crédit). INV-778 (projet ORION) est exclue. Ne pas confondre plafond disponible et autorisation de dépense. ${src(f.preuves, ['INV-001', 'INV-002', 'E07'])}</p>
       ${notesSynth ? `<p><strong>Mises à jour :</strong></p><ul>${notesSynth}</ul>` : ''}
       <h2>5. Priorités</h2>
       <ol>${prio}</ol>
       ${ajouts ? `<p><strong>Nouvelles actions (mises à jour) :</strong></p><ul>${ajouts}</ul>` : ''}
       <h2>6. À ne pas utiliser</h2>
       <p>Le 15 octobre (plans v2/v3, charte) ; la sécurité et l'accessibilité « VERT » (rapport du 21 sept., brouillon d'Alex) ; le risque R-01 « ouvert » (INT-101 fermé le 17 sept.) ; East US (remplacé par Canada Central) ; INV-778 (autre projet).</p>
+      ${(s.incertitudes || []).length ? `<p><strong>Encore inconnu :</strong> ${s.incertitudes.map((x) => esc(x.replace(/\.$/, ''))).join(' ; ')}.</p>` : ''}
       <p class="imp-pied">Échéances : aucune date n'est documentée pour les actions restantes (« à confirmer ») ; la seule limite connue est le go visé le 22 octobre. Pour chaque fait, les preuves (fichier et repère) se trouvent dans l'application, espaces « Questions et preuves » et « Historique et décisions ». Données : NOVA_OPERATIONS.json, ${esc(BASE.meta.version_donnees)}.</p>
     </div>`;
   }
@@ -117,35 +120,43 @@
     const ouvertes = e.actions.filter((a) => !C.ETATS_FERMES.includes(a.etat));
     const ton = (code) => (C.ETATS[code] || {}).ton || 'gris';
     // Le moment fort de la page : la date approuvée et sa réserve, en pleine largeur.
-    let html = `<section class="hero-date" aria-labelledby="titre-date">
-        <div class="eyebrow">Espace 01 · Mise en production approuvée ${marqueMaj(d)}</div>
+    let html = `<section class="hero-date" aria-labelledby="titre-date">${etoile}
+        <div class="eyebrow">${icone('calendar-days')}Mise en production approuvée ${marqueMaj(d)}</div>
         <p class="affiche" id="titre-date">${esc(d.texte)},<br><em>${esc(sousTitre)}</em></p>
         <div class="hero-ligne">
           <span>Approuvée par le <strong>${esc(d.autorite.charAt(0).toLowerCase() + d.autorite.slice(1))}</strong> le ${fmtDate(d.date_decision, true)}.</span>
-          ${jours >= 0 ? `<span class="jalon">J−${jours} · au ${fmtDate(dateReference(e))}</span>` : ''}
+          ${jours >= 0 ? `<span class="jalon">${icone('hourglass')}J−${jours} · au ${fmtDate(dateReference(e))}</span>` : ''}
           ${boutonPreuve(d.preuves[0], { compact: true })}
-          <button type="button" class="bouton" data-action="imprimer-brief">Imprimer le brief (1 page)</button>
+          <button type="button" class="bouton" data-action="imprimer-brief">${icone('printer')}Imprimer le brief (1 page)</button>
         </div>
-        <div class="conditions-mini">${s.conditions.map((c) => `<a class="cond" href="#vue/conditions" style="color:inherit;text-decoration:none"><span class="point ${ton(c.etat)}" aria-hidden="true"></span><span class="cond-id">${esc(c.id)}</span>${esc(c.titre.split(' (')[0])} · <strong>${esc((C.ETATS[c.etat] || {}).libelle || c.etat)}</strong></a>`).join('')}
-          ${props.map((p) => `<span class="cond"><span class="point gris" aria-hidden="true"></span><span class="cond-id">PROPOSITION</span>${esc(p.texte)} · <strong>non approuvée</strong></span>`).join('')}</div>
+        <div class="conditions-mini">${s.conditions.map((c) => `<a class="cond" href="#vue/conditions">${icone(ICONE_CONDITION[c.id] || 'flag')}<span class="point ${ton(c.etat)}" aria-hidden="true"></span><span class="cond-id">${esc(c.id)}</span>${esc(c.titre.split(' (')[0])} · <strong>${esc((C.ETATS[c.etat] || {}).libelle || c.etat)}</strong></a>`).join('')}
+          ${props.map((p) => `<span class="cond">${icone('pencil-line')}<span class="point gris" aria-hidden="true"></span><span class="cond-id">PROPOSITION</span>${esc(p.texte)} · <strong>non approuvée</strong></span>`).join('')}</div>
       </section>
       <div class="grille grille-4">
-        <div class="carte"><div class="etiquette">Responsable</div><div class="chiffre">${esc(s.responsable.nom)}</div>
+        <div class="carte kpi">${tuile('user-round')}<div class="etiquette">Responsable</div><div class="chiffre">${esc(s.responsable.nom)}</div>
           <p>${esc(s.responsable.role)} depuis le <strong>${fmtDate(s.responsable.depuis, true)}</strong>.</p>
           <p class="petit doux">Avant : ${esc(s.responsable.avant)}.</p>${boutonPreuve(s.responsable.preuves[0], { compact: true })}${marqueMaj(s.responsable)}</div>
-        <div class="carte"><div class="etiquette">Conditions de go-live</div><div class="chiffre">${remplies} / ${s.conditions.length} remplies</div>
-          <ul class="petit" style="list-style:none;padding:0;margin:0 0 12px">${s.conditions.map((c) => `<li>${esc(c.id)} ${badgeEtat(c.etat)}</li>`).join('')}</ul>
+        <div class="carte kpi">${tuile('flag', remplies === s.conditions.length ? 'ton-vert' : 'ton-rouge')}<div class="etiquette">Conditions de go-live</div><div class="chiffre">${remplies} / ${s.conditions.length} remplies</div>
+          <ul class="liste-cond">${s.conditions.map((c) => `<li><span class="code-cond">${esc(c.id)}</span>${badgeEtat(c.etat)}</li>`).join('')}</ul>
           <a class="petit" href="#vue/conditions">Détail des conditions</a></div>
-        <div class="carte"><div class="etiquette">Finances (CAD, HT)</div><div class="chiffre">${fmtMontant(f.autorise)}</div>
+        <div class="carte kpi">${tuile('banknote')}<div class="etiquette">Finances (CAD, HT)</div><div class="chiffre">${fmtMontant(f.autorise)}</div>
           <p class="petit">autorisés (180 000 $ + CR-01).<br>Facturé : <strong>${fmtMontant(f.facture)}</strong> · Payé : <strong>${fmtMontant(f.paye)}</strong></p>
           <p class="petit">${badge('rouge', fmtMontant(f.a_contester) + ' à contester (INV-003)', '!')}</p>${boutonPreuve(f.preuves[0], { compact: true })}</div>
-        <div class="carte"><div class="etiquette">Actions ouvertes</div><div class="chiffre">${ouvertes.length}</div>
+        <div class="carte kpi">${tuile('list-checks')}<div class="etiquette">Actions ouvertes</div><div class="chiffre">${ouvertes.length}</div>
           <p class="petit">dont ${ouvertes.filter((a) => a.condition).length} liées aux conditions de go-live.<br>Échéances documentées : <strong>${ouvertes.filter((a) => a.echeance).length}</strong> (les autres sont « À confirmer »).</p>
           <a class="petit" href="#actions">Voir les actions</a></div>
       </div>`;
 
+    // Ce que l'on ne sait pas encore (incertitudes relevées par l'équipe)
+    if ((s.incertitudes || []).length) {
+      html += `<section class="carte" aria-labelledby="titre-incertitudes" style="margin-top:var(--e5)">
+        <div class="preuve-ligne">${tuile('circle-help', 'ton-ambre')}<div><h3 id="titre-incertitudes" style="margin:0">Ce que l'on ne sait pas encore</h3>
+        <p class="doux" style="margin:0">Aucune de ces informations n'est écrite dans le corpus : NOVA les signale au lieu de les inventer.</p></div></div>
+        <ul class="liste-inconnus">${s.incertitudes.map((x) => `<li>${icone('hourglass')}<span>${esc(x)}</span></li>`).join('')}</ul></section>`;
+    }
+
     // Conditions de go-live
-    html += `<div class="section" id="conditions"><h2>Conditions de go-live</h2></div>
+    html += `<div class="section" id="conditions"><h2>${icone('flag')}Conditions de go-live</h2></div>
       <p class="intro">Fixées par le comité de direction du 26 septembre. Le 22 octobre n'est pas un go automatique : les trois doivent être remplies.</p>
       <div class="table-wrap"><table><thead><tr><th>Condition</th><th>État</th><th>Responsable</th><th>Actions</th><th>Preuve</th></tr></thead><tbody>
       ${s.conditions.map((c) => `<tr><td><strong>${esc(c.id)}. ${esc(c.titre)}</strong>${marqueMaj(c)}<br><span class="petit doux">${esc(c.detail)}</span>
@@ -156,7 +167,7 @@
       </tbody></table></div>`;
 
     if (props.length) {
-      html += `<div class="section"><h2>Propositions en attente de décision</h2></div>
+      html += `<div class="section"><h2>${icone('pencil-line')}Propositions en attente de décision</h2></div>
         <p class="intro">Une proposition n'est pas une décision : la date approuvée ne change pas tant que l'autorité compétente n'a pas approuvé.</p>
         <div class="table-wrap"><table><thead><tr><th>Proposition</th><th>Par</th><th>Motif</th><th>Statut</th><th>Preuve</th></tr></thead><tbody>
         ${props.map((p) => `<tr><td><strong>${esc(p.texte)}</strong></td><td>${esc(p.propose_par || '')}</td><td>${esc(p.motif || '')}</td><td>${badge('bleu', p.statut || 'En attente de décision', '?')}</td><td>${(p.preuves || []).map((x) => boutonPreuve(x, { compact: true })).join(' ')}</td></tr>`).join('')}
@@ -164,7 +175,7 @@
     }
 
     // Priorités
-    html += `<div class="section"><h2>Priorités</h2></div><ol>
+    html += `<div class="section"><h2>${icone('target')}Priorités</h2></div><ol>
       ${s.priorites.map((p) => {
         const acts = (p.actions || []).map((id) => actionParId(e, id)).filter(Boolean);
         const cond = p.condition && s.conditions.find((c) => c.id === p.condition);
@@ -173,13 +184,15 @@
       }).join('')}</ol>`;
 
     // Portée et finances
-    html += `<div class="grille grille-2" style="margin-top:1rem">
-      <section class="carte"><h3>Portée</h3><p>${esc(s.portee.texte)}</p>
+    html += `<div class="grille grille-2" style="margin-top:1rem" id="finances">
+      <section class="carte"><h3 class="ligne-ic">${icone('route')}Portée</h3><p>${esc(s.portee.texte)}</p>
+        ${s.hebergement ? `<p class="ligne-ic petit">${icone('server')}<span><strong>Hébergement :</strong> ${esc(s.hebergement)}</span></p>` : ''}
+        ${s.fournisseur ? `<p class="ligne-ic petit">${icone('handshake')}<span><strong>Fournisseur :</strong> ${esc(s.fournisseur)}</span></p>` : ''}
         <h4>Inclus</h4><ul>${s.portee.incluse.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
         <h4>Hors portée</h4><ul>${s.portee.hors_portee.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
         ${(s.portee.notes_maj || []).map((n) => `<div class="maj-note">${esc(n.texte)}</div>`).join('')}
         <details><summary>Preuves</summary>${listePreuves(s.portee.preuves)}</details></section>
-      <section class="carte"><h3>Finances</h3>
+      <section class="carte"><h3 class="ligne-ic">${icone('banknote')}Finances</h3>
         <p><strong>Autorisé : ${fmtMontant(f.autorise)}</strong> = ${esc(f.calcul)}.</p>
         <div class="table-wrap"><table><thead><tr><th>Facture</th><th>Date</th><th>Montant</th><th>Statut</th></tr></thead><tbody>
           ${f.factures.map((x) => `<tr><td><strong>${esc(x.id)}</strong><br><span class="petit doux">${esc(x.detail)}</span></td><td class="nowrap">${fmtDate(x.date)}</td><td class="nowrap">${fmtMontant(x.montant)}</td>
@@ -192,16 +205,16 @@
         <details><summary>Preuves</summary>${listePreuves(f.preuves)}</details></section></div>`;
 
     // Informations périmées
-    html += `<div class="section"><h2>Informations à ne pas utiliser</h2></div>
+    html += `<div class="section"><h2>${icone('triangle-alert')}Informations à ne pas utiliser</h2></div>
       <p class="intro">Ces informations circulent encore dans le corpus, mais elles sont périmées, inexactes ou hors projet.</p>
       <div class="table-wrap"><table><thead><tr><th>Information</th><th>Où on la trouve</th><th>Pourquoi l'écarter</th></tr></thead><tbody>
       ${s.a_ne_pas_utiliser.map((x) => `<tr><td><strong>${esc(x.texte)}</strong></td><td>${x.sources.map((id) => `<button type="button" class="bouton petit" data-ouvrir-source-page="${esc(id)}">${esc(id)}</button>`).join(' ')}</td><td>${esc(x.raison)}</td></tr>`).join('')}
       </tbody></table></div>`;
 
     // Brief
-    html += `<div class="section" id="brief"><h2>Brief de reprise (une page)</h2>
-      <div class="groupe-boutons"><button type="button" class="bouton primaire" data-action="imprimer-brief">Imprimer le brief (1 page)</button>
-      <button type="button" class="bouton" data-action="exporter-brief">Exporter le brief (texte)</button></div></div>
+    html += `<div class="section" id="brief"><h2>${icone('file-text')}Brief de reprise (une page)</h2>
+      <div class="groupe-boutons"><button type="button" class="bouton primaire" data-action="imprimer-brief">${icone('printer')}Imprimer le brief (1 page)</button>
+      <button type="button" class="bouton" data-action="exporter-brief">${icone('download')}Exporter le brief (texte)</button></div></div>
       <div class="carte brief">${briefHtml(e)}</div>`;
     return html;
   }
@@ -220,43 +233,46 @@
       if (filtres.nature && t.nature !== filtres.nature) return false;
       return true;
     });
-    let html = `<header class="tete-page"><div class="eyebrow">Espace 03 · ${e.chronologie.length} événements, ${e.contradictions.length} contradictions</div><h2>Historique et décisions</h2>
+    let html = `<header class="tete-page"><div class="eyebrow">${icone('history')}Espace 03 · ${e.chronologie.length} événements, ${e.contradictions.length} contradictions</div><h2>Historique et décisions</h2>
       <p class="intro">Ce qui a été proposé, décidé, livré et validé, et pourquoi certaines informations ne font plus foi.</p></header>
-      <nav class="sous-nav" aria-label="Sections"><a href="#historique/h-chrono">Chronologie</a><a href="#historique/h-cycles">Proposition → décision → validation</a><a href="#historique/h-decisions">Registre des décisions</a><a href="#historique/h-contradictions">Contradictions expliquées</a></nav>
+      <nav class="sous-nav" aria-label="Sections"><a href="#historique/h-chrono">${icone('calendar-days')}Chronologie</a><a href="#historique/h-cycles">${icone('milestone')}Proposition → décision → validation</a><a href="#historique/h-decisions">${icone('landmark')}Registre des décisions</a><a href="#historique/h-contradictions">${icone('split')}Contradictions expliquées</a></nav>
       <h3 id="h-chrono">Chronologie (${items.length} sur ${e.chronologie.length})</h3>
       <div class="filtres" role="group" aria-label="Filtrer par sujet">
+        <p class="filtres-titre">${icone('target')}Filtrer par sujet (cliquez pour sélectionner, cliquez encore pour retirer)</p>
         ${sujetsPresents.map((s) => `<button type="button" class="puce" data-filtre-sujet="${s}" aria-pressed="${filtres.sujets.has(s)}">${esc(SUJETS[s])}</button>`).join('')}
-        <label class="petit"><input type="checkbox" data-filtre="historique" ${filtres.masquerHistorique ? 'checked' : ''}> Masquer l'historique remplacé</label>
-        <label class="petit">Nature : <select data-filtre="nature"><option value="">Toutes</option>${Object.entries(C.NATURES).map(([k, n]) => `<option value="${k}" ${filtres.nature === k ? 'selected' : ''}>${esc(n.libelle)}</option>`).join('')}</select></label>
+      </div>
+      <div class="filtres-options">
+        <label><input type="checkbox" data-filtre="historique" ${filtres.masquerHistorique ? 'checked' : ''}> Masquer ce qui a été remplacé</label>
+        <label>Type d'événement : <select data-filtre="nature"><option value="">Tous</option>${Object.entries(C.NATURES).map(([k, n]) => `<option value="${k}" ${filtres.nature === k ? 'selected' : ''}>${esc(n.libelle)}</option>`).join('')}</select></label>
       </div>
       <ol class="chrono">
-      ${items.map((t) => `<li class="${t._ajoute_par ? 'ajout' : ''}"><div class="date">${t.date_texte ? esc(t.date_texte) : fmtDate(t.date, true)}${t.heure ? ', ' + esc(t.heure.replace(':', ' h ')) : ''}</div>
+      ${items.map((t) => `<li class="${t._ajoute_par ? 'ajout' : ''}"><span class="jalon-ic ton-${(C.NATURES[t.nature] || {}).ton || 'gris'}" aria-hidden="true">${icone(A.ICONE_NATURE[t.nature] || 'info')}</span><div class="date">${t.date_texte ? esc(t.date_texte) : fmtDate(t.date, true)}${t.heure ? ', ' + esc(t.heure.replace(':', ' h ')) : ''}</div>
           <div class="preuve-ligne">${badgeNature(t.nature)} ${badgeValidite(t.validite)} ${t._ajoute_par ? badge('ambre', 'Mise à jour', '◆') : ''} <span class="titre">${esc(t.titre)}</span></div>
           ${t.resume ? `<p class="petit">${esc(t.resume)}</p>` : ''}
           <div class="groupe-boutons petit" style="margin-top:.25rem">${t.preuve ? boutonPreuve(t.preuve, { compact: true }) : ''}
             ${(t.sources || []).filter((id) => !t.preuve || id !== t.preuve.source).map((id) => `<button type="button" class="bouton petit" data-ouvrir-source-page="${esc(id)}">${esc(id)}</button>`).join(' ')}</div></li>`).join('')}
       </ol>`;
 
-    html += `<div class="section" id="h-cycles"><h2>Proposition, décision, livraison, validation</h2></div>
+    html += `<div class="section" id="h-cycles"><h2>${icone('milestone')}Proposition, décision, livraison, validation</h2></div>
       <p class="intro">Pour chaque sujet, ce qui a été proposé, décidé, livré et validé, avec les dates et les sources. Une étape rouge n'est pas faite.</p>
       ${e.cycles.map((c) => `<section class="carte"><h3>${esc(c.sujet)}</h3><div class="cycle">
-        ${c.etapes.map((t) => `<div class="etape ${t.statut === 'fait' ? 'fait' : 'manquant'}"><div class="etape-nom">${t.statut === 'fait' ? '✓' : '✗'} ${esc(t.etape)}</div>
+        ${c.etapes.map((t) => `<div class="etape ${t.statut === 'fait' ? 'fait' : 'manquant'}"><div class="etape-nom">${icone(t.statut === 'fait' ? 'circle-check' : 'circle-x')}${esc(t.etape)}</div>
           <div>${t.date ? `<strong>${fmtDate(t.date)}</strong> · ` : '<strong>Pas encore</strong> · '}${esc(t.texte)}</div>
           ${t.preuve ? `<div style="margin-top:.3rem">${boutonPreuve(t.preuve, { compact: true })}</div>` : ''}</div>`).join('')}
       </div></section>`).join('')}`;
 
-    html += `<div class="section" id="h-decisions"><h2>Registre des décisions</h2></div>
+    html += `<div class="section" id="h-decisions"><h2>${icone('landmark')}Registre des décisions</h2></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Décision</th><th>Autorité</th><th>Statut</th><th>Preuve</th></tr></thead><tbody>
       ${e.decisions.map((x) => `<tr><td class="nowrap">${fmtDate(x.date)}</td><td><strong>${esc(x.titre)}</strong>${x.remarque ? `<br><span class="petit doux">${esc(x.remarque)}</span>` : ''}</td><td>${esc(x.autorite)}</td>
         <td>${/^En vigueur/.test(x.statut) ? badge('vert', x.statut, '✓') : badge('gris', x.statut)}</td><td>${boutonPreuve(x.preuve, { compact: true })}</td></tr>`).join('')}
       </tbody></table></div>`;
 
-    html += `<div class="section" id="h-contradictions"><h2>Contradictions expliquées</h2></div>
+    html += `<div class="section" id="h-contradictions"><h2>${icone('split')}Contradictions expliquées</h2></div>
       <p class="intro">Chaque contradiction est tranchée par l'autorité de la source ou la date des faits, pas par la date du fichier.</p>
       ${e.contradictions.map((k) => `<section class="carte"><div class="preuve-ligne"><h3 style="margin:0">${esc(k.id)} · ${esc(k.sujet)}</h3>${badge('gris', k.type)}</div>
         <div class="versus" style="margin-top:.6rem">
-          <div class="perime"><div class="etiquette">✗ Périmé ou inexact</div><p><strong>${esc(k.version_perimee.texte)}</strong></p><p class="petit">Sources : ${k.version_perimee.sources.map(esc).join(', ')}</p>${boutonPreuve(k.version_perimee.preuve, { compact: true })}</div>
-          <div class="valide"><div class="etiquette">✓ Fait foi</div><p><strong>${esc(k.version_valide.texte)}</strong></p><p class="petit">Sources : ${k.version_valide.sources.map(esc).join(', ')}</p>${boutonPreuve(k.version_valide.preuve, { compact: true })}</div>
+          <div class="perime"><div class="etiquette">${icone('circle-x')}Périmé ou inexact</div><p><strong>${esc(k.version_perimee.texte)}</strong></p><p class="petit">Sources : ${k.version_perimee.sources.map(esc).join(', ')}</p>${boutonPreuve(k.version_perimee.preuve, { compact: true })}</div>
+          <div class="valide"><div class="etiquette">${icone('circle-check')}Fait foi</div><p><strong>${esc(k.version_valide.texte)}</strong></p><p class="petit">Sources : ${k.version_valide.sources.map(esc).join(', ')}</p>${boutonPreuve(k.version_valide.preuve, { compact: true })}</div>
         </div>
         <p style="margin-top:.6rem"><strong>Pourquoi :</strong> ${esc(k.explication)}</p>${k.preuve_explication ? boutonPreuve(k.preuve_explication, { compact: true }) : ''}</section>`).join('')}`;
     return html;
@@ -280,8 +296,8 @@
     const liste = e.actions.filter(filtre[1]);
     const ouvertes = e.actions.filter((a) => !C.ETATS_FERMES.includes(a.etat));
     const sansDate = ouvertes.filter((a) => !a.echeance).length;
-    return `<header class="tete-page"><div class="eyebrow">Espace 04 · Responsables et échéances</div>
-      <div class="section" style="margin:0"><h2>Actions</h2><div class="groupe-boutons"><button type="button" class="bouton" data-action="exporter-actions">Exporter les actions (CSV)</button></div></div></header>
+    return `<header class="tete-page"><div class="eyebrow">${icone('list-checks')}Espace 04 · Responsables et échéances</div>
+      <div class="section" style="margin:0"><h2>Actions</h2><div class="groupe-boutons"><button type="button" class="bouton" data-action="exporter-actions">${icone('download')}Exporter les actions (CSV)</button></div></div></header>
       <p class="intro"><strong>${ouvertes.length} actions ouvertes</strong>, dont ${ouvertes.filter((a) => a.condition).length} liées aux conditions de go-live. ${sansDate} n'ont aucune échéance documentée : elles sont marquées « À confirmer ». Aucune date n'a été inventée.</p>
       <div class="encadre ton-gris petit"><strong>Lecture :</strong> ${badge('vert', 'Confirmé', '✓')} le responsable est désigné dans une source ; ${badge('bleu', "Proposé par l'équipe", '?')} c'est notre suggestion.
         ${badge('violet', 'Engagement documenté')} promis dans une source ; ${badge('bleu', "Recommandation de l'équipe")} proposée par notre équipe, sans engagement écrit.</div>
@@ -294,8 +310,8 @@
           <div class="preuve-ligne" style="margin-top:.3rem">${a.condition ? `<a class="badge ton-gris" href="#vue/conditions">Condition ${esc(a.condition)}</a>` : ''} ${badgeType(a.type)}</div>
           ${(a.notes_maj || []).map((n) => `<div class="maj-note petit">${esc(n.texte)}</div>`).join('')}
           <div class="groupe-boutons" style="margin-top:.35rem">${(a.preuves || []).map((p) => boutonPreuve(p, { compact: true })).join('')}</div></td>
-        <td>${esc(a.responsable)}<br>${badgeResponsable(a.responsable_statut)}</td>
-        <td>${texteEcheance(a)}${a.echeance_note ? `<br><span class="petit doux">${esc(a.echeance_note)}</span>` : ''}</td>
+        <td><span class="ligne-ic">${icone('user-round')}${esc(a.responsable)}</span><br>${badgeResponsable(a.responsable_statut)}</td>
+        <td><span class="ligne-ic">${icone('calendar-clock')}${texteEcheance(a)}</span>${a.echeance_note ? `<br><span class="petit doux">${esc(a.echeance_note)}</span>` : ''}</td>
         <td>${badgeEtat(a.etat)}</td></tr>`).join('')}
       </tbody></table></div>`;
   }
@@ -325,27 +341,27 @@
       const dossier = s._evenement ? 'Nouvelles sources (mises à jour)' : DOSSIERS[(s.chemin || '').split('/')[0]] || 'Consignes du défi';
       (groupes[dossier] = groupes[dossier] || []).push(s);
     }
-    let html = `<header class="tete-page"><div class="eyebrow">Espace 05 · ${Object.keys(A.SOURCES).length} sources</div><h2>Documents et mises à jour</h2>
+    let html = `<header class="tete-page"><div class="eyebrow">${icone('folder-open')}Espace 05 · ${Object.keys(A.SOURCES).length} sources</div><h2>Documents et mises à jour</h2>
       <p class="intro">Retrouver un passage dans les sources, ajouter une nouvelle information et comparer avant et après.</p></header>
-      <nav class="sous-nav" aria-label="Sections"><a href="#documents/d-recherche">Rechercher</a><a href="#documents/d-liste">Tous les documents</a><a href="#documents/d-ajout">Ajouter une mise à jour</a><a href="#documents/d-avant-apres">Avant / après</a><a href="#documents/d-export">Exporter</a></nav>
-      <section class="carte" id="d-recherche"><h3>Rechercher dans les sources</h3>
+      <nav class="sous-nav" aria-label="Sections"><a href="#documents/d-recherche">${icone('search')}Rechercher</a><a href="#documents/d-liste">${icone('files')}Tous les documents</a><a href="#documents/d-ajout">${icone('plus')}Ajouter une mise à jour</a><a href="#documents/d-avant-apres">${icone('git-compare')}Avant / après</a><a href="#documents/d-export">${icone('download')}Exporter</a></nav>
+      <section class="carte" id="d-recherche"><h3 class="ligne-ic">${icone('file-search')}Rechercher dans les sources</h3>
         <form id="form-recherche-docs" class="groupe-boutons" role="search">
           <label for="champ-recherche-docs" class="visuellement-cache">Mots à chercher</label>
           <input id="champ-recherche-docs" type="search" style="flex:1 1 300px" value="${esc(req)}" placeholder="ex. : rollback, Canada Central, 18 000, ACC-303">
-          <button class="bouton primaire" type="submit">Rechercher</button></form>
+          <button class="bouton primaire" type="submit">${icone('search')}Rechercher</button></form>
         <p class="petit doux" style="margin:.4rem 0">Recherche dans le texte de tous les courriels, comptes rendus, tickets, PDF et cellules Excel, sans tenir compte des accents. Les captures sont décrites par leurs tickets.</p>
         ${req ? `<p><strong>${resultats.length} document(s)</strong> pour « ${esc(req)} »</p>${A.htmlResultatsDocuments(resultats, req)}` : ''}
       </section>
-      <section id="d-liste"><div class="section"><h2>Tous les documents (${Object.keys(A.SOURCES).length})</h2></div>
+      <section id="d-liste"><div class="section"><h2>${icone('files')}Tous les documents (${Object.keys(A.SOURCES).length})</h2></div>
         <p class="intro">Chaque source porte son niveau d'autorité. Une copie ou une pièce jointe identique ne compte jamais comme une confirmation indépendante.</p>
         ${Object.entries(groupes).map(([g, liste]) => `<details class="carte" ${g.startsWith('Nouvelles') ? 'open' : ''}><summary>${esc(g)} (${liste.length})</summary>
           <div class="table-wrap" style="margin-top:.5rem"><table><thead><tr><th>ID</th><th>Document</th><th>Date</th><th>Autorité</th><th>Note</th><th></th></tr></thead><tbody>
           ${liste.map((s) => {
             const doc = A.DOCS[s.id] || {};
             const pj = (doc.pieces || []).filter((p) => p.identique_a).map((p) => `Pièce jointe = ${p.identique_a.join(', ')}`).join(' ; ');
-            return `<tr><td class="nowrap"><strong>${esc(s.id)}</strong></td><td>${esc(s.titre)}<br><span class="petit doux">${esc(s.chemin || '(texte collé)')}</span></td>
+            return `<tr><td class="nowrap"><span class="ligne-ic">${icone(iconeDoc(s.id))}<strong>${esc(s.id)}</strong></span></td><td>${esc(s.titre)}<br><span class="petit doux">${esc(s.chemin || '(texte collé)')}</span></td>
               <td class="nowrap">${fmtDate(s.date)}</td><td>${badgeAutorite(s.autorite)}</td><td class="petit">${esc(s.remarque || '')}${pj ? `<br>${esc(pj)}` : ''}</td>
-              <td><button type="button" class="bouton petit" data-ouvrir-source-page="${esc(s.id)}">Ouvrir</button></td></tr>`;
+              <td><button type="button" class="bouton petit" data-ouvrir-source-page="${esc(s.id)}">${icone('eye')}Ouvrir</button></td></tr>`;
           }).join('')}</tbody></table></div></details>`).join('')}
       </section>`;
     if (window.NOVA_MAJ) html += window.NOVA_MAJ.rendreSections();

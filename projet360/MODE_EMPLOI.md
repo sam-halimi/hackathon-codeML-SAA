@@ -1,4 +1,4 @@
-# NOVA — Mode d'emploi
+# NOVA · Mode d'emploi
 
 Mémoire opérationnelle du projet NOVA (défi Projet 360). Situation de référence : **30 septembre 2026, 09 h 00, heure de Montréal**. L'application n'utilise jamais la date de l'ordinateur.
 
@@ -20,6 +20,8 @@ Ouvrez `dist/NOVA_Projet360.html` par double-clic dans Chrome, Edge ou Firefox.
 | **3. Historique et décisions** | Chronologie filtrable, cycle proposition → décision → livraison → validation, registre des décisions, 8 contradictions expliquées |
 | **4. Actions** | Responsable (confirmé ou proposé), échéance (connue ou « À confirmer »), état, type (engagement documenté ou recommandation de l'équipe), preuves |
 | **5. Documents et mises à jour** | Recherche dans les sources, liste des documents avec leur autorité, ajout d'un événement, comparaison avant/après, exports |
+
+**Guide d'accueil** : à la première ouverture, un guide en 8 écrans se met dans la peau d'un PDG pressé (« Lundi, 9 h. Le comité vous demande de trancher. »). Chaque étape part d'une douleur réelle du dossier (trop de documents, un rapport « tout au vert » faux, des versions qui se contredisent, une facture qui glisse, des responsabilités floues, une nouvelle de dernière minute), nomme le risque concret, puis montre la réponse de NOVA avec un bouton qui y mène. Les chiffres affichés (date, conditions remplies, montants) viennent de l'état courant. Le bouton « Comment ça marche ? » le rouvre à tout moment ; les flèches du clavier le parcourent. Son texte est dans `donnees/guide.json` et se modifie sans toucher au code.
 
 **Une preuve** s'ouvre au bon endroit :
 
@@ -44,6 +46,7 @@ Prérequis : [Node.js](https://nodejs.org) 18 ou plus récent. Aucun `npm instal
 node outils/verifier.mjs              # contrôle chaque preuve dans le corpus
 node outils/construire.mjs            # recrée dist/NOVA_Projet360.html
 node outils/tester_navigateur.mjs     # facultatif : test complet hors connexion (Playwright)
+node outils/comparer_equipe.mjs       # facultatif : vérifie l'analyse JSON de l'équipe (dossier equipe/)
 ```
 
 Si `verifier.mjs` signale « passage introuvable », c'est que la citation ne correspond pas exactement au document : recopiez-la depuis la source.
@@ -83,7 +86,7 @@ Pour répéter avant le jour J, utilisez le bouton « S'entraîner avec l'exempl
   - niveau d'autorité de chaque source ;
   - zones encadrées sur les captures (coordonnées en pixels lues à l'œil) ;
   - classement en « engagement documenté » ou « recommandation de l'équipe ».
-- **Direction artistique** : skill `da-moderne` (dépôt catalyst-skills), direction « Marine opérations » choisie par l'équipe : encre marine #0B2348, un seul accent bleu #1F6BFF réservé aux preuves et aux actions, polices IBM Plex intégrées au fichier (licence SIL OFL, `app/polices/OFL.txt`).
+- **Direction artistique** : skill `da-moderne` (dépôt catalyst-skills), direction « Marine opérations » choisie par l'équipe : encre marine #0B2348, un seul accent bleu #1F6BFF réservé aux preuves et aux actions, angles très arrondis, boutons larges (48 px au moins), texte de base en 18 px, animations douces désactivées si le système le demande. Polices IBM Plex intégrées au fichier (licence SIL OFL, `app/polices/OFL.txt`). Icônes Lucide intégrées au fichier (licence ISC, `app/icones-LICENCE.txt`) ; chaque couleur d'état garde une icône **et** un libellé.
 - **Automatique** : extraction du texte (courriels, PDF, Excel), détection des copies (empreinte SHA-256 et Message-ID), contrôle des citations, des cellules et des zones, recherche plein texte.
 
 ## 6. Limites et informations incertaines
@@ -97,7 +100,7 @@ Pour répéter avant le jour J, utilisez le bouton « S'entraîner avec l'exempl
 - **CR-01** : elle a été approuvée par le « comité de projet ». Le corpus ne contient pas d'avenant au contrat ; nous la considérons comme l'approbation écrite prévue au contrat.
 - **PDF** : le surlignage se fait dans le texte extrait de la page, pas directement sur l'image de la page.
 - **Mises à jour saisies dans le navigateur** : elles restent dans ce navigateur (stockage local), y compris sur la version en ligne : les autres visiteurs ne les voient pas. Pour les publier, rendez-les permanentes (section 4C) puis redéployez (section 8).
-- **Testé** : Chromium, hors connexion et sur la version en ligne. **Non testé** : Firefox, Safari, Edge réel, lecteurs d'écran, impression sur papier.
+- **Testé** : Chromium, hors connexion et sur la version en ligne, sur grand écran (1366 px) et en largeur téléphone (390 px). **Non testé** : Firefox, Safari, Edge réel, vrai téléphone, lecteurs d'écran, impression sur papier.
 
 ## 7. Données et git
 

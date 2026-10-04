@@ -1,4 +1,4 @@
-# Contrat de données — `donnees/NOVA_OPERATIONS.json`
+# Contrat de données · `donnees/NOVA_OPERATIONS.json`
 
 Toutes les informations du projet sont dans ce fichier, séparé du code : pour corriger un fait, on modifie le JSON, puis on relance `node outils/verifier.mjs` et `node outils/construire.mjs`.
 
@@ -68,7 +68,7 @@ Toutes les informations du projet sont dans ce fichier, séparé du code : pour 
 
 `proposition` · `decision_approuvee` · `correctif_livre` · `validation_obtenue` · `information` · `probleme` · `document` · `finance`.
 
-## Événements (mises à jour) — `donnees/evenements/*.json`
+## Événements (mises à jour) · `donnees/evenements/*.json`
 
 Un fichier par événement (ou un tableau d'événements). Modèle : `donnees/modeles/MODELE_EVENEMENT.json`.
 
@@ -78,6 +78,7 @@ Un fichier par événement (ou un tableau d'événements). Modèle : `donnees/mo
   - `{ "ajouter": "actions" | "propositions" | "risques" | "chronologie", "objet": { … } }` ajoute un élément.
   - Chaque impact porte une `nature`, un `passage` (preuve) et, au besoin, une `note`.
 - `inchange` : ce que l'événement ne change pas.
+- `date` : la **date du fait** (quand la source a été émise). `cree_le` : la **date d'ajout dans NOVA** (horodatage réel, renseigné automatiquement par le formulaire). Les deux sont affichées séparément ; la date de situation du 30 septembre, elle, ne change jamais.
 
 Garde-fous (appliqués par l'application et par `verifier.mjs`) :
 
@@ -89,3 +90,13 @@ Garde-fous (appliqués par l'application et par `verifier.mjs`) :
 La version initiale n'est jamais modifiée : les événements s'appliquent sur une copie.
 
 `donnees/evenements/exemples/` contient un exemple **fictif**, chargé seulement à la demande (bouton « S'entraîner »).
+
+## Guide d'accueil · `donnees/guide.json`
+
+Texte du tutoriel affiché à la première ouverture (modifiable sans toucher au code, puis `node outils/construire.mjs`).
+
+- `persona` : `nom`, `accroche` (titre du premier écran), `texte`, `promesse`.
+- `etapes` (6) : `icone` (nom d'une icône de `app/icones.svg`, sans `i-`), `douleur_titre`, `douleur`, `risque`, `solution_titre`, `solution`, `onglet` (`vue`, `questions`, `historique`, `actions`, `documents`), `ancre` (facultatif), `bouton`.
+- `fin` : `titre`, `texte`.
+- Jetons remplacés par l'état affiché : `{date}`, `{remplies}`, `{autorise}`, `{conteste}`. Dans les étapes, les valeurs qui décrivent l'état courant passent par ces jetons, pour suivre les mises à jour.
+

@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   const A = window.NOVA_APP;
-  const { etat, BASE, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, badge, badgeEtat, badgeNature, boutonPreuve } = A;
+  const { etat, BASE, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, badge, badgeEtat, badgeNature, boutonPreuve, icone } = A;
 
   // ===================================================================
   // Brouillon du formulaire (conservé entre deux affichages)
@@ -222,7 +222,7 @@
     const analyse = analyserTexte(b.texte);
     const indices = (analyse.indices || []).map((x, k) => `<li>${esc(x.libelle)} <button type="button" class="bouton petit" data-ajouter-indice="${k}">Ajouter cet impact</button></li>`).join('');
     const nat = (analyse.natures || []).map((n) => C.NATURES[n].libelle).join(', ');
-    return `<section class="carte" id="d-ajout"><h3>Ajouter une nouvelle information</h3>
+    return `<section class="carte" id="d-ajout"><h3 class="ligne-ic">${icone('bell-ring')}Ajouter une nouvelle information</h3>
       <p class="intro">Saisissez la nouvelle source puis ce qu'elle change. La version initiale est conservée : vous pourrez toujours comparer. Pour une mise à jour permanente, exportez-la en JSON et placez le fichier dans <code>donnees/evenements/</code>.</p>
       <div class="ligne-champs">
         <div class="champ"><label for="f-titre">Titre</label><input id="f-titre" type="text" data-brouillon="titre" value="${esc(b.titre)}" placeholder="ex. : Courriel de Boréal · ACC-303 livré"></div>
@@ -246,19 +246,19 @@
         <button type="button" class="bouton petit danger" data-retirer-impact="${i}">Retirer</button></div>${champsImpact(im, i)}</div>`).join('')}
       <div class="groupe-boutons"><label for="f-nouvel-impact" class="visuellement-cache">Type d'impact</label>
         <select id="f-nouvel-impact">${Object.entries(TYPES_IMPACT).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select>
-        <button type="button" class="bouton" data-ajouter-impact>Ajouter un impact</button></div>
+        <button type="button" class="bouton" data-ajouter-impact>${icone('plus')}Ajouter un impact</button></div>
       <div class="champ" style="margin-top:1rem"><label for="f-inchange">Ce qui ne change pas (une ligne par point)</label>
         <textarea id="f-inchange" data-brouillon="inchange" rows="3">${esc(b.inchange)}</textarea>
         <span class="aide"><button type="button" class="bouton petit" data-suggerer-inchange>Proposer automatiquement</button> Rappel : une mise à jour ne ferme pas les autres conditions.</span></div>
       ${b.erreurs.length ? `<div class="encadre ton-rouge" role="alert"><strong>À corriger avant d'enregistrer :</strong><ul>${b.erreurs.map((e) => `<li>${esc(e)}</li>`).join('')}</ul></div>` : ''}
       ${b.message ? `<div class="encadre ton-vert" role="status">${esc(b.message)}</div>` : ''}
       <div class="groupe-boutons" style="margin-top:.6rem">
-        <button type="button" class="bouton" data-maj="apercu">Prévisualiser l'avant / après</button>
-        <button type="button" class="bouton primaire" data-maj="enregistrer">Enregistrer la mise à jour</button>
-        <button type="button" class="bouton" data-maj="vider">Vider le formulaire</button></div>
+        <button type="button" class="bouton" data-maj="apercu">${icone('eye')}Prévisualiser l'avant / après</button>
+        <button type="button" class="bouton primaire" data-maj="enregistrer">${icone('save')}Enregistrer la mise à jour</button>
+        <button type="button" class="bouton" data-maj="vider">${icone('x')}Vider le formulaire</button></div>
       ${b.apercu ? `<div style="margin-top:1rem"><h4>Aperçu (non enregistré)</h4>${carteJournal(b.apercu.entree, b.apercu.ev, b.apercu.etat)}</div>` : ''}
       <hr style="margin:1.2rem 0;border:0;border-top:1px solid var(--bordure)">
-      <div class="groupe-boutons"><label class="bouton" for="f-import">Importer une mise à jour (.json)</label><input id="f-import" type="file" accept=".json,application/json" class="visuellement-cache">
+      <div class="groupe-boutons"><label class="bouton" for="f-import">${icone('upload')}Importer une mise à jour (.json)</label><input id="f-import" type="file" accept=".json,application/json" class="visuellement-cache">
         ${etat.exempleActif ? '<button type="button" class="bouton danger" data-maj="exemple-off">Retirer l\'exemple fictif</button>' : (A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : '')}</div>
       <p class="petit doux" style="margin-top:.4rem">L'exemple fictif sert seulement à répéter la démonstration : il ne fait pas partie du corpus et il est signalé partout.</p>
       ${etat.evenementsLocaux.length ? `<h4 style="margin-top:1rem">Mises à jour enregistrées dans ce navigateur</h4><ul>${etat.evenementsLocaux.map((ev, k) => `<li><strong>${esc(ev.id)}</strong> · ${esc(ev.titre)} (${fmtDateHeure(ev.date)}) <button type="button" class="bouton petit danger" data-supprimer-local="${k}">Supprimer</button></li>`).join('')}</ul>` : ''}
@@ -281,6 +281,13 @@
     return cible;
   }
   const valeurAffichee = (champ, v) => (champ === 'etat' ? badgeEtat(v) : ['approuvee', 'echeance', 'date_decision'].includes(champ) ? (v ? fmtDate(v, true) : 'Non renseigné') : esc(v == null || v === '' ? 'Non renseigné' : String(v).slice(0, 200)));
+
+  // Date d'ajout dans NOVA (horodatage réel de l'import), distincte de la date du fait.
+  function ajouteLe(ev) {
+    if (!ev.cree_le || isNaN(Date.parse(ev.cree_le))) return '';
+    const f = new Intl.DateTimeFormat('fr-CA', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
+    return ` · Ajoutée dans NOVA le ${esc(f.format(new Date(ev.cree_le)))} (heure de Montréal)`;
+  }
 
   function carteJournal(entree, ev, etatApres) {
     const src = ev.source || {};
@@ -306,7 +313,7 @@
     const ligneAction = (a) => `<li><strong>${esc(a.id)}</strong> ${esc(a.titre)} · ${esc(a.responsable)} ${a.responsable_statut === 'confirme' ? badge('vert', 'Confirmé', '✓') : badge('bleu', 'Proposé', '?')} · ${a.echeance ? fmtDate(a.echeance) : badge('ambre', a.echeance_texte || 'À confirmer', '?')} · ${badgeEtat(a.etat)}</li>`;
     return `<article class="carte">
       <div class="preuve-ligne"><h3 style="margin:0">${esc(ev.titre)}</h3>${badgeNature(ev.nature)} ${ev.exemple || String(ev.id).startsWith('EXEMPLE') ? badge('rouge', 'EXEMPLE FICTIF', '!') : ''}</div>
-      <p class="petit doux">${esc(ev.id)} · ${fmtDateHeure(ev.date)} · Source : ${esc(src.titre || '')}${src.auteur ? ' (' + esc(src.auteur) + ')' : ''} · ${esc(ev.methode || '')} ${preuveSource}</p>
+      <p class="petit doux">${esc(ev.id)} · Date du fait : ${fmtDateHeure(ev.date)}${ajouteLe(ev)} · Source : ${esc(src.titre || '')}${src.auteur ? ' (' + esc(src.auteur) + ')' : ''} · ${esc(ev.methode || '')} ${preuveSource}</p>
       <h4>1. Qu'est-ce qui vient de changer ?</h4><p>${esc(ev.resume || '')}</p>
       <h4>2. Quelles informations précédentes sont affectées ?</h4>
       <div class="table-wrap"><table><thead><tr><th>Élément</th><th>Avant → après</th><th>Nature</th></tr></thead><tbody>${lignesModifs}${lignesAjouts}</tbody></table></div>
@@ -336,12 +343,12 @@
 
   function rendreAvantApres() {
     if (!etat.evenements.length) {
-      return `<section id="d-avant-apres"><div class="section"><h2>Avant / après</h2></div>
+      return `<section id="d-avant-apres"><div class="section"><h2>${icone('git-compare')}Avant / après</h2></div>
         <div class="carte"><p>Aucune mise à jour pour l'instant : l'application affiche la situation initiale du 30 septembre 2026 à 09 h.</p>
         ${A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : ''}</div></section>`;
     }
     const parId = Object.fromEntries(etat.evenements.map((e) => [e.id, e]));
-    return `<section id="d-avant-apres"><div class="section"><h2>Avant / après</h2></div>
+    return `<section id="d-avant-apres"><div class="section"><h2>${icone('git-compare')}Avant / après</h2></div>
       <p class="intro">Comparaison entre la version initiale (conservée) et la version actualisée. ${etat.erreursMaj.length ? `<strong>${etat.erreursMaj.length} impact(s) refusé(s) par les garde-fous.</strong>` : ''}</p>
       ${tableauComparaison()}
       <h3 style="margin-top:1rem">Détail par mise à jour</h3>
@@ -349,7 +356,7 @@
   }
 
   function rendreExport() {
-    return `<section class="carte" id="d-export"><h3>Exporter</h3>
+    return `<section class="carte" id="d-export"><h3 class="ligne-ic">${icone('download')}Exporter</h3>
       <div class="groupe-boutons">
         <button type="button" class="bouton" data-export="evenements" ${etat.evenementsLocaux.length ? '' : 'disabled'}>Mises à jour de ce navigateur (JSON)</button>
         <button type="button" class="bouton" data-export="etat">État actualisé complet (JSON)</button>

@@ -92,16 +92,25 @@
     return Math.ceil((f - d) / 86400000);
   }
 
-  function badge(ton, texte, icone) {
-    return `<span class="badge ton-${esc(ton)}">${icone ? `<span aria-hidden="true">${esc(icone)}</span>` : ''}${esc(texte)}</span>`;
+  // Icônes (planche Lucide intégrée au fichier) : toujours à côté d'un mot.
+  const icone = (nom, classe) => `<svg class="ic${classe ? ' ' + classe : ''}" aria-hidden="true" focusable="false"><use href="#i-${nom}"/></svg>`;
+  const ICONE_SIGNE = { '✓': 'circle-check', '!': 'triangle-alert', '?': 'circle-help', '◆': 'refresh-cw', '◐': 'clock', '●': 'circle-alert', '⌛': 'history', '↺': 'undo-2', '✗': 'circle-x', '○': 'circle-dashed', '–': 'x' };
+  const ICONE_TON = { rouge: 'circle-alert', ambre: 'clock', vert: 'circle-check', bleu: 'info', violet: 'landmark', gris: 'circle-dashed' };
+  const ICONE_NATURE = { proposition: 'pencil-line', decision_approuvee: 'landmark', correctif_livre: 'upload', validation_obtenue: 'circle-check', information: 'info', probleme: 'triangle-alert', document: 'file-text', finance: 'banknote' };
+  const ICONE_GENRE = { courriel: 'mail', pdf: 'file', tableur: 'file-spreadsheet', image: 'image', texte: 'file-text' };
+  const iconeDoc = (id) => ICONE_GENRE[(DOCS[id] || {}).genre] || 'file-text';
+  const tuile = (nom, ton) => `<span class="tuile${ton ? ' ' + ton : ''}" aria-hidden="true">${icone(nom)}</span>`;
+  function badge(ton, texte, signe) {
+    const nom = signe ? ICONE_SIGNE[signe] || (/^[a-z-]+$/.test(signe) ? signe : null) : null;
+    return `<span class="badge ton-${esc(ton)}">${nom ? icone(nom) : ''}${esc(texte)}</span>`;
   }
   function badgeEtat(code) {
-    const e = C.ETATS[code] || { libelle: code || 'Inconnu', ton: 'gris', icone: '?' };
-    return badge(e.ton, e.libelle, e.icone);
+    const e = C.ETATS[code] || { libelle: code || 'Inconnu', ton: 'gris' };
+    return badge(e.ton, e.libelle, ICONE_TON[e.ton]);
   }
   function badgeNature(code) {
     const n = C.NATURES[code] || { libelle: code || 'Inconnue', ton: 'gris' };
-    return badge(n.ton, n.libelle);
+    return badge(n.ton, n.libelle, ICONE_NATURE[code]);
   }
   function badgeAutorite(code) {
     const a = BASE.autorites[code] || { libelle: code || 'Source', ton: 'gris' };
@@ -131,15 +140,19 @@
     const s = SOURCES[p.source] || {};
     const citation = p.lecture || p.passage || (p.cellules ? `Cellules ${p.cellules}` : '');
     if (opts.compact) {
-      return `<button type="button" class="bouton petit" data-preuve="${i}" title="${esc(s.titre || p.source)}">Preuve : ${esc(p.source)}</button>`;
+      return `<button type="button" class="bouton petit" data-preuve="${i}" title="Voir la preuve : ${esc(s.titre || p.source)}">${icone(iconeDoc(p.source))}Preuve <span class="code">${esc(p.source)}</span></button>`;
     }
     return `<button type="button" class="preuve" data-preuve="${i}">
-      <span class="preuve-ligne"><span class="preuve-src">${esc(p.source)}</span>
-        <span>${esc(p.repere || s.titre || '')}</span>
-        ${p.role ? badge('gris', p.role) : ''}
-        ${s.copie_de ? badge('gris', 'Copie de ' + s.copie_de) : ''}</span>
-      ${citation ? `<span class="preuve-citation">« ${esc(citation.length > 220 ? citation.slice(0, 217) + '…' : citation)}${p.jusqua ? ' … ' + esc(p.jusqua) : ''} »</span>` : ''}
-      <span class="preuve-ouvrir">${esc(s.chemin || '')} · Ouvrir la preuve →</span>
+      ${tuile(iconeDoc(p.source))}
+      <span class="preuve-corps">
+        <span class="preuve-ligne"><span class="preuve-src">${esc(p.source)}</span>
+          <span>${esc(p.repere || s.titre || '')}</span>
+          ${p.role ? badge('gris', p.role) : ''}
+          ${s.copie_de ? badge('gris', 'Copie de ' + s.copie_de, 'copy') : ''}</span>
+        ${citation ? `<span class="preuve-citation">« ${esc(citation.length > 220 ? citation.slice(0, 217) + '…' : citation)}${p.jusqua ? ' … ' + esc(p.jusqua) : ''} »</span>` : ''}
+        <span class="preuve-ouvrir">${esc(s.chemin || '')} · Voir la preuve</span>
+      </span>
+      ${icone('arrow-right', 'preuve-fleche')}
     </button>`;
   }
   const listePreuves = (preuves) => (preuves && preuves.length ? `<ul class="liste-preuves">${preuves.map((p) => `<li>${boutonPreuve(p)}</li>`).join('')}</ul>` : '<p class="doux">Aucune preuve.</p>');
@@ -216,7 +229,7 @@
     const page = doc.pages && doc.pages[n - 1];
     const boutons = doc.original
       ? `<div class="groupe-boutons" style="margin-bottom:.6rem">
-          <button type="button" class="bouton" data-ouvrir-pdf="${n}">Ouvrir le PDF original à la page ${n}</button>
+          <button type="button" class="bouton" data-ouvrir-pdf="${n}">${icone('external-link')}Ouvrir le PDF original à la page ${n}</button>
           <span class="petit doux">Le PDF compte ${doc.pages ? doc.pages.length || '?' : '?'} page(s).</span></div>`
       : '';
     if (!page) return boutons + '<p class="doux">Texte de la page non disponible : ouvrez le PDF original.</p>';
@@ -246,7 +259,7 @@
       html += '</tr>';
     }
     html += '</tbody></table></div>';
-    if (doc.original) html += `<p style="margin-top:.6rem"><button type="button" class="bouton" data-telecharger="original">Télécharger le fichier Excel original</button></p>`;
+    if (doc.original) html += `<p style="margin-top:.6rem"><button type="button" class="bouton" data-telecharger="original">${icone('download')}Télécharger le fichier Excel original</button></p>`;
     return html;
   }
 
@@ -270,6 +283,7 @@
     urlsTemporaires = [];
     docOuvert = doc;
     $('#visionneuse-sur').textContent = `${p.source} · ${s ? s.chemin || '' : ''}`;
+    $('#visionneuse-tuile').innerHTML = tuile(iconeDoc(p.source));
     $('#visionneuse-titre').textContent = s ? s.titre : p.source;
     let corps = '';
     if (s) {
@@ -281,9 +295,9 @@
         ${s.remarque ? `<p class="petit"><strong>Note de l'équipe :</strong> ${esc(s.remarque)}</p>` : ''}`;
     }
     if (p.repere || p.role || p.passage || p.cellules || p.zone) {
-      corps += `<div class="repere"><strong>Repère :</strong> ${esc(p.repere || '')}
+      corps += `<div class="repere">${icone('target')}<div><strong>Repère :</strong> ${esc(p.repere || '')}
         ${p.page ? ` · page ${p.page}` : ''}${p.cellules ? ` · cellules ${esc(p.cellules)}` : ''}${p.role ? ' · ' + badge('gris', p.role) : ''}
-        ${p.passage ? `<br><span class="preuve-citation">« ${esc(p.passage)}${p.jusqua ? ' … ' + esc(p.jusqua) : ''} »</span>` : ''}</div>`;
+        ${p.passage ? `<br><span class="preuve-citation">« ${esc(p.passage)}${p.jusqua ? ' … ' + esc(p.jusqua) : ''} »</span>` : ''}</div></div>`;
     }
     if (!doc) corps += '<p class="erreur">Document non disponible dans ce rendu.</p>';
     else if (doc.genre === 'courriel') corps += rendreCourriel(doc, p);
@@ -293,8 +307,8 @@
     else if (doc.genre === 'texte') corps += rendreTexte(doc.texte, p).html;
     else corps += '<p>Format non affichable.</p>';
     corps += `<div class="groupe-boutons" style="margin-top:1rem">
-      <button type="button" class="bouton" data-copier-ref="${esc(p.source)}">Copier la référence</button>
-      ${doc && doc.original ? '<button type="button" class="bouton" data-telecharger="original">Télécharger le fichier original</button>' : ''}</div>`;
+      <button type="button" class="bouton" data-copier-ref="${esc(p.source)}">${icone('copy')}Copier la référence</button>
+      ${doc && doc.original ? `<button type="button" class="bouton" data-telecharger="original">${icone('download')}Télécharger le fichier original</button>` : ''}</div>`;
     $('#visionneuse-corps').innerHTML = corps;
     $('#visionneuse-corps').dataset.reference = `${p.source} · ${s ? s.chemin : ''} · ${p.repere || ''}${p.cellules ? ' (cellules ' + p.cellules + ')' : ''}${p.page ? ' (page ' + p.page + ')' : ''}`;
     if (!dialogue.open) dialogue.showModal();
@@ -468,14 +482,14 @@
 
   function rendreQuestions() {
     const e = etat.courant;
-    let html = `<header class="tete-page"><div class="eyebrow">Espace 02 · 10 questions officielles</div><h2>Questions et preuves</h2>
+    let html = `<header class="tete-page"><div class="eyebrow">${icone('message-circle-question')}Espace 02 · 10 questions officielles</div><h2>Questions et preuves</h2>
       <p class="intro">Chaque réponse est nuancée, et chaque preuve ouvre le document au bon endroit : passage surligné, page du PDF, cellules Excel ou zone de la capture.</p></header>
       <form class="carte" id="form-interroger">
-        <label for="champ-interroger">Interroger le projet en langage naturel</label>
+        <label for="champ-interroger" class="ligne-ic">${icone('message-circle-question')}Posez votre question, avec vos mots</label>
         <div class="groupe-boutons" style="margin-top:.35rem">
           <input id="champ-interroger" type="search" style="flex:1 1 320px" value="${esc(etat.requete)}" placeholder="ex. : qui a approuvé le report ? quels sont les risques ?">
-          <button class="bouton primaire" type="submit">Chercher</button>
-          ${etat.requete ? '<button class="bouton" type="button" id="effacer-requete">Effacer</button>' : ''}
+          <button class="bouton primaire" type="submit">${icone('search')}Chercher</button>
+          ${etat.requete ? `<button class="bouton" type="button" id="effacer-requete">${icone('x')}Effacer</button>` : ''}
         </div>
         <p class="petit doux" style="margin:.4rem 0 0">Recherche locale par mots-clés : elle retrouve la réponse préparée par l'équipe la plus proche, et les passages des documents. Aucune IA en ligne, aucun compte requis.</p>
       </form>`;
@@ -605,7 +619,7 @@
   window.addEventListener('hashchange', lireAncre);
 
   // Exposé pour les autres parties de l'application.
-  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees, typographier };
+  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees, typographier, icone, tuile, iconeDoc, ICONE_NATURE };
 
   // Premier affichage une fois tous les scripts chargés (espaces.js, mises_a_jour.js).
   document.addEventListener('DOMContentLoaded', () => {

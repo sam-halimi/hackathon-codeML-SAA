@@ -1,0 +1,983 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "project": "NOVA",
+    "baseline_as_of": "2026-09-30T09:00:00-04:00",
+    "timezone": "America/Montreal",
+    "source_root": "Projet360_NOVA_ETUDIANTS",
+    "currency": "CAD",
+    "tax_basis": "hors taxes",
+    "preparation": "Analyse assistée par IA, vérifiée par lecture des textes, cellules et captures. Ce fichier est une proposition opérationnelle de notre équipe, pas un corrigé officiel.",
+    "official_facts_only": true,
+    "usage": "Données modifiables séparées de l’interface. Conserver ce baseline et créer une nouvelle version après chaque événement. Vérifier les preuves originales avant remise.",
+    "runtime_ai_required": false
+  },
+  "project_state": {
+    "owner": {
+      "name": "Nicolas Perron",
+      "effective_date": "2026-09-16",
+      "evidence": [
+        {
+          "file": "01_Courriels/E06_Transition_charge_projet.eml",
+          "locator": "Courriel du 16 septembre, corps",
+          "supports": "Prise officielle de la charge du projet à compter de ce jour."
+        },
+        {
+          "file": "04_Documents_projet/Note_transition_Elodie_16sept.txt",
+          "locator": "Première phrase après la date",
+          "supports": "Confirmation de la transition."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_16sept_Transition.txt",
+          "locator": "Messages de 08:45 et 08:47",
+          "supports": "Rappel de la transition et prise du comité par Nicolas."
+        }
+      ]
+    },
+    "approved_launch_date": "2026-10-22",
+    "launch_status": "Conditionnel — trois validations restantes",
+    "initial_launch_date": "2026-10-15",
+    "scope": "Phase 1 : SSO, demandes et suivi, pièces jointes, workflow, tableau de suivi, rapports standards ; CR-01 ajoute rapports avancés et export de synthèse. Mobile avancé CR-04 reporté à la phase 2, non approuvé.",
+    "scope_evidence": [
+      {
+        "file": "05_Contrats_et_finances/CONTRAT_Boreal_NOVA.pdf",
+        "locator": "Page 1, Portée incluse",
+        "supports": "Portée de base."
+      },
+      {
+        "file": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf",
+        "locator": "Page 1, Objet",
+        "supports": "Ajout approuvé."
+      },
+      {
+        "file": "06_Architecture_et_decisions/Decision_Portee_Phase2.md",
+        "locator": "Décision et paragraphe final",
+        "supports": "Mobile avancé hors portée approuvée de phase 1."
+      }
+    ],
+    "hosting": "Canada Central",
+    "integration_status": "INT-101 validé et fermé le 17 septembre",
+    "gate_action_ids": [
+      "A01",
+      "A02",
+      "A03"
+    ],
+    "known_uncertainties": [
+      "Date précise du re-test sécurité non fournie.",
+      "Date de livraison de la prochaine build ACC-303 non fournie.",
+      "Responsable détaillé de rédaction du runbook à confirmer.",
+      "Dates exactes de clôture des trois conditions non fournies.",
+      "Traitement final de INV-003 non documenté."
+    ]
+  },
+  "financials": {
+    "initial_contract": 180000,
+    "approved_cr01": 24000,
+    "authorized_total": 204000,
+    "unapproved_cr04_estimate": 18000,
+    "invoiced_total_nova": 186000,
+    "documented_paid_total_nova": 132000,
+    "in_validation_total": 54000,
+    "disputed_line": 18000,
+    "inv003_base_line": 36000,
+    "calculation_notes": [
+      "Autorisé = 180000 + 24000.",
+      "Facturé NOVA = 60000 + 72000 + 54000 ; ce total inclut 18000 contestés.",
+      "Payé documenté NOVA = 60000 + 72000.",
+      "Les 36000 du jalon 3 ne sont pas automatiquement approuvés au paiement par ce calcul.",
+      "INV-778 est rattachée à ORION ; exclure ses 41000 des totaux NOVA.",
+      "Ne pas recompter INV-003 jointe au courriel E07."
+    ],
+    "invoices": [
+      {
+        "id": "INV-001",
+        "amount": 60000,
+        "status": "Payée",
+        "evidence": [
+          {
+            "file": "05_Contrats_et_finances/INV-001.pdf",
+            "locator": "Page 1, Statut et TOTAL",
+            "supports": "Payée ; 60000 CAD."
+          }
+        ]
+      },
+      {
+        "id": "INV-002",
+        "amount": 72000,
+        "status": "Payée",
+        "evidence": [
+          {
+            "file": "05_Contrats_et_finances/INV-002.pdf",
+            "locator": "Page 1, Statut et TOTAL",
+            "supports": "Payée ; 48000 + 24000 = 72000 CAD."
+          }
+        ]
+      },
+      {
+        "id": "INV-003",
+        "amount": 54000,
+        "status": "En validation ; ligne CR-04 de 18000 à clarifier",
+        "evidence": [
+          {
+            "file": "05_Contrats_et_finances/INV-003.pdf",
+            "locator": "Page 1, Statut et lignes de facturation",
+            "supports": "36 000 + 18 000 = 54 000 CAD ; facture en validation."
+          },
+          {
+            "file": "01_Courriels/E07_Facture_003_question.eml",
+            "locator": "Courriel du 23 septembre, corps",
+            "supports": "Amélie demande l’approbation des 18 000 CAD avant de libérer la facture."
+          },
+          {
+            "file": "01_Courriels/E10_Fonction_mobile.eml",
+            "locator": "Courriel du 24 septembre, corps",
+            "supports": "Aucune dépense CR-04 ne doit être engagée ou facturée sans nouvelle approbation."
+          },
+          {
+            "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+            "locator": "Page 1, Statut",
+            "supports": "Absence d’approbation documentée."
+          }
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "file": "05_Contrats_et_finances/CONTRAT_Boreal_NOVA.pdf",
+        "locator": "Page 1, Valeur contractuelle et Gestion des changements",
+        "supports": "Montant maximal initial et nécessité d’une approbation écrite pour les changements."
+      },
+      {
+        "file": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf",
+        "locator": "Page 1, Impact financier et Décision",
+        "supports": "24 000 CAD, approuvés le 14 août par le comité de projet."
+      },
+      {
+        "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+        "locator": "Page 1, Estimation et Statut",
+        "supports": "18 000 CAD estimés, approbation requise."
+      },
+      {
+        "file": "06_Architecture_et_decisions/Decision_Portee_Phase2.md",
+        "locator": "Décision du 24 septembre et paragraphe final",
+        "supports": "Report du mobile avancé et absence d’autorisation de dépense."
+      }
+    ]
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "Quelle est la date de mise en production actuellement approuvée, et avec quelle réserve ?",
+      "answer": "La cible approuvée est le 22 octobre 2026. Elle reste conditionnelle à l’acceptation sécurité de SEC-210, à la fermeture de ACC-303 et à l’approbation du runbook incluant le retour arrière.",
+      "important_nuance": "Une date approuvée ne constitue pas un feu vert automatique pour la production.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:22 à 15:28",
+          "supports": "Approbation de la nouvelle date, maintien des critères de go-live."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:09 à 10:15",
+          "supports": "Liste des trois conditions concrètes et caractère conditionnel du 22."
+        },
+        {
+          "file": "01_Courriels/E09_Rappel_mise_en_production.eml",
+          "locator": "Courriel du 27 septembre, corps du message",
+          "supports": "Confirmation de la cible et demande de ne pas annoncer un go garanti."
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "question": "Pourquoi la date a-t-elle changé, et quel est l’état actuel de la cause initiale ?",
+      "answer": "Le retard du connecteur interne INT-101 a motivé le report afin de stabiliser le connecteur, reprendre les tests intégrés et conserver une marge. Ce problème a ensuite été corrigé, validé et fermé le 17 septembre : 120 recherches sur 120 ont réussi.",
+      "important_nuance": "La cause initiale est résolue au baseline. Sa résolution ne rétablit pas automatiquement le 15 octobre. Le registre du 29 septembre reprend sur R-01 un suivi datant du 9 septembre.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:02 à 15:08",
+          "supports": "Motif du report et stabilisation attendue."
+        },
+        {
+          "file": "03_Tickets/INT-101.txt",
+          "locator": "Commentaires du 17 septembre à 14:23 et 16:10 ; Résolution",
+          "supports": "Rotation du secret, renouvellement du jeton, validation et fermeture."
+        },
+        {
+          "file": "01_Courriels/E12_Resolution_integration.eml",
+          "locator": "Courriel du 17 septembre à 16:22, corps",
+          "supports": "Confirmation par Marc de 120/120 recherches et de la fermeture."
+        },
+        {
+          "file": "04_Documents_projet/Registre_Risques_29sept.xlsx",
+          "locator": "Onglet Risques, ligne 2 : A2, F2 et H2",
+          "supports": "R-01 encore ouvert, mais commentaire « Suivi au 9 septembre 2026 »."
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "question": "Qui a approuvé le changement et quand ? Distinguez proposition et approbation.",
+      "answer": "Julien Moreau, pour Boréal, propose le 22 octobre dans son courriel du 8 septembre. Le comité de direction approuve le report le 10 septembre 2026 ; Élodie formule la décision à 15:22 et prononce son approbation à 15:25 après l’accord du comité.",
+      "important_nuance": "Le courriel fournisseur du 8 septembre est une proposition, pas l’approbation de gouvernance.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E05_Retard_integration.eml",
+          "locator": "Courriel du 8 septembre, derniers paragraphes",
+          "supports": "Le fournisseur précise explicitement qu’il s’agit d’une proposition."
+        },
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:22 à 15:27",
+          "supports": "Décision collective et approbation prononcée par Élodie."
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "question": "Qui est responsable du projet et depuis quand ?",
+      "answer": "Nicolas Perron est officiellement chargé du projet depuis le 16 septembre 2026. Élodie Caron assure temporairement le transfert.",
+      "important_nuance": "La charte historique désigne Élodie. Le nom de Nicolas dans un plan daté du 12 septembre ne modifie pas la date officielle de prise de responsabilité.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E06_Transition_charge_projet.eml",
+          "locator": "Courriel du 16 septembre, corps",
+          "supports": "Prise officielle de la charge du projet à compter de ce jour."
+        },
+        {
+          "file": "04_Documents_projet/Note_transition_Elodie_16sept.txt",
+          "locator": "Première phrase après la date",
+          "supports": "Confirmation de la transition."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_16sept_Transition.txt",
+          "locator": "Messages de 08:45 et 08:47",
+          "supports": "Rappel de la transition et prise du comité par Nicolas."
+        }
+      ]
+    },
+    {
+      "id": "Q05",
+      "question": "Quel est le montant contractuel autorisé et comment se calcule-t-il ?",
+      "answer": "204 000 CAD hors taxes : 180 000 CAD au contrat initial + 24 000 CAD pour CR-01 approuvée le 14 août 2026.",
+      "important_nuance": "Les 18 000 CAD de CR-04 sont exclus : le changement reste non approuvé et les optimisations mobiles avancées sont reportées à la phase 2. Autorisé, facturé et payé sont des montants distincts.",
+      "evidence": [
+        {
+          "file": "05_Contrats_et_finances/CONTRAT_Boreal_NOVA.pdf",
+          "locator": "Page 1, Valeur contractuelle et Gestion des changements",
+          "supports": "Montant maximal initial et nécessité d’une approbation écrite pour les changements."
+        },
+        {
+          "file": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf",
+          "locator": "Page 1, Impact financier et Décision",
+          "supports": "24 000 CAD, approuvés le 14 août par le comité de projet."
+        },
+        {
+          "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+          "locator": "Page 1, Estimation et Statut",
+          "supports": "18 000 CAD estimés, approbation requise."
+        },
+        {
+          "file": "06_Architecture_et_decisions/Decision_Portee_Phase2.md",
+          "locator": "Décision du 24 septembre et paragraphe final",
+          "supports": "Report du mobile avancé et absence d’autorisation de dépense."
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "question": "Quel problème présente INV-003 ? Précisez le montant concerné et le traitement à prévoir.",
+      "answer": "INV-003 totalise 54 000 CAD et reste en validation. Elle contient 36 000 CAD pour le jalon 3 et une ligne de 18 000 CAD liée à CR-04, qui n’est pas approuvée. C’est cette ligne de 18 000 CAD qui pose problème.",
+      "important_nuance": "Traitement recommandé : faire clarifier ou corriger la facture avec les finances et Nicolas, obtenir au besoin un avoir ou une facture corrigée et traiter séparément la part contractuelle selon les contrôles usuels. Ne pas présenter les 54 000 CAD comme entièrement non autorisés, ni comme payés. Le fait de rester sous le plafond ne valide pas CR-04.",
+      "evidence": [
+        {
+          "file": "05_Contrats_et_finances/INV-003.pdf",
+          "locator": "Page 1, Statut et lignes de facturation",
+          "supports": "36 000 + 18 000 = 54 000 CAD ; facture en validation."
+        },
+        {
+          "file": "01_Courriels/E07_Facture_003_question.eml",
+          "locator": "Courriel du 23 septembre, corps",
+          "supports": "Amélie demande l’approbation des 18 000 CAD avant de libérer la facture."
+        },
+        {
+          "file": "01_Courriels/E10_Fonction_mobile.eml",
+          "locator": "Courriel du 24 septembre, corps",
+          "supports": "Aucune dépense CR-04 ne doit être engagée ou facturée sans nouvelle approbation."
+        },
+        {
+          "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+          "locator": "Page 1, Statut",
+          "supports": "Absence d’approbation documentée."
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "question": "Où les données de production doivent-elles être hébergées ? Quelle preuve confirme la mise en œuvre ?",
+      "answer": "Les données de production doivent rester au Canada, dans Canada Central. La décision est prise le 23 juillet dans ADR-007. L’architecture v2 du 25 août et le courriel du 26 août indiquent la migration ; le comité du 27 août confirme sa vérification par l’équipe architecture.",
+      "important_nuance": "East US appartient à l’architecture v1 remplacée sur la localisation. La pièce jointe du courriel et le PDF v2 séparé sont le même document, pas deux confirmations indépendantes.",
+      "evidence": [
+        {
+          "file": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md",
+          "locator": "Date, Statut et section Décision",
+          "supports": "Exigence Canada Central, architecture v1 remplacée sur ce point."
+        },
+        {
+          "file": "06_Architecture_et_decisions/Architecture_NOVA_v2.pdf",
+          "locator": "Page 1, bloc Données et titre daté du 25 août",
+          "supports": "Schéma révisé indiquant Canada Central."
+        },
+        {
+          "file": "01_Courriels/E03_Confirmation_Canada_Central.eml",
+          "locator": "Courriel du 26 août, corps",
+          "supports": "Migration annoncée terminée et tests de déploiement/connectivité."
+        },
+        {
+          "file": "02_Reunions/M03_CR_Comite_27aout.txt",
+          "locator": "Résumé de gestion, première puce",
+          "supports": "Vérification de la migration par l’équipe architecture."
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "question": "La sécurité est-elle acceptée ? Distinguez livraison et validation.",
+      "answer": "Non, aucune acceptation sécurité n’est établie au baseline. Le correctif SEC-210 a été livré le 19 septembre dans l’environnement de validation, mais le ticket reste EN VALIDATION ; Sophie doit réaliser le re-test et confirmer l’acceptation.",
+      "important_nuance": "Le défaut concerne une ligne EXPORT_CSV incomplète : l’objet et le résultat sont absents. Une ligne d’export existe. Le rapport vert du 21 septembre et l’annonce fournisseur ne prouvent pas l’acceptation sécurité.",
+      "evidence": [
+        {
+          "file": "03_Tickets/SEC-210.txt",
+          "locator": "Attendu/Observé ; commentaires du 19 septembre à 14:05 et du 26 septembre à 15:40",
+          "supports": "Détail du défaut, validation attendue et statut maintenu."
+        },
+        {
+          "file": "03_Tickets/SEC-210_audit.png",
+          "locator": "Capture, ligne EXPORT_CSV à 14:04:08, colonnes Objet et Résultat",
+          "supports": "Événement présent mais champs non renseignés."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:01 à 10:02",
+          "supports": "Sophie distingue explicitement livraison et acceptation."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_19sept_Securite.txt",
+          "locator": "Message de Sophie à 10:31",
+          "supports": "Ticket conservé en validation jusqu’au re-test."
+        }
+      ]
+    },
+    {
+      "id": "Q09",
+      "question": "L’accessibilité est-elle complétée ? Identifiez ce qui reste à corriger.",
+      "answer": "Non. ACC-301 (labels) est validé et fermé le 15 août ; ACC-302 (contraste) est validé et fermé le 20 août. ACC-303 demeure ouvert : dans la modale, Tab reste entre Nom et Commentaire et ne permet pas d’atteindre Enregistrer.",
+      "important_nuance": "ACC-303 est bloquant avant production. Un correctif est annoncé pour une prochaine build, sans date précise ni validation finale. Les anciennes captures de labels et de contraste ne signifient pas que ces défauts restent ouverts.",
+      "evidence": [
+        {
+          "file": "03_Tickets/ACC-301.txt",
+          "locator": "Commentaires des 14 et 15 août",
+          "supports": "Correction et validation des labels, ticket fermé."
+        },
+        {
+          "file": "03_Tickets/ACC-302.txt",
+          "locator": "Commentaires des 18 et 20 août",
+          "supports": "Palette corrigée et re-test à 5,3:1, ticket fermé."
+        },
+        {
+          "file": "03_Tickets/ACC-303.txt",
+          "locator": "Commentaires des 17 septembre à 13:14 et du 26 septembre à 11:03",
+          "supports": "Défaut clavier précis et statut toujours ouvert."
+        },
+        {
+          "file": "03_Tickets/ACC-303_focus.png",
+          "locator": "Capture, bouton Enregistrer encadré en rouge et annotation",
+          "supports": "Le focus clavier ne rejoint pas le bouton."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:05",
+          "supports": "Confirmation par Mélissa du caractère bloquant avant production."
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "question": "Quelles sont les trois conditions de go-live ? Précisez les travaux manquants du runbook à partir de sa capture.",
+      "answer": "1. Acceptation sécurité de SEC-210 après re-test par Sophie Lambert. 2. Correction et fermeture de ACC-303, avec validation accessibilité de Mélissa Gagnon. 3. Approbation exploitation du runbook par Olivier Côté. Le runbook doit compléter la procédure de retour arrière ET la validation fonctionnelle après déploiement.",
+      "important_nuance": "La capture OPS-601 marque l’étape 4 « Procédure de retour arrière » TODO et l’étape 5 « Validation fonctionnelle post-déploiement » À compléter. Les dates exactes de clôture ne sont pas documentées : elles restent à confirmer avant le lancement.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:02 à 10:15",
+          "supports": "Trois conditions, responsables des validations et maintien de la réserve."
+        },
+        {
+          "file": "03_Tickets/OPS-601.txt",
+          "locator": "Commentaires des 25, 26 et 29 septembre",
+          "supports": "Runbook encore incomplet et version finale non reçue."
+        },
+        {
+          "file": "03_Tickets/OPS-601_runbook.png",
+          "locator": "Capture Version du 25 septembre, étapes 4 et 5",
+          "supports": "Retour arrière TODO et validation fonctionnelle post-déploiement À compléter."
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "A01",
+      "title": "Réaliser le re-test SEC-210 et prononcer l’acceptation sécurité",
+      "kind": "validation documentée",
+      "owner": "Sophie Lambert",
+      "owner_status": "confirmé",
+      "deadline": "Avant mise en production ; date précise à confirmer",
+      "status": "En validation",
+      "note": "",
+      "evidence": [
+        {
+          "file": "03_Tickets/SEC-210.txt",
+          "locator": "Attendu/Observé ; commentaires du 19 septembre à 14:05 et du 26 septembre à 15:40",
+          "supports": "Détail du défaut, validation attendue et statut maintenu."
+        },
+        {
+          "file": "03_Tickets/SEC-210_audit.png",
+          "locator": "Capture, ligne EXPORT_CSV à 14:04:08, colonnes Objet et Résultat",
+          "supports": "Événement présent mais champs non renseignés."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:01 à 10:02",
+          "supports": "Sophie distingue explicitement livraison et acceptation."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_19sept_Securite.txt",
+          "locator": "Message de Sophie à 10:31",
+          "supports": "Ticket conservé en validation jusqu’au re-test."
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "title": "Livrer le correctif clavier ACC-303 et obtenir sa validation",
+      "kind": "travail et validation documentés",
+      "owner": "Boréal Numérique : correctif ; Mélissa Gagnon : validation",
+      "owner_status": "confirmé",
+      "deadline": "Correctif annoncé pour une prochaine build ; date précise à confirmer, avant mise en production",
+      "status": "Ouvert",
+      "note": "",
+      "evidence": [
+        {
+          "file": "03_Tickets/ACC-301.txt",
+          "locator": "Commentaires des 14 et 15 août",
+          "supports": "Correction et validation des labels, ticket fermé."
+        },
+        {
+          "file": "03_Tickets/ACC-302.txt",
+          "locator": "Commentaires des 18 et 20 août",
+          "supports": "Palette corrigée et re-test à 5,3:1, ticket fermé."
+        },
+        {
+          "file": "03_Tickets/ACC-303.txt",
+          "locator": "Commentaires des 17 septembre à 13:14 et du 26 septembre à 11:03",
+          "supports": "Défaut clavier précis et statut toujours ouvert."
+        },
+        {
+          "file": "03_Tickets/ACC-303_focus.png",
+          "locator": "Capture, bouton Enregistrer encadré en rouge et annotation",
+          "supports": "Le focus clavier ne rejoint pas le bouton."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:05",
+          "supports": "Confirmation par Mélissa du caractère bloquant avant production."
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "title": "Compléter le retour arrière et la validation fonctionnelle post-déploiement, puis faire approuver le runbook",
+      "kind": "condition documentée",
+      "owner": "Olivier Côté : approbation ; équipe ops de Boréal proposée pour la rédaction",
+      "owner_status": "approbateur confirmé ; responsable de rédaction proposé",
+      "deadline": "Avant mise en production ; date précise à confirmer",
+      "status": "Ouvert",
+      "note": "Julien annonce au comité du 26 septembre à 10:12 qu’il relance son équipe ops. Confirmer qui rédige chaque partie.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:02 à 10:15",
+          "supports": "Trois conditions, responsables des validations et maintien de la réserve."
+        },
+        {
+          "file": "03_Tickets/OPS-601.txt",
+          "locator": "Commentaires des 25, 26 et 29 septembre",
+          "supports": "Runbook encore incomplet et version finale non reçue."
+        },
+        {
+          "file": "03_Tickets/OPS-601_runbook.png",
+          "locator": "Capture Version du 25 septembre, étapes 4 et 5",
+          "supports": "Retour arrière TODO et validation fonctionnelle post-déploiement À compléter."
+        }
+      ]
+    },
+    {
+      "id": "A04",
+      "title": "Clarifier et faire corriger la ligne CR-04 de 18 000 CAD sur INV-003",
+      "kind": "traitement recommandé à partir d’une demande documentée",
+      "owner": "Amélie Fortin avec Nicolas Perron",
+      "owner_status": "rôles documentés ; procédure de correction proposée",
+      "deadline": "Avant libération de la facture ; date précise à confirmer",
+      "status": "À traiter",
+      "note": "",
+      "evidence": [
+        {
+          "file": "05_Contrats_et_finances/INV-003.pdf",
+          "locator": "Page 1, Statut et lignes de facturation",
+          "supports": "36 000 + 18 000 = 54 000 CAD ; facture en validation."
+        },
+        {
+          "file": "01_Courriels/E07_Facture_003_question.eml",
+          "locator": "Courriel du 23 septembre, corps",
+          "supports": "Amélie demande l’approbation des 18 000 CAD avant de libérer la facture."
+        },
+        {
+          "file": "01_Courriels/E10_Fonction_mobile.eml",
+          "locator": "Courriel du 24 septembre, corps",
+          "supports": "Aucune dépense CR-04 ne doit être engagée ou facturée sans nouvelle approbation."
+        },
+        {
+          "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+          "locator": "Page 1, Statut",
+          "supports": "Absence d’approbation documentée."
+        }
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "Corriger les plans et communications qui affichent une date ou une acceptation erronée",
+      "kind": "recommandation de l’équipe",
+      "owner": "Nicolas Perron, avec Alex Deschamps pour la communication",
+      "owner_status": "proposé",
+      "deadline": "À confirmer",
+      "status": "À organiser",
+      "note": "",
+      "evidence": [
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:25",
+          "supports": "Demande de mise à jour des plans et communications."
+        },
+        {
+          "file": "04_Documents_projet/Plan_Projet_NOVA_v3_12sept.xlsx",
+          "locator": "Plan projet!D7:G7",
+          "supports": "La ligne de production conserve le 15 octobre."
+        },
+        {
+          "file": "01_Courriels/E11_Communication_statut.eml",
+          "locator": "Courriel du 21 septembre, brouillon cité",
+          "supports": "Projet présenté au vert, sécurité/accessibilité dites terminées."
+        }
+      ]
+    },
+    {
+      "id": "A06",
+      "title": "Mettre à jour R-01 en tenant compte de la fermeture validée de INT-101",
+      "kind": "recommandation de l’équipe",
+      "owner": "Marc Gervais",
+      "owner_status": "proposé ; propriétaire du risque documenté",
+      "deadline": "À confirmer",
+      "status": "À organiser",
+      "note": "",
+      "evidence": [
+        {
+          "file": "04_Documents_projet/Registre_Risques_29sept.xlsx",
+          "locator": "Risques!A2:H2",
+          "supports": "Risque du connecteur, propriétaire Marc, suivi au 9 septembre."
+        },
+        {
+          "file": "03_Tickets/INT-101.txt",
+          "locator": "Commentaire du 17 septembre à 16:10",
+          "supports": "Fermeture validée du ticket."
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2026-07-07",
+      "title": "Lancement",
+      "type": "Décision initiale",
+      "description": "Élodie, cible 15 octobre, budget initial 180 000 CAD.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M01_CR_Demarrage_07juillet.txt",
+          "locator": "Décisions",
+          "supports": "Élodie, cible 15 octobre, budget initial 180 000 CAD."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-23",
+      "title": "Canada Central",
+      "type": "Décision",
+      "description": "La région East US est remplacée pour les données de production.",
+      "evidence": [
+        {
+          "file": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md",
+          "locator": "Décision",
+          "supports": "La région East US est remplacée pour les données de production."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-14",
+      "title": "CR-01 approuvée",
+      "type": "Approbation",
+      "description": "24 000 CAD de rapports avancés ; autorisé total 204 000 CAD.",
+      "evidence": [
+        {
+          "file": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf",
+          "locator": "Page 1",
+          "supports": "24 000 CAD de rapports avancés ; autorisé total 204 000 CAD."
+        }
+      ]
+    },
+    {
+      "date": "2026-08-27",
+      "title": "Migration Canada vérifiée",
+      "type": "Validation",
+      "description": "Le comité confirme la vérification par l’équipe architecture.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M03_CR_Comite_27aout.txt",
+          "locator": "Résumé de gestion, première puce",
+          "supports": "Le comité confirme la vérification par l’équipe architecture."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-08",
+      "title": "Report au 22 proposé",
+      "type": "Proposition",
+      "description": "Recommandation de Boréal en raison du connecteur.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E05_Retard_integration.eml",
+          "locator": "Corps du courriel",
+          "supports": "Recommandation de Boréal en raison du connecteur."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-09",
+      "title": "DATA-401 validé et fermé",
+      "type": "Validation",
+      "description": "Rejeu de 15 000 événements sans doublon.",
+      "evidence": [
+        {
+          "file": "03_Tickets/DATA-401.txt",
+          "locator": "Validation",
+          "supports": "Rejeu de 15 000 événements sans doublon."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-10",
+      "title": "22 octobre approuvé",
+      "type": "Approbation",
+      "description": "Le comité approuve, en conservant les conditions de lancement.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:22 à 15:28",
+          "supports": "Le comité approuve, en conservant les conditions de lancement."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-16",
+      "title": "Nicolas reprend NOVA",
+      "type": "Prise de responsabilité",
+      "description": "Transition officielle depuis Élodie.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E06_Transition_charge_projet.eml",
+          "locator": "Corps du courriel",
+          "supports": "Transition officielle depuis Élodie."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-17",
+      "title": "INT-101 validé et fermé",
+      "type": "Validation",
+      "description": "120 recherches valides sur 120 ; cause initiale du report résolue.",
+      "evidence": [
+        {
+          "file": "03_Tickets/INT-101.txt",
+          "locator": "Commentaire à 16:10",
+          "supports": "120 recherches valides sur 120 ; cause initiale du report résolue."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "title": "Correctif SEC-210 livré",
+      "type": "Livraison technique",
+      "description": "Correctif en validation, acceptation sécurité encore requise.",
+      "evidence": [
+        {
+          "file": "03_Tickets/SEC-210.txt",
+          "locator": "Commentaires du 19 septembre",
+          "supports": "Correctif en validation, acceptation sécurité encore requise."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-23",
+      "title": "Question sur INV-003",
+      "type": "Contrôle financier",
+      "description": "Amélie demande l’approbation de la ligne CR-04 avant libération.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E07_Facture_003_question.eml",
+          "locator": "Corps du courriel",
+          "supports": "Amélie demande l’approbation de la ligne CR-04 avant libération."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "title": "Mobile avancé en phase 2",
+      "type": "Décision de portée",
+      "description": "Aucune dépense CR-04 autorisée sans nouvelle approbation.",
+      "evidence": [
+        {
+          "file": "06_Architecture_et_decisions/Decision_Portee_Phase2.md",
+          "locator": "Décision",
+          "supports": "Aucune dépense CR-04 autorisée sans nouvelle approbation."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-26",
+      "title": "Trois conditions précisées",
+      "type": "Confirmation des conditions",
+      "description": "Sécurité, ACC-303, runbook incluant le retour arrière.",
+      "evidence": [
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:09 à 10:15",
+          "supports": "Sécurité, ACC-303, runbook incluant le retour arrière."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-29",
+      "title": "Runbook encore incomplet",
+      "type": "Suivi",
+      "description": "Olivier n’a pas reçu la version finale.",
+      "evidence": [
+        {
+          "file": "03_Tickets/OPS-601.txt",
+          "locator": "Commentaire du 29 septembre",
+          "supports": "Olivier n’a pas reçu la version finale."
+        }
+      ]
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "C01",
+      "topic": "Date de lancement",
+      "apparently_conflicting_claim": "Le plan v3 daté du 12 septembre indique toujours le 15 octobre.",
+      "resolution": "La décision du comité du 10 septembre approuve le 22 ; Teams du 15 septembre signale explicitement le plan non corrigé. Le nom ou la date récente du fichier ne rendent pas ses cellules exactes.",
+      "evidence": [
+        {
+          "file": "04_Documents_projet/Plan_Projet_NOVA_v3_12sept.xlsx",
+          "locator": "Plan projet!E7:F7",
+          "supports": "Ancienne date dans les deux cellules."
+        },
+        {
+          "file": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt",
+          "locator": "15:22 à 15:27",
+          "supports": "Décision officielle."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_15sept_ProjetNOVA.txt",
+          "locator": "09:18",
+          "supports": "Nicolas confirme que le plan n’a pas été corrigé."
+        }
+      ]
+    },
+    {
+      "id": "C02",
+      "topic": "Connecteur",
+      "apparently_conflicting_claim": "Le registre du 29 septembre maintient R-01 ouvert.",
+      "resolution": "Le commentaire H2 date ce suivi au 9 septembre ; la validation du 17 septembre ferme INT-101. Il faut actualiser le registre, sans rouvrir le défaut sur la seule base de ce fichier.",
+      "evidence": [
+        {
+          "file": "04_Documents_projet/Registre_Risques_29sept.xlsx",
+          "locator": "Risques!F2:H2",
+          "supports": "Statut ouvert avec commentaire daté du 9 septembre."
+        },
+        {
+          "file": "03_Tickets/INT-101.txt",
+          "locator": "17 septembre à 16:10",
+          "supports": "Validation et fermeture."
+        }
+      ]
+    },
+    {
+      "id": "C03",
+      "topic": "Sécurité et accessibilité au vert",
+      "apparently_conflicting_claim": "Le rapport du 21 septembre et son brouillon de communication présentent ces domaines comme terminés.",
+      "resolution": "Le rapport confond livraison et acceptation. SEC-210 reste en validation et ACC-303 est toujours ouvert selon les tickets et le comité du 26 septembre.",
+      "evidence": [
+        {
+          "file": "04_Documents_projet/Rapport_Statut_21sept.pdf",
+          "locator": "Page 1, tableau Synthèse",
+          "supports": "Sécurité et accessibilité vertes."
+        },
+        {
+          "file": "02_Reunions/M06_Transcript_Comite_26sept.txt",
+          "locator": "10:02 à 10:05",
+          "supports": "Acceptation sécurité absente et ACC-303 bloquant."
+        }
+      ]
+    },
+    {
+      "id": "C04",
+      "topic": "Hébergement",
+      "apparently_conflicting_claim": "L’architecture v1 indique East US.",
+      "resolution": "ADR-007 remplace la région par Canada Central ; v2 et la vérification architecture en attestent la mise en œuvre.",
+      "evidence": [
+        {
+          "file": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md",
+          "locator": "Date, Statut et section Décision",
+          "supports": "Exigence Canada Central, architecture v1 remplacée sur ce point."
+        },
+        {
+          "file": "06_Architecture_et_decisions/Architecture_NOVA_v2.pdf",
+          "locator": "Page 1, bloc Données et titre daté du 25 août",
+          "supports": "Schéma révisé indiquant Canada Central."
+        },
+        {
+          "file": "01_Courriels/E03_Confirmation_Canada_Central.eml",
+          "locator": "Courriel du 26 août, corps",
+          "supports": "Migration annoncée terminée et tests de déploiement/connectivité."
+        },
+        {
+          "file": "02_Reunions/M03_CR_Comite_27aout.txt",
+          "locator": "Résumé de gestion, première puce",
+          "supports": "Vérification de la migration par l’équipe architecture."
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "topic": "Portée mobile et facture",
+      "apparently_conflicting_claim": "Le fournisseur pense le mobile avancé inclus et une ligne CR-04 est facturée.",
+      "resolution": "Compatibilité mobile de base et optimisation avancée sont distinctes. CR-04 n’est pas approuvée et ses travaux sont reportés en phase 2 ; la ligne de facture ne vaut pas autorisation.",
+      "evidence": [
+        {
+          "file": "07_Conversations_Teams/Teams_22sept_Mobile.txt",
+          "locator": "13:06",
+          "supports": "Nicolas distingue compatibilité de base et package avancé."
+        },
+        {
+          "file": "05_Contrats_et_finances/INV-003.pdf",
+          "locator": "Page 1, Statut et lignes de facturation",
+          "supports": "36 000 + 18 000 = 54 000 CAD ; facture en validation."
+        },
+        {
+          "file": "01_Courriels/E07_Facture_003_question.eml",
+          "locator": "Courriel du 23 septembre, corps",
+          "supports": "Amélie demande l’approbation des 18 000 CAD avant de libérer la facture."
+        },
+        {
+          "file": "01_Courriels/E10_Fonction_mobile.eml",
+          "locator": "Courriel du 24 septembre, corps",
+          "supports": "Aucune dépense CR-04 ne doit être engagée ou facturée sans nouvelle approbation."
+        },
+        {
+          "file": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf",
+          "locator": "Page 1, Statut",
+          "supports": "Absence d’approbation documentée."
+        }
+      ]
+    },
+    {
+      "id": "C06",
+      "topic": "Responsable",
+      "apparently_conflicting_claim": "La charte historique désigne Élodie.",
+      "resolution": "La transition officielle du 16 septembre désigne Nicolas ; la charte reste une référence historique.",
+      "evidence": [
+        {
+          "file": "01_Courriels/E06_Transition_charge_projet.eml",
+          "locator": "Courriel du 16 septembre, corps",
+          "supports": "Prise officielle de la charge du projet à compter de ce jour."
+        },
+        {
+          "file": "04_Documents_projet/Note_transition_Elodie_16sept.txt",
+          "locator": "Première phrase après la date",
+          "supports": "Confirmation de la transition."
+        },
+        {
+          "file": "07_Conversations_Teams/Teams_16sept_Transition.txt",
+          "locator": "Messages de 08:45 et 08:47",
+          "supports": "Rappel de la transition et prise du comité par Nicolas."
+        }
+      ]
+    }
+  ],
+  "deduplication_notes": [
+    {
+      "files": [
+        "01_Courriels/E12_Resolution_integration.eml",
+        "08_Archives_et_documents_connexes/Courriel_archive_17sept.eml"
+      ],
+      "reason": "Même Message-ID et même message : une seule confirmation."
+    },
+    {
+      "file": "01_Courriels/E02_Question_hebergement.eml",
+      "attachment_same_as": "06_Architecture_et_decisions/Architecture_NOVA_v1.pdf"
+    },
+    {
+      "file": "01_Courriels/E03_Confirmation_Canada_Central.eml",
+      "attachment_same_as": "06_Architecture_et_decisions/Architecture_NOVA_v2.pdf"
+    },
+    {
+      "file": "01_Courriels/E07_Facture_003_question.eml",
+      "attachment_same_as": "05_Contrats_et_finances/INV-003.pdf"
+    },
+    {
+      "file": "01_Courriels/E10_Fonction_mobile.eml",
+      "attachment_same_as": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf"
+    },
+    {
+      "file": "01_Courriels/E11_Communication_statut.eml",
+      "attachment_same_as": "04_Documents_projet/Rapport_Statut_21sept.pdf"
+    }
+  ],
+  "event_workflow": {
+    "new_event_not_yet_provided": true,
+    "steps": [
+      "Conserver la source originale et sa date de fait.",
+      "Identifier les faits nouveaux et leurs preuves ; distinguer statut du problème, décision et proposition.",
+      "Préparer les modifications des réponses, du brief, des conditions et des actions concernées.",
+      "Vérifier humainement les liens et l’absence d’approbation inventée.",
+      "Enregistrer une nouvelle version sans écraser le baseline.",
+      "Afficher avant/après et exporter la version mise à jour avec ses nouvelles preuves."
+    ],
+    "human_validation_note": "La validation de saisie par l’équipe n’est pas une approbation de gouvernance du projet NOVA.",
+    "do_not_assume": [
+      "Une résolution remet automatiquement le lancement au 15 octobre.",
+      "Une nouvelle proposition de date remplace une date approuvée.",
+      "La fermeture d’une condition ferme les deux autres."
+    ]
+  }
+}

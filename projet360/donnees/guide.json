@@ -1,0 +1,76 @@
+{
+  "persona": {
+    "nom": "Le PDG pressé",
+    "accroche": "Lundi, 9 h. Le comité vous demande de trancher.",
+    "texte": "Vous dirigez l'entreprise. Le chargé de projet a changé il y a deux semaines, le fournisseur assure que tout va bien, et le comité vous pose une seule question : « On lance NOVA le 22 octobre ? » Vous avez cinq minutes, et 64 documents que vous ne lirez pas.",
+    "promesse": "Ce guide vous montre en une minute comment NOVA vous évite les six pièges de la reprise de projet."
+  },
+  "etapes": [
+    {
+      "icone": "files",
+      "douleur_titre": "Trop de documents, pas le temps de lire",
+      "douleur": "Courriels, comptes rendus, factures, tableaux, captures : 64 fichiers éparpillés. Personne ne vous fera de résumé fiable avant lundi.",
+      "risque": "Trancher à l'instinct, sans savoir où en est vraiment le projet.",
+      "solution_titre": "La réponse tient sur un écran",
+      "solution": "La page d'accueil répond en dix secondes : mise en production le {date}, sous trois conditions, dont {remplies} sur 3 remplies aujourd'hui.",
+      "onglet": "vue",
+      "bouton": "Voir l'accueil"
+    },
+    {
+      "icone": "triangle-alert",
+      "douleur_titre": "« Tout est au vert » : vraiment ?",
+      "douleur": "Le rapport du 21 septembre affiche la sécurité et l'accessibilité en vert. C'est faux : la sécurité n'a pas donné son accord, et un défaut clavier bloque encore.",
+      "risque": "Annoncer un lancement sur la foi d'un rapport faux.",
+      "solution_titre": "Chaque phrase a sa preuve",
+      "solution": "Un clic sur « Preuve » ouvre le document original au passage exact, surligné : la ligne d'un compte rendu, la page d'une facture, la cellule d'un tableau, la zone d'une capture.",
+      "onglet": "questions",
+      "bouton": "Voir les réponses et leurs preuves"
+    },
+    {
+      "icone": "split",
+      "douleur_titre": "Des versions qui se contredisent",
+      "douleur": "Le plan dit 15 octobre, le comité a décidé le 22. Le registre des risques dit « ouvert », le ticket dit « fermé ». Lequel croire ?",
+      "risque": "Défendre devant le comité une date déjà abandonnée.",
+      "solution_titre": "NOVA tranche, et explique pourquoi",
+      "solution": "Chaque contradiction est mise côte à côte : ce qui est périmé, ce qui fait foi, et la raison (qui a décidé, et quand). Plus besoin d'arbitrer à l'aveugle.",
+      "onglet": "historique",
+      "bouton": "Voir les contradictions"
+    },
+    {
+      "icone": "receipt",
+      "douleur_titre": "Une facture qui glisse",
+      "douleur": "La facture INV-003 contient {conteste} pour un travail que personne n'a approuvé. Noyée dans un total de 54 000 $, la ligne passe facilement.",
+      "risque": "Payer {conteste} pour un travail que personne n'a validé.",
+      "solution_titre": "L'argent est rangé en trois cases",
+      "solution": "Autorisé ({autorise}), facturé, payé : jamais mélangés. La ligne à bloquer est signalée en rouge, avec la règle du contrat qui l'interdit.",
+      "onglet": "vue",
+      "ancre": "finances",
+      "bouton": "Voir les finances"
+    },
+    {
+      "icone": "users",
+      "douleur_titre": "Qui fait quoi ? Pour quand ?",
+      "douleur": "Les engagements se perdent dans les courriels. On vous promet « la prochaine build » sans date, et personne n'ose l'écrire.",
+      "risque": "Découvrir la veille du lancement qu'une tâche clé n'avait pas de responsable.",
+      "solution_titre": "Une liste claire, sans dates inventées",
+      "solution": "Chaque action a un responsable, confirmé ou proposé, et une échéance. Quand aucune date n'est écrite nulle part, NOVA affiche « À confirmer » au lieu d'en inventer une.",
+      "onglet": "actions",
+      "bouton": "Voir les actions"
+    },
+    {
+      "icone": "bell-ring",
+      "douleur_titre": "La nouvelle tombe la veille du comité",
+      "douleur": "Un courriel du fournisseur propose une autre date. Faut-il tout relire, tout refaire, et risquer d'annoncer une décision qui n'existe pas ?",
+      "risque": "Présenter une simple proposition comme une décision officielle.",
+      "solution_titre": "Une mise à jour en quelques champs",
+      "solution": "Collez la nouvelle information : NOVA montre ce qui change et ce qui ne change pas. Une proposition ne devient jamais une décision, et la version d'origine reste consultable.",
+      "onglet": "documents",
+      "ancre": "d-ajout",
+      "bouton": "Voir comment ajouter une information"
+    }
+  ],
+  "fin": {
+    "titre": "Vous êtes prêt pour lundi.",
+    "texte": "Imprimez le brief d'une page pour le comité, ou posez votre question en français dans la barre de recherche, par exemple : « qui a approuvé le report ? ». Ce guide reste disponible à tout moment, avec le bouton « Comment ça marche ? » en haut de l'écran."
+  }
+}

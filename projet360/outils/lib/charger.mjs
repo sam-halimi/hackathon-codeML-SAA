@@ -75,6 +75,9 @@ export function chargerEvenements() {
 export function toutCharger({ embarquer = true, journal = console } = {}) {
   const avertissements = [];
   const operations = lireJson(path.join(DOSSIER_DONNEES, 'NOVA_OPERATIONS.json'));
+  // Texte du tutoriel d'accueil (modifiable sans toucher au code).
+  const fichierGuide = path.join(DOSSIER_DONNEES, 'guide.json');
+  if (fs.existsSync(fichierGuide)) operations.guide = lireJson(fichierGuide);
   const { integres, exemples } = chargerEvenements();
   const racineCorpus = trouverCorpus(journal);
   const dossierCache = path.join(DOSSIER_CORPUS, '.cache_extraction');
