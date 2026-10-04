@@ -1,4 +1,4 @@
-// Tests des espaces 1, 3, 4 et 5 (appelé par tester_navigateur.mjs).
+// Tests des espaces 1, 3, 4 et 5, de l'assistant et des deux versions (appelé par tester_navigateur.mjs).
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -41,15 +41,22 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   const brief = await page.evaluate(() => document.getElementById('zone-impression').textContent);
   ok('Brief : cinq thèmes (responsable, date et conditions, portée, budget et factures, priorités)', ['Responsable', 'Date approuvée et conditions', 'Portée', 'Budget et factures', 'Priorités'].every((t) => brief.includes(t)));
 
-  // ---------- Historique ----------
+  // ---------- Historique : un sous-onglet à la fois ----------
   await page.click('[data-onglet="historique"]');
-  ok('Historique : 8 contradictions expliquées', (await page.locator('#h-contradictions ~ section.carte').count()) === 8);
+  ok('Historique : quatre sous-onglets (chronologie, décision et validation, registre, contradictions)', (await page.locator('.segmente [data-sous-onglet^="historique:"]').count()) === 4);
   ok('Historique : chronologie complète', (await page.locator('ol.chrono > li').count()) >= 40);
+  await page.click('.filtres-repli > summary');
   await page.click('[data-filtre-sujet="securite"]');
   const nbSecu = await page.locator('ol.chrono > li').count();
-  ok('Historique : filtre par sujet (Sécurité)', nbSecu > 0 && nbSecu < 15, `${nbSecu} événements`);
+  ok('Historique : filtre par sujet (Sécurité), replié par défaut', nbSecu > 0 && nbSecu < 15, `${nbSecu} événements`);
   await page.click('[data-filtre-sujet="securite"]');
+  await page.click('[data-sous-onglet="historique:cycles"]');
   ok('Historique : cycles proposition → décision → validation', (await page.locator('.cycle').count()) >= 8);
+  await page.click('[data-sous-onglet="historique:decisions"]');
+  ok('Historique : registre des décisions', (await page.locator('main table tbody tr').count()) >= 5);
+  await page.click('[data-sous-onglet="historique:contradictions"]');
+  ok('Historique : 8 contradictions expliquées', (await page.locator('section.carte.contradiction').count()) === 8);
+  await page.click('[data-sous-onglet="historique:chrono"]');
 
   // ---------- Actions ----------
   await page.click('[data-onglet="actions"]');
@@ -69,9 +76,11 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.waitForSelector('#visionneuse[open]');
   ok('Documents : un résultat ouvre le passage surligné', (await page.locator('#visionneuse-corps mark').count()) >= 1);
   await page.click('#visionneuse-fermer');
+  await page.click('[data-sous-onglet="documents:liste"]');
   ok('Documents : 64 sources listées', /Tous les documents \(64\)/.test(await texte('#d-liste')));
 
   // ---------- Exemple fictif ----------
+  await page.click('[data-sous-onglet="documents:maj"]');
   await page.click('[data-maj="exemple-on"]');
   await page.waitForSelector('#bandeau-version:not([hidden])');
   ok('Exemple : bandeau « EXEMPLE FICTIF » visible', /EXEMPLE FICTIF/.test(await texte('#bandeau-version')));
@@ -91,8 +100,10 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.click('[data-onglet="documents"]');
   await page.click('[data-maj="exemple-off"]');
 
-  // ---------- Formulaire : garde-fous ----------
+  // ---------- Formulaire expert (replié par défaut) : garde-fous ----------
   await page.click('[data-onglet="documents"]');
+  ok('Mises à jour : le formulaire expert est replié, l\'assistant est la porte d\'entrée', (await page.locator('#d-ajout:not([open])').count()) === 1 && (await page.locator('#d-assistant [data-ouvrir-assistant]').count()) >= 1);
+  await page.click('#d-ajout > summary');
   await page.fill('#f-titre', 'Test — courriel fournisseur');
   await page.fill('#f-texte', 'Le correctif SEC-210 est corrigé de notre côté. Nous proposons le 29 octobre.');
   await page.locator('#f-texte').blur();
@@ -142,6 +153,7 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
     source: { id: 'TEST-SRC', titre: 'Test', autorite: 'ticket', texte: '02 oct - Sophie : Re-test OK. SEC-210 accepté. Fermé.' },
     impacts: [{ cible: 'conditions/C1', nature: 'validation_obtenue', modifs: { etat: 'valide' }, passage: 'Re-test OK. SEC-210 accepté.' }] }));
   await page.click('[data-onglet="documents"]');
+  await page.click('[data-sous-onglet="documents:maj"]');
   await page.setInputFiles('#f-import', fichierImport);
   await page.waitForTimeout(300);
   await page.click('[data-onglet="vue"]');
@@ -153,6 +165,7 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
     source: { id: 'TEST-SRC-2', titre: 'Compte rendu test', autorite: 'decision', texte: '15:30 Nicolas : Le comité approuve le 29 octobre comme nouvelle date. Les trois conditions restent.' },
     impacts: [{ cible: 'synthese/date_mep', nature: 'decision_approuvee', modifs: { approuvee: '2026-10-29', texte: '29 octobre 2026', autorite: 'Comité de direction NOVA', date_decision: '2026-10-03', statut: 'Approuvée' }, passage: 'Le comité approuve le 29 octobre comme nouvelle date.' }] }));
   await page.click('[data-onglet="documents"]');
+  await page.click('[data-sous-onglet="documents:maj"]');
   await page.setInputFiles('#f-import', fichierImport);
   await page.waitForTimeout(300);
   fs.unlinkSync(fichierImport);
@@ -196,7 +209,14 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.click('#guide [data-guide="suivant"]');
   await page.click('#guide [data-guide="aller"]');
   await page.waitForTimeout(400);
-  ok('Tutoriel : « Comment ça marche ? » le rouvre et « Voir l\'accueil » mène à la page', (await page.locator('#guide[open]').count()) === 0 && (await page.locator('main .hero-date').count()) === 1);
+  ok('Tutoriel : le bouton « Guide » le rouvre et « Voir l\'accueil » mène à la page', (await page.locator('#guide[open]').count()) === 0 && (await page.locator('main .hero-date').count()) === 1);
+  await page.click('#ouvrir-guide');
+  await page.waitForSelector('#guide[open]');
+  for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowRight');
+  await page.click('#guide [data-guide="aller"]');
+  await page.waitForTimeout(400);
+  ok('Tutoriel : le piège 6 ouvre l\'assistant avec un message d\'essai prêt (marqué EXEMPLE)', (await page.locator('body.assistant-ouvert').count()) === 1 && /29 octobre/.test(await page.inputValue('#assistant-champ')) && (await page.evaluate(() => window.NOVA_ASSISTANT.conv.exempleSuivant)) === true);
+  await page.click('#assistant-fermer');
   if (captures) {
     await page.evaluate(() => { localStorage.removeItem('nova360.guide.vu'); });
     await page.click('#ouvrir-guide'); await page.waitForSelector('#guide[open]');
@@ -244,9 +264,205 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.evaluate(() => { location.hash = '#vue'; });
   await page.waitForTimeout(700);
-  const debord = await page.evaluate(() => ['#champ-question', '#form-question button', '#ouvrir-guide', '.hero-date'].map((s) => document.querySelector(s).getBoundingClientRect()).every((r) => r.left >= 0 && r.right <= window.innerWidth + 1));
-  ok('Téléphone (390 px) : en-tête et carte principale tiennent dans l\'écran', debord && (await page.evaluate(() => window.scrollX)) === 0);
+  const debord = await page.evaluate(() => ['#champ-question', '#form-question button', '#bouton-mode', '#ouvrir-guide', '.hero-date', '#lanceur-assistant'].map((s) => document.querySelector(s).getBoundingClientRect()).every((r) => r.left >= 0 && r.right <= window.innerWidth + 1));
+  ok('Téléphone (390 px) : en-tête, carte principale et bouton Assistant tiennent dans l\'écran', debord && (await page.evaluate(() => window.scrollX)) === 0);
+  await page.click('#lanceur-assistant');
+  await page.waitForTimeout(650);
+  const plein = await page.evaluate(() => { const r = document.getElementById('assistant').getBoundingClientRect(); return Math.round(r.left) === 0 && Math.round(r.width) === window.innerWidth; });
+  ok('Téléphone : l\'assistant passe en plein écran', plein);
+  await page.click('#assistant-fermer');
   await page.setViewportSize({ width: 1366, height: 900 });
+
+  // ===================================================================
+  // Assistant : vue fractionnée, réponses sourcées, mises à jour confirmées
+  // ===================================================================
+  await page.evaluate(() => { localStorage.clear(); localStorage.setItem('nova360.mode', 'demo'); localStorage.setItem('nova360.guide.vu', '1'); sessionStorage.clear(); location.hash = '#vue'; });
+  await page.reload();
+  await page.waitForSelector('main#contenu > *');
+  const attendreAssistant = () => page.waitForFunction(() => !window.NOVA_ASSISTANT.conv.occupe);
+  const dernierMessage = () => page.evaluate(() => { const b = [...document.querySelectorAll('#assistant-fil .bulle')]; return b.length ? b[b.length - 1].textContent.replace(/\s+/g, ' ') : ''; });
+  async function envoyer(texte, exemple) {
+    if (exemple != null) await page.click(`[data-ia-exemple="${exemple}"]`);
+    else await page.fill('#assistant-champ', texte);
+    await page.click('#assistant-form .bouton-envoyer');
+    await attendreAssistant();
+  }
+  await page.click('#form-question button[type=submit]'); // champ vide : ouvre simplement l'assistant
+  await page.waitForTimeout(650);
+  {
+    const m = await page.evaluate(() => { const a = document.getElementById('assistant').getBoundingClientRect(); const p = document.getElementById('page').getBoundingClientRect(); return { ratio: a.width / window.innerWidth, droite: a.right, vw: window.innerWidth, finPage: p.right, debutAssistant: a.left }; });
+    ok('Assistant : vue fractionnée, un tiers de la largeur à droite, la page se resserre', m.ratio > 0.32 && m.ratio < 0.345 && Math.abs(m.droite - m.vw) < 2 && m.finPage <= m.debutAssistant + 1, `${(m.ratio * 100).toFixed(1)} % de la largeur`);
+  }
+  ok('Assistant : message d\'accueil, suggestions et essais', /Bonjour/.test(await texte('#assistant-fil')) && (await page.locator('[data-ia-envoyer]').count()) >= 3 && (await page.locator('[data-ia-exemple]').count()) === 3);
+  await envoyer('Où en est le projet ?');
+  ok('Assistant : « Où en est le projet ? » → synthèse (date, 0 / 3, actions)', /22 octobre 2026/.test(await dernierMessage()) && /0 \/ 3 remplies/.test(await dernierMessage()));
+  await envoyer('Combien a-t-on payé ?');
+  ok('Assistant : question de finances → montants et preuve', /204\s000\s\$/.test(await dernierMessage()) && (await page.locator('#assistant-fil .bulle.ia').last().locator('[data-preuve-ia]').count()) >= 1);
+
+  // Mise à jour : Sophie valide SEC-210 → aperçu → appliquer → 1 / 3 → annuler.
+  await envoyer(null, 0);
+  ok('Assistant : un courriel collé devient une mise à jour proposée (rien n\'est appliqué avant accord)', (await page.locator('.carte-maj [data-ia-appliquer]').count()) === 1 && /0 \/ 3 remplies/.test(await texte('main')));
+  const carte = await texte('#assistant-fil .carte-maj');
+  ok('Assistant : l\'aperçu montre le changement, la source citée, ce qui ne change pas, et le badge EXEMPLE', /Validé \/ fermé/.test(carte) && /Validation obtenue/.test(carte) && /Re-test de SEC-210 concluant/.test(carte) && /Ce qui ne change pas/.test(carte) && /EXEMPLE/.test(carte));
+  await page.click('[data-ia-appliquer]');
+  await attendreAssistant();
+  ok('Assistant : « Appliquer » met tout le dossier à jour (1 / 3 remplies)', /1 \/ 3 remplies/.test(await texte('main')) && /1 \/ 3 remplie/.test(await dernierMessage()));
+  await page.click('[data-onglet="historique"]');
+  ok('Assistant : la mise à jour entre dans l\'historique avec sa source', /Re-test de SEC-210 concluant|Sophie Lambert/.test(await texte('main ol.chrono')));
+  await page.click('[data-onglet="vue"]');
+  await page.click('[data-ia-annuler]');
+  await attendreAssistant();
+  ok('Assistant : « Annuler cette mise à jour » rétablit l\'état précédent (0 / 3)', /0 \/ 3 remplies/.test(await texte('main')));
+
+  // Garde-fou : le fournisseur dit ACC-303 « validé » → correctif livré, jamais une validation.
+  await envoyer(null, 2);
+  const garde = await texte('#assistant-fil');
+  ok('Assistant : garde-fou fournisseur (correctif livré, la condition reste ouverte)', /Garde-fou/.test(garde) && /ne peut pas fermer C2/.test(garde) && /Correctif livré, validation en attente/.test(await page.locator('#assistant-fil .carte-maj').last().textContent()));
+  await page.locator('[data-ia-appliquer]').last().click();
+  await attendreAssistant();
+  ok('Assistant : après application, C2 est « correctif livré » et rien n\'est fermé (0 / 3)', /0 \/ 3 remplies/.test(await texte('main')) && (await page.evaluate(() => window.NOVA_APP.etat.actualise.synthese.conditions.find((c) => c.id === 'C2').etat)) === 'correctif_livre');
+  await page.locator('[data-ia-annuler]').last().click();
+  await attendreAssistant();
+
+  // Proposition : Boréal propose le 29 octobre → proposition en attente, la date approuvée ne bouge pas.
+  await envoyer(null, 1);
+  await page.locator('[data-ia-appliquer]').last().click();
+  await attendreAssistant();
+  const vueProp = await texte('main');
+  ok('Assistant : une proposition reste une proposition (22 octobre inchangé, 29 octobre en attente)', /22 octobre 2026/.test(await texte('main .hero-date')) && /29 octobre 2026/.test(vueProp) && /non approuvée/.test(vueProp));
+  await page.locator('[data-ia-annuler]').last().click();
+  await attendreAssistant();
+
+  // Question de précision : une validation sans validateur → l'assistant demande qui a validé.
+  await envoyer('Le re-test de SEC-210 est concluant, c\'est validé.');
+  ok('Assistant : demande qui a validé avant de fermer une condition', /Qui a validé/.test(await dernierMessage()) && (await page.locator('[data-ia-repondre]').count()) >= 3);
+  await page.locator('[data-ia-repondre]').filter({ hasText: 'fournisseur' }).click();
+  await attendreAssistant();
+  ok('Assistant : réponse « le fournisseur » → correctif livré proposé, pas de fermeture', /Correctif livré/.test(await dernierMessage()) && !/Validé \/ fermé/.test(await dernierMessage()));
+  await page.locator('[data-ia-ignorer]').last().click();
+  await attendreAssistant();
+  ok('Assistant : « Ignorer » ne modifie rien', /rien n'a été modifié/.test(await dernierMessage()) && /0 \/ 3 remplies/.test(await texte('main')));
+
+  // Connecteur Claude (facultatif) : requête simulée, sans réseau. Mêmes garde-fous qu'en local.
+  {
+    const requetes = [];
+    let reponses = [];
+    await page.route('https://api.anthropic.com/**', async (route) => {
+      const req = route.request();
+      requetes.push({ entetes: req.headers(), corps: JSON.parse(req.postData() || '{}') });
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(reponses.shift()) });
+    });
+    const outil = (input) => ({ id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', stop_reason: 'tool_use', content: [{ type: 'text', text: 'Je prépare la mise à jour pour [C1], voir [Q08].' }, { type: 'tool_use', id: 'toolu_' + requetes.length, name: 'proposer_mise_a_jour', input }] });
+    await page.click('#assistant-reglages');
+    await page.check('input[name="moteur-ia"][value="claude"]');
+    await page.fill('#cle-claude', 'sk-ant-test-factice');
+    await page.click('[data-ia-reglages="enregistrer"]');
+    ok('Connecteur Claude : activé avec une clé gardée dans l\'onglet (sessionStorage, jamais localStorage)', /Claude/.test(await texte('#assistant-moteur')) && (await page.evaluate(() => sessionStorage.getItem('nova360.claude.cle'))) === 'sk-ant-test-factice' && !(await page.evaluate(() => JSON.stringify(localStorage))).includes('sk-ant'));
+    reponses.push(outil({ titre: 'Sophie valide SEC-210', resume: 'Validation de C1.', date: '2026-10-02T09:00:00-04:00', auteur: 'Sophie Lambert', autorite: 'ticket', impacts: [{ operation: 'etat_condition', cible: 'C1', etat: 'valide', nature: 'validation_obtenue', passage: 'Re-test de SEC-210 concluant.' }] }));
+    await envoyer('Sophie Lambert : Re-test de SEC-210 concluant. Je valide.');
+    const r = requetes[0] || { entetes: {}, corps: {} };
+    ok('Connecteur Claude : requête conforme (modèle claude-opus-5-5, version d\'API, outil, accès navigateur explicite)', r.entetes['x-api-key'] === 'sk-ant-test-factice' && r.entetes['anthropic-version'] === '2023-06-01' && r.entetes['anthropic-dangerous-direct-browser-access'] === 'true' && r.corps.model === 'claude-opus-5-5' && r.corps.tools && r.corps.tools[0].name === 'proposer_mise_a_jour' && r.corps.tool_choice && r.corps.tool_choice.type === 'auto' && !('thinking' in r.corps));
+    ok('Connecteur Claude : l\'état du dossier est transmis (conditions, actions)', (r.corps.messages || []).some((m) => m.role === 'system' && /C1/.test(m.content) && /A0/.test(m.content)));
+    ok('Connecteur Claude : la proposition de Claude passe par l\'aperçu (rien n\'est appliqué seul)', (await page.locator('.carte-maj [data-ia-appliquer]').count()) === 1 && /0 \/ 3 remplies/.test(await texte('main')));
+    await page.locator('[data-ia-appliquer]').last().click();
+    await attendreAssistant();
+    ok('Connecteur Claude : appliquée après accord (1 / 3)', /1 \/ 3 remplies/.test(await texte('main')));
+    await page.locator('[data-ia-annuler]').last().click();
+    await attendreAssistant();
+    // Claude tente de faire fermer une condition par le fournisseur : refusé par les mêmes garde-fous.
+    reponses.push(outil({ titre: 'Boréal ferme ACC-303', resume: 'Fermeture de C2.', date: '2026-10-02T10:00:00-04:00', auteur: 'Julien Moreau (Boréal)', autorite: 'fournisseur', impacts: [{ operation: 'etat_condition', cible: 'C2', etat: 'valide', nature: 'validation_obtenue', passage: 'ACC-303 est validé de notre côté.' }] }));
+    await envoyer('Boréal : ACC-303 est validé de notre côté.');
+    ok('Connecteur Claude : la suite de la conversation renvoie le résultat de l\'outil (historique en ajout seul)', (requetes[1] ? requetes[1].corps.messages : []).some((m) => Array.isArray(m.content) && m.content.some((c) => c.type === 'tool_result')));
+    ok('Connecteur Claude : une fermeture par le fournisseur est refusée par les garde-fous', /Refusé par les garde-fous/.test(await texte('#assistant-fil .bulle:last-child')));
+    await page.locator('[data-ia-appliquer]').last().click();
+    await attendreAssistant();
+    ok('Connecteur Claude : C2 reste ouverte (0 / 3)', /0 \/ 3 remplies/.test(await texte('main')));
+    // Erreur réseau : retour possible au moteur local.
+    await page.unroute('https://api.anthropic.com/**');
+    await page.route('https://api.anthropic.com/**', (route) => route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ type: 'error', error: { type: 'authentication_error', message: 'invalid x-api-key' } }) }));
+    await envoyer('Où en est le projet ?');
+    ok('Connecteur Claude : clé refusée → message clair et repli sur le moteur local', /401/.test(await dernierMessage()) && (await page.locator('[data-ia-local]').count()) >= 1);
+    await page.locator('[data-ia-local]').last().click();
+    await page.waitForTimeout(200);
+    ok('Connecteur Claude : le moteur local répond à la place', /22 octobre 2026/.test(await dernierMessage()));
+    await page.unroute('https://api.anthropic.com/**');
+    await page.click('#assistant-reglages');
+    await page.click('[data-ia-reglages="oublier"]');
+    ok('Connecteur Claude : « Oublier la clé » revient au moteur local', /Moteur local/.test(await texte('#assistant-moteur')) && !(await page.evaluate(() => sessionStorage.getItem('nova360.claude.cle'))));
+    await page.click('#assistant-reglages');
+  }
+  if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'assistant.png') });
+  await page.keyboard.press('Escape');
+  await page.click('#assistant-champ').catch(() => {});
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(600);
+  ok('Assistant : Échap ferme le panneau, la page reprend toute la largeur', (await page.locator('body.assistant-ouvert').count()) === 0);
+
+  // ===================================================================
+  // Deux versions : écran de choix, démo, dossier vierge
+  // ===================================================================
+  await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); sessionStorage.setItem('tester-choix', '1'); sessionStorage.setItem('tester-guide', '1'); location.hash = ''; });
+  await page.reload();
+  await page.waitForSelector('#choix-mode[open]', { timeout: 5000 });
+  ok('Versions : au premier lancement, l\'écran de choix s\'ouvre (démo ou dossier vierge)', (await page.locator('#choix-mode [data-choisir-mode]').count()) === 2);
+  if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'choix_version.png') });
+  await Promise.all([page.waitForEvent('load'), page.click('[data-choisir-mode="vierge"]')]);
+  await page.waitForSelector('main#contenu > *');
+  ok('Versions : dossier vierge choisi (mémorisé, rechargé)', (await page.evaluate(() => window.NOVA_APP.MODE)) === 'vierge' && (await page.evaluate(() => localStorage.getItem('nova360.mode'))) === 'vierge');
+  await page.waitForSelector('#guide[open]', { timeout: 5000 });
+  ok('Versions : le dossier vierge a son propre guide (4 pièges du démarrage)', /dirigeant qui lance un projet/.test(await texte('#guide')) && (await page.locator('#guide .guide-pieges li').count()) === 4);
+  await page.click('#guide [data-guide="fermer"]');
+  await page.evaluate(() => localStorage.setItem('nova360.guide.vu', '1')); // le guide de la démo est testé plus haut
+  const vueVide = await texte('main');
+  ok('Dossier vierge : aucune donnée de la démo, états vides avec une prochaine étape', /Date à définir/.test(vueVide) && !/22 octobre/.test(vueVide) && !/Nicolas Perron/.test(vueVide) && (await page.locator('main [data-ouvrir-assistant]').count()) >= 2);
+  const espacesVides = [];
+  for (const [o, sel] of [['questions', '.appel-assistant'], ['historique', '.etat-vide'], ['actions', '.etat-vide'], ['documents', '#d-recherche']]) {
+    await page.click(`[data-onglet="${o}"]`);
+    if (!(await page.locator(`main ${sel}`).count()) || (await page.locator('main h2:has-text("En construction")').count())) espacesVides.push(o);
+  }
+  await page.click('[data-sous-onglet="documents:liste"]');
+  if (!(await page.locator('main .etat-vide').count())) espacesVides.push('documents (liste)');
+  ok('Dossier vierge : les cinq espaces s\'affichent, chacun avec une prochaine étape claire', espacesVides.length === 0, espacesVides.join(', '));
+  await page.click('[data-onglet="vue"]');
+  await page.click('#form-question button[type=submit]');
+  await page.waitForTimeout(500);
+  ok('Dossier vierge : l\'assistant propose des essais adaptés (4)', (await page.locator('[data-ia-exemple]').count()) === 4 && /dossier est vierge/.test(await texte('#assistant-fil')));
+  const appliquerDernier = async () => { await page.locator('[data-ia-appliquer]').last().click(); await attendreAssistant(); };
+  await envoyer(null, 0); await appliquerDernier();
+  await envoyer(null, 1);
+  ok('Dossier vierge : une date sans autorité → l\'assistant demande qui l\'a approuvée', /Qui a approuvé/.test(await dernierMessage()));
+  await page.locator('[data-ia-repondre]').filter({ hasText: 'comité' }).click();
+  await attendreAssistant();
+  await appliquerDernier();
+  await envoyer(null, 2); await appliquerDernier();
+  await envoyer(null, 3); await appliquerDernier();
+  const vueRemplie = await texte('main');
+  ok('Dossier vierge : l\'assistant remplit tout (nom, responsable, date approuvée, condition, action)', /Atlas/.test(await texte('.entete')) && /Marie Dupont/.test(vueRemplie) && /15 novembre 2026/.test(vueRemplie) && /0 \/ 1 remplies/.test(vueRemplie) && (await page.evaluate(() => window.NOVA_APP.etat.actualise.actions.length)) === 1);
+  ok('Dossier vierge : chaque fait garde sa source (message d\'origine consultable)', (await page.evaluate(() => Object.values(window.NOVA_APP.SOURCES).filter((s) => /^NS-/.test(s.id)).length)) === 4);
+  await page.click('[data-onglet="questions"]');
+  await envoyer('Qui pilote le projet ?');
+  ok('Dossier vierge : l\'assistant répond à partir de ce qu\'on lui a confié', /Marie Dupont/.test(await dernierMessage()) && /1 octobre 2026|1er octobre/.test(await dernierMessage()));
+  await page.click('#assistant-fermer');
+  await page.evaluate(() => { location.hash = '#vue'; });
+  await page.reload();
+  await page.waitForSelector('main#contenu > *');
+  ok('Dossier vierge : persistance après rechargement', /Atlas/.test(await texte('.entete')) && /15 novembre 2026/.test(await texte('main')));
+  // Retour à la démo : les deux dossiers ne se mélangent pas.
+  await page.click('#bouton-mode');
+  ok('Versions : le menu propose démo, dossier vierge, écran d\'accueil et effacement', (await page.locator('#menu-mode .menu-mode-item').count()) === 4);
+  if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'menu_versions.png') });
+  await Promise.all([page.waitForEvent('load'), page.click('[data-version-action="demo"]')]);
+  await page.waitForSelector('main#contenu > *');
+  const vueDemo = await texte('main');
+  ok('Versions : retour à la démo intacte (22 octobre, 0 / 3), sans les données du dossier vierge', /22 octobre 2026/.test(vueDemo) && /0 \/ 3 remplies/.test(vueDemo) && !/Atlas/.test(await texte('.entete')));
+  await page.click('#bouton-mode');
+  await Promise.all([page.waitForEvent('load'), page.click('[data-version-action="vierge"]')]);
+  await page.waitForSelector('main#contenu > *');
+  page.once('dialog', (d) => d.accept());
+  await page.click('#bouton-mode');
+  await Promise.all([page.waitForEvent('load'), page.click('[data-version-action="effacer-vierge"]')]);
+  await page.waitForSelector('main#contenu > *');
+  ok('Versions : « Effacer le dossier vierge » repart de zéro', /Date à définir/.test(await texte('main')) && !/Atlas/.test(await texte('.entete')));
 
   // Nettoyage du stockage local.
   await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });

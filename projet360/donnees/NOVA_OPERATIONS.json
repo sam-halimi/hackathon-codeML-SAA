@@ -6,7 +6,7 @@
     "date_situation": "2026-09-30T09:00:00-04:00",
     "date_situation_texte": "30 septembre 2026, 09 h 00 (heure de Montréal, UTC−04:00)",
     "version_donnees": "1.0 (baseline)",
-    "methode": "Analyse humaine assistée par Claude (Claude Code), vérifiée passage par passage dans les documents originaux du corpus. L'application n'appelle aucune IA : elle affiche les réponses préparées par l'équipe et leurs preuves.",
+    "methode": "Analyse humaine assistée par Claude (Claude Code), vérifiée passage par passage dans les documents originaux du corpus. Par défaut, l'application n'appelle aucune IA en ligne : réponses préparées par l'équipe, assistant local par règles ; le connecteur Claude est facultatif (clé de l'utilisateur).",
     "regles": [
       "Une proposition n'est pas une décision.",
       "Un correctif livré n'est pas une validation.",

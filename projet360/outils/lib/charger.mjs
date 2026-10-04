@@ -78,6 +78,10 @@ export function toutCharger({ embarquer = true, journal = console } = {}) {
   // Texte du tutoriel d'accueil (modifiable sans toucher au code).
   const fichierGuide = path.join(DOSSIER_DONNEES, 'guide.json');
   if (fs.existsSync(fichierGuide)) operations.guide = lireJson(fichierGuide);
+  // Dossier vierge (version « nouveau projet ») : même structure, aucune donnée.
+  const fichierVierge = path.join(DOSSIER_DONNEES, 'vierge.json');
+  const vierge = fs.existsSync(fichierVierge) ? lireJson(fichierVierge) : null;
+  if (vierge && operations.guide && operations.guide.vierge) vierge.guide = operations.guide.vierge;
   const { integres, exemples } = chargerEvenements();
   const racineCorpus = trouverCorpus(journal);
   const dossierCache = path.join(DOSSIER_CORPUS, '.cache_extraction');
@@ -130,5 +134,5 @@ export function toutCharger({ embarquer = true, journal = console } = {}) {
     }
   }
 
-  return { operations, evenements: integres, exemples, documents, doublons, avertissements, racineCorpus, sourcesEvenements, texteDocument };
+  return { operations, vierge, evenements: integres, exemples, documents, doublons, avertissements, racineCorpus, sourcesEvenements, texteDocument };
 }

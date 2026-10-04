@@ -5,9 +5,21 @@
 
   const C = window.NOVA_COMMUN;
   const BRUT = JSON.parse(document.getElementById('nova-donnees').textContent);
-  const BASE = BRUT.operations;
-  const DOCS = BRUT.documents;
-  const CLE_STOCKAGE = 'nova360.evenements.v1';
+  // Deux versions dans le même fichier : la démo (dossier NOVA, situation figée au 30 septembre 2026)
+  // et un dossier vierge (nouveau projet, rempli par l'assistant ou le formulaire).
+  const CLE_MODE = 'nova360.mode';
+  const MODE_CHOISI = (() => { try { return localStorage.getItem(CLE_MODE); } catch { return null; } })();
+  const MODE = MODE_CHOISI === 'vierge' && BRUT.vierge ? 'vierge' : 'demo';
+  const BASE = MODE === 'vierge' ? BRUT.vierge : BRUT.operations;
+  const DOCS = MODE === 'vierge' ? {} : BRUT.documents;
+  const CLE_STOCKAGE = MODE === 'vierge' ? 'nova360.vierge.evenements.v1' : 'nova360.evenements.v1';
+  if (MODE === 'vierge') {
+    // Un vrai nouveau projet vit au présent : sa situation est la date du jour.
+    const maintenant = new Date();
+    BASE.meta.date_situation = maintenant.toISOString();
+    BASE.meta.date_situation_texte = new Intl.DateTimeFormat('fr-CA', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(maintenant).replace(/ h /, ' h ');
+    BASE.guide = BASE.guide || (BRUT.operations.guide && BRUT.operations.guide.vierge) || null;
+  }
   const $ = (sel, racine) => (racine || document).querySelector(sel);
   const $$ = (sel, racine) => [...(racine || document).querySelectorAll(sel)];
 
@@ -27,6 +39,9 @@
     evenements: [],
     requete: '',
     filtres: { sujets: new Set(), masquerHistorique: false, actions: 'toutes' },
+    // Un espace = une vue à la fois : les grandes sections deviennent des sous-onglets.
+    sousOnglets: { historique: 'chrono', documents: 'recherche' },
+    expertOuvert: false,
   };
 
   function lireLocaux() {
@@ -57,7 +72,9 @@
   }
 
   function recalculer() {
-    const evs = [...BRUT.evenements, ...(etat.exempleActif ? BRUT.exemples : []), ...etat.evenementsLocaux]
+    const integres = MODE === 'demo' ? BRUT.evenements : [];
+    const exemples = MODE === 'demo' && etat.exempleActif ? BRUT.exemples : [];
+    const evs = [...integres, ...exemples, ...etat.evenementsLocaux]
       .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
     evs.forEach(enregistrerSourceEvenement);
     const r = C.appliquerEvenements(BASE, evs);
@@ -478,44 +495,30 @@
         ${(q._modifie_par || []).length ? badge('ambre', 'Mis à jour', '◆') : ''}</div>
       ${bandeauTouchee}${notes}
       <p class="reponse-courte">${esc(q.reponse_courte)}</p>
-      ${q.details && q.details.length ? `<details open><summary>${icone('info')}Nuances et points d'attention</summary><ul>${q.details.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
+      ${q.details && q.details.length ? `<details${surlignee ? ' open' : ''}><summary>${icone('info')}Nuances et points d'attention</summary><ul>${q.details.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
       <details ${surlignee ? 'open' : ''}><summary>${icone('file-search')}Preuves (${(q.preuves || []).length}) · ${nbIndep} source${nbIndep > 1 ? 's' : ''} indépendante${nbIndep > 1 ? 's' : ''}</summary>${listePreuves(q.preuves)}</details>
     </article>`;
   }
 
+  // Bandeau d'appel : une question hors liste se pose à l'assistant (une seule porte d'entrée).
+  function appelAssistant(titre, texte, exemple) {
+    return `<div class="carte appel-assistant">${tuile('sparkles')}<div><strong>${esc(titre)}</strong><p>${esc(texte)}</p></div>
+      <button type="button" class="bouton primaire" data-ouvrir-assistant="${esc(exemple || '')}">${icone('sparkles')}Demander à l'assistant</button></div>`;
+  }
+
   function rendreQuestions() {
     const e = etat.courant;
-    let html = `<header class="tete-page"><div class="eyebrow">${icone('message-circle-question')}Espace 02 · 10 questions officielles</div><h2>Questions et preuves</h2>
-      <p class="intro">Chaque réponse est nuancée, et chaque preuve ouvre le document au bon endroit : passage surligné, page du PDF, cellules Excel ou zone de la capture.</p></header>
-      <form class="carte" id="form-interroger">
-        <label for="champ-interroger" class="ligne-ic">${icone('message-circle-question')}Posez votre question, avec vos mots</label>
-        <div class="groupe-boutons" style="margin-top:.35rem">
-          <input id="champ-interroger" type="search" style="flex:1 1 320px" value="${esc(etat.requete)}" placeholder="ex. : qui a approuvé le report ? quels sont les risques ?">
-          <button class="bouton primaire" type="submit">${icone('search')}Chercher</button>
-          ${etat.requete ? `<button class="bouton" type="button" id="effacer-requete">${icone('x')}Effacer</button>` : ''}
-        </div>
-        <p class="petit doux" style="margin:.4rem 0 0">Recherche locale par mots-clés : elle retrouve la réponse préparée par l'équipe la plus proche, et les passages des documents. Aucune IA en ligne, aucun compte requis.</p>
-      </form>`;
-    let surlignee = null;
-    if (etat.requete) {
-      const rep = repondre(etat.requete);
-      const docs = rechercherDocuments(etat.requete, 6);
-      surlignee = rep[0] && rep[0].e.id;
-      html += `<section class="carte" aria-labelledby="titre-resultats"><h3 id="titre-resultats">Résultats pour « ${esc(etat.requete)} »</h3>`;
-      if (rep.length) {
-        html += `<p><strong>Réponse la plus proche : ${esc(rep[0].e.id)}</strong> · ${esc(rep[0].e.question)}</p>
-          <p class="reponse-courte">${esc(rep[0].e.reponse_courte)}</p>${listePreuves(rep[0].e.preuves)}`;
-        if (rep.length > 1) html += `<p class="petit" style="margin-top:.6rem">Autres réponses possibles : ${rep.slice(1).map((r) => `<a href="#questions/${esc(r.e.id)}">${esc(r.e.id)} · ${esc(r.e.question)}</a>`).join(' · ')}</p>`;
-      } else {
-        html += '<p>Aucune réponse préparée ne correspond. Voici les passages trouvés dans les documents : vérifiez-les avant de conclure.</p>';
-      }
-      html += `<details ${rep.length ? '' : 'open'}><summary>Passages trouvés dans les documents (${docs.length})</summary>${htmlResultatsDocuments(docs, etat.requete)}</details></section>`;
+    const tete = `<header class="tete-page"><div class="eyebrow">${icone('message-circle-question')}${MODE === 'demo' ? `Espace 02 · ${e.questions.length} questions officielles` : 'Espace 02 · Questions'}</div><h2>Questions et preuves</h2>
+      <p class="intro">${MODE === 'demo' ? 'Une réponse courte pour chaque question, ses nuances, puis les preuves : chaque preuve ouvre le document au bon endroit.' : 'Les réponses viennent des informations et des sources que vous avez données à NOVA.'}</p></header>`;
+    if (!e.questions.length) {
+      return tete + appelAssistant('Aucune question préparée dans ce dossier', 'Posez vos questions à l\'assistant : il répond à partir de ce que vous lui avez confié, et cite la source de chaque fait.', 'Où en est le projet ?');
     }
+    const surlignee = etat.questionSurlignee || null;
+    let html = tete + appelAssistant('Une question qui n\'est pas dans la liste ?', 'Demandez à l\'assistant, avec vos mots : il répond avec les preuves, sans connexion.', 'Qui a approuvé le report ?');
     html += e.questions.map((q) => carteQuestion(q, q.id === surlignee)).join('');
     if (e.questions_complementaires && e.questions_complementaires.length) {
-      html += `<div class="section"><div><div class="eyebrow">Exemples des consignes</div><h2>Questions complémentaires</h2></div></div>
-        <p class="intro">Exemples de questions tirés des consignes du défi, préparés pour la démonstration.</p>`;
-      html += e.questions_complementaires.map((q) => carteQuestion(q, q.id === surlignee)).join('');
+      html += `<details class="carte accordeon" id="questions-complementaires"${(e.questions_complementaires || []).some((q) => q.id === surlignee) ? ' open' : ''}><summary>${icone('list-checks')}Questions complémentaires (${e.questions_complementaires.length}) · exemples tirés des consignes</summary>
+        <div class="accordeon-corps">${e.questions_complementaires.map((q) => carteQuestion(q, q.id === surlignee)).join('')}</div></details>`;
     }
     return html;
   }
@@ -531,9 +534,18 @@
   function rendreEntete() {
     const e = etat.courant;
     const maj = e !== BASE && e.meta.date_situation_maj;
-    $('#situation').innerHTML = `Situation au <strong>${esc(BASE.meta.date_situation_texte)}</strong>${maj ? ` · mise à jour jusqu'au <strong>${fmtDateHeure(e.meta.date_situation_maj)}</strong>` : ''}`;
+    if (MODE === 'vierge') {
+      const nom = (e.synthese.projet && e.synthese.projet.nom) || 'Nouveau projet';
+      $('.titre-fin').textContent = nom;
+      document.title = `NOVA · ${nom}`;
+      $('#situation').innerHTML = `Dossier vierge · <strong>${etat.evenements.length} information${etat.evenements.length > 1 ? 's' : ''} enregistrée${etat.evenements.length > 1 ? 's' : ''}</strong> · aujourd'hui, ${esc(BASE.meta.date_situation_texte)}`;
+    } else {
+      $('#situation').innerHTML = `Situation au <strong>${esc(BASE.meta.date_situation_texte)}</strong>${maj ? ` · mise à jour jusqu'au <strong>${fmtDateHeure(e.meta.date_situation_maj)}</strong>` : ''}`;
+    }
+    const boutonMode = $('#bouton-mode-libelle');
+    if (boutonMode) boutonMode.textContent = MODE === 'vierge' ? 'Dossier vierge' : 'Démo · NOVA';
     const bandeau = $('#bandeau-version');
-    if (etat.evenements.length) {
+    if (etat.evenements.length && MODE === 'demo') {
       bandeau.hidden = false;
       bandeau.innerHTML = `<span><strong>Version affichée :</strong></span>
         <span class="groupe-boutons" role="group" aria-label="Version affichée">
@@ -544,7 +556,7 @@
         ${etat.exempleActif ? badge('rouge', 'EXEMPLE FICTIF chargé (entraînement)', '!') : ''}`;
     } else bandeau.hidden = true;
     $$('.onglets button').forEach((b) => b.setAttribute('aria-current', b.dataset.onglet === etat.onglet ? 'page' : 'false'));
-    $('#pied-texte').innerHTML = `${esc(BASE.meta.methode)} Rendu construit le ${esc(BRUT.construit_le || '')} · ${Object.keys(DOCS).length} documents, données ${esc(BASE.meta.version_donnees)}.`;
+    $('#pied-texte').innerHTML = `${esc(BASE.meta.methode)} Rendu construit le ${esc(BRUT.construit_le || '')} · ${Object.keys(SOURCES).length} documents, données ${esc(BASE.meta.version_donnees)}.`;
   }
 
   // Typographie française à l'affichage : espaces insécables avant « : ; ! ? » et dans les guillemets.
@@ -585,6 +597,12 @@
     }
   }
 
+  // Ancres profondes (liens, guide, assistant) → bon sous-onglet de l'espace.
+  const ANCRES_SOUS_ONGLETS = {
+    'h-chrono': ['historique', 'chrono'], 'h-cycles': ['historique', 'cycles'], 'h-decisions': ['historique', 'decisions'], 'h-contradictions': ['historique', 'contradictions'],
+    'd-recherche': ['documents', 'recherche'], 'd-liste': ['documents', 'liste'], 'd-ajout': ['documents', 'maj'], 'd-avant-apres': ['documents', 'maj'], 'd-export': ['documents', 'export'],
+  };
+
   function rendre(options) {
     PREUVES = [];
     rendreEntete();
@@ -598,12 +616,19 @@
     if (options && options.animer) { void main.offsetWidth; main.classList.add('anime'); }
     if (options && options.ancre) {
       const cible = document.getElementById(options.ancre);
-      if (cible) cible.scrollIntoView({ block: 'start' });
+      if (cible) {
+        // Une section repliée s'ouvre quand on y mène.
+        for (let d = cible.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) d.open = true;
+        if (cible.tagName === 'DETAILS') cible.open = true;
+        cible.scrollIntoView({ block: 'start' });
+      }
     }
   }
 
   function allerA(onglet, ancre) {
     etat.onglet = RENDUS[onglet] || ['vue', 'historique', 'actions', 'documents'].includes(onglet) ? onglet : 'vue';
+    const sous = ANCRES_SOUS_ONGLETS[ancre];
+    if (sous && sous[0] === etat.onglet) etat.sousOnglets[sous[0]] = sous[1];
     rendre({ ancre, animer: !ancre }); // pas d'animation sur un lien profond : le contenu visé s'affiche aussitôt
     if (!ancre) window.scrollTo(0, 0);
   }
@@ -621,28 +646,38 @@
 
   // Délégation des clics.
   document.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-preuve], [data-onglet], [data-version], [data-ouvrir-source-page], #effacer-requete');
+    const b = e.target.closest('[data-preuve], [data-onglet], [data-version], [data-ouvrir-source-page], [data-sous-onglet], [data-ouvrir-assistant]');
     if (!b) return;
+    if (b.dataset.sousOnglet) {
+      const [espace, vue] = b.dataset.sousOnglet.split(':');
+      etat.sousOnglets[espace] = vue;
+      history.replaceState(null, '', '#' + espace);
+      rendre();
+      return;
+    }
+    if (b.dataset.ouvrirAssistant !== undefined) {
+      if (window.NOVA_ASSISTANT) window.NOVA_ASSISTANT.ouvrir({ brouillon: b.dataset.ouvrirAssistant || '' });
+      return;
+    }
     if (b.dataset.preuve !== undefined) ouvrirPreuve(PREUVES[+b.dataset.preuve]);
     else if (b.dataset.onglet) { history.pushState(null, '', '#' + b.dataset.onglet); allerA(b.dataset.onglet); $('#contenu').focus({ preventScroll: true }); }
     else if (b.dataset.version) { etat.version = b.dataset.version; recalculer(); rendre(); annoncer('Version ' + (etat.version === 'initiale' ? 'initiale' : 'actualisée') + ' affichée.'); }
     else if (b.dataset.ouvrirSourcePage) ouvrirPreuve({ source: b.dataset.ouvrirSourcePage, repere: 'Document complet' });
-    else if (b.id === 'effacer-requete') { etat.requete = ''; rendre(); }
   });
+  // Le champ de l'en-tête est la porte d'entrée de l'assistant : poser une question ou donner une information.
   document.addEventListener('submit', (e) => {
-    if (e.target.id === 'form-question' || e.target.id === 'form-interroger') {
+    if (e.target.id === 'form-question') {
       e.preventDefault();
-      const champ = e.target.id === 'form-question' ? $('#champ-question') : $('#champ-interroger');
-      etat.requete = champ.value.trim();
-      history.pushState(null, '', '#questions');
-      allerA('questions');
-      annoncer(etat.requete ? 'Résultats de recherche affichés.' : 'Recherche effacée.');
+      const champ = $('#champ-question');
+      const texte = champ.value.trim();
+      champ.value = '';
+      if (window.NOVA_ASSISTANT) window.NOVA_ASSISTANT.ouvrir({ envoyer: texte });
     }
   });
   window.addEventListener('hashchange', lireAncre);
 
   // Exposé pour les autres parties de l'application.
-  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees, typographier, icone, tuile, iconeDoc, ICONE_NATURE };
+  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, MODE, CLE_MODE, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, repondre, jetons, normaliser, recalculer, rendre, allerA, annoncer, ecrireLocaux, enregistrerSourceEvenement, RENDUS, conditionsModifiees, typographier, icone, tuile, iconeDoc, ICONE_NATURE, appelAssistant };
 
   // Premier affichage une fois tous les scripts chargés (espaces.js, mises_a_jour.js).
   document.addEventListener('DOMContentLoaded', () => {

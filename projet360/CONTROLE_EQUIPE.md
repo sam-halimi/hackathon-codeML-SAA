@@ -10,10 +10,10 @@ Liste de vérification avant la remise et avant la démonstration. Elle suit le 
 |---|---|
 | `node outils/verifier.mjs` | Chaque preuve (passage, page, cellules, zone) existe dans le corpus ; les 10 questions ont réponse et preuves ; chaque action a un responsable confirmé ou proposé, une échéance datée ou « À confirmer », un état et une preuve ; 3 conditions de go-live ; les copies sont déclarées ; les garde-fous des événements sont respectés |
 | `node outils/construire.mjs` | Refait la vérification et produit `dist/NOVA_Projet360.html` |
-| `node outils/tester_navigateur.mjs` | Dans Chromium, **hors connexion**, avec un fuseau horaire différent (Paris) : ouverture, date fixe du 30 sept., ouverture au bon endroit des 53 preuves des Q01–Q10, PDF, Excel et capture, copies signalées, questions libres, 5 espaces, brief sur **une page** (Lettre et A4), filtres, recherche, exemple fictif, garde-fous, enregistrement, persistance, import JSON, décision de date approuvée (la version initiale garde le 22 oct.), tutoriel d'accueil (ouverture au mercredi 30 sept., fiche du dirigeant, 6 pièges, chiffres réels, clavier, fermeture, **aucun défilement sur 8 tailles d'écran**), affichage téléphone (390 px), chaque icône affichée existe et se dessine, aucun tiret cadratin visible, polices Fraunces et Source Sans 3 chargées sans réseau, aucune erreur JavaScript, aucune requête réseau |
+| `node outils/tester_navigateur.mjs` | Dans Chromium, **hors connexion**, avec un fuseau horaire différent (Paris) : ouverture, date fixe du 30 sept., ouverture au bon endroit des 53 preuves des Q01–Q10, PDF, Excel et capture, copies signalées, 5 espaces, brief sur **une page** (Lettre et A4), sous-onglets et filtres, recherche, exemple fictif, formulaire expert et garde-fous, enregistrement, persistance, import JSON, décision de date approuvée (la version initiale garde le 22 oct.), tutoriel d'accueil (mercredi 30 sept., fiche du dirigeant, 6 pièges, chiffres réels, clavier, **aucun défilement sur 8 tailles d'écran**), affichage téléphone (390 px). **Assistant** : vue fractionnée à un tiers de la largeur, réponses Q03 et Q10 avec preuve ouverte au passage, synthèse, finances, courriel → aperçu → appliquer → 1 / 3 → annuler, garde-fou fournisseur (correctif livré, rien de fermé), proposition sans changement de date, question « qui a validé ? », ignorer. **Connecteur Claude** (réponse d'API simulée, sans réseau) : clé en stockage de session, requête conforme (`claude-opus-5-5`, version d'API, outil), état transmis, aperçu obligatoire, résultat d'outil renvoyé, fermeture par le fournisseur refusée, clé refusée → repli local. **Versions** : écran de choix, dossier vierge (guide propre, états vides, l'assistant remplit nom, responsable, date approuvée après question, condition et action ; sources ; persistance), retour à la démo intacte, effacement. Plus : chaque icône existe et se dessine, aucun tiret cadratin visible, polices chargées sans réseau, aucune erreur JavaScript, aucune requête réseau |
 | `node outils/comparer_equipe.mjs` | Vérifie l'analyse JSON de l'équipe (`equipe/`) dans le corpus original (empreintes, fichiers cités, heures, cellules, pages) et la compare aux faits clés de l'application |
 
-**Dernière exécution (4 octobre 2026)** : `verifier.mjs` → 0 erreur (229 preuves contrôlées : 221 dans les données + 8 passages de l'exemple fictif) ; `tester_navigateur.mjs` → 72/72 vérifications réussies hors connexion, et 72/72 sur la version en ligne https://nova-projet360.vercel.app ; `comparer_equipe.mjs` → 64/64 fichiers identiques, 106 preuves de l'équipe et 80 repères contrôlés, aucun écart sur les faits clés.
+**Dernière exécution (4 octobre 2026)** : `verifier.mjs` → 0 erreur (229 preuves contrôlées : 221 dans les données + 8 passages de l'exemple fictif) ; `tester_navigateur.mjs` → 119/119 vérifications réussies hors connexion, et 119/119 sur la version en ligne https://nova-projet360.vercel.app ; `comparer_equipe.mjs` → 64/64 fichiers identiques, 106 preuves de l'équipe et 80 repères contrôlés, aucun écart sur les faits clés.
 
 ## 2. Barème → où le montrer
 
@@ -24,11 +24,11 @@ Liste de vérification avant la remise et avant la démonstration. Elle suit le 
 | | ≥ 2 réponses qui croisent des sources distinctes | Chaque carte affiche le nombre de sources indépendantes (3 à 6, copies exclues) | ✓ calculé |
 | Chronologie (10) | Proposition, décision et validation, avec dates et sources | Espace 3, section « Proposition, décision, livraison, validation » (8 sujets) | ✓ |
 | | ≥ 2 contradictions expliquées, dont une dans un plan ou un registre | K01 (plan v3 : 15 oct.), K02 (registre : R-01), + 6 autres | ✓ |
-| Brief et actions (10) | Cinq thèmes sur une page | Vue d'ensemble → « Imprimer le brief (1 page) » | ✓ testé (Lettre) |
+| Brief et actions (10) | Cinq thèmes sur une page | Accueil → « Imprimer le brief (1 page) » | ✓ testé (Lettre et A4) |
 | | Les 3 conditions reliées à des actions, responsables et échéances | Tableau des conditions + Actions A01–A05 | ✓ |
 | Utilisation (10) | Le jury ouvre le rendu et retrouve une preuve | Double-clic, aucun compte | ✓ testé hors connexion |
-| | Limites explicitées | `MODE_EMPLOI.md` section 6 | ☐ à présenter à l'oral |
-| Mise à jour (10) | Distinguer statut du problème, décision antérieure et nouvelle proposition | Formulaire guidé + garde-fous | ✓ testé |
+| | Limites explicitées | `MODE_EMPLOI.md` section 8 | ☐ à présenter à l'oral |
+| Mise à jour (10) | Distinguer statut du problème, décision antérieure et nouvelle proposition | Assistant (aperçu, questions de précision) + formulaire expert + mêmes garde-fous | ✓ testé |
 | | Baseline conservé, impacts et actions sourcés, aucune approbation inventée, aucune autre condition fermée | Bouton Initiale / Actualisée ; avant/après en 3 questions + « Ce qui ne change pas » | ✓ testé (exemple fictif) |
 
 ## 3. Relecture humaine des dix réponses (3e membre)
@@ -82,13 +82,12 @@ Fichiers reçus le 4 octobre : `NOVA_OPERATIONS.json`, `INVENTAIRE_SOURCES.json`
 
 ## 6. Le jour J : nouvel événement (environ 10 minutes)
 
-1. Ouvrez `dist/NOVA_Projet360.html` → onglet **5** → « Ajouter une mise à jour ».
-2. Collez la source et renseignez sa date, son auteur et son **autorité** (fournisseur, comité, ticket…).
-3. Pour chaque fait nouveau, demandez-vous : est-ce une **proposition**, une **décision approuvée** (par qui ?), un **correctif livré** ou une **validation obtenue** (par l'équipe responsable) ?
-4. Ajoutez les impacts avec le passage exact, puis « Prévisualiser ».
-5. Vérifiez dans l'aperçu : la date approuvée ne change que s'il y a une décision ; les autres conditions restent ouvertes ; les actions ont un responsable et une échéance ou « À confirmer ».
-6. Enregistrez → montrez **Avant / après**, puis la bascule **Initiale / Actualisée**, puis le brief réimprimé.
-7. Si vous avez utilisé Claude pour analyser la source, dites-le (méthode « assistée par Claude »).
+1. Ouvrez `dist/NOVA_Projet360.html` (version **démo**), cliquez sur **Assistant** et collez la source (courriel, compte rendu, ticket), si possible précédée de sa date et de son auteur (« Courriel de …, 2 octobre : … »).
+2. Lisez la carte d'aperçu : pour chaque fait nouveau, l'assistant indique s'il s'agit d'une **proposition**, d'une **décision approuvée** (par qui ?), d'un **correctif livré** ou d'une **validation obtenue** (par l'équipe responsable). S'il pose une question (« Qui a validé ? », « Qui a approuvé ? »), répondez avec les boutons.
+3. Vérifiez : la date approuvée ne change que s'il y a une décision ; les autres conditions restent ouvertes (« Ce qui ne change pas ») ; les actions ont un responsable et une échéance ou « À confirmer ».
+4. « Appliquer » → montrez l'Accueil mis à jour, **Avant / après** (Documents → Mises à jour), la bascule **Initiale / Actualisée**, puis le brief réimprimé.
+5. Si l'assistant ne comprend pas la source, utilisez le **formulaire expert** (Documents → Mises à jour) : mêmes garde-fous, saisie champ par champ.
+6. Si vous avez utilisé Claude (connecteur ou analyse à part), dites-le (méthode « assistée par Claude »).
 
 ## 7. Démonstration en 5 minutes (version de l'équipe, adaptée)
 
@@ -96,12 +95,13 @@ Confirmez d'abord la durée officielle. Gardez une vidéo de secours, clairement
 
 | Temps | Geste | Ce qu'on dit |
 |---|---|---|
-| 0:00 | Ouvrir le fichier : le guide d'accueil s'affiche, cliquer « Passer le guide » | « Aucune connexion, aucun compte. Situation figée au 30 septembre, 9 h, Montréal. » |
-| 0:20 | Vue d'ensemble : responsable, 22 octobre, 0 condition sur 3 | « Nicolas Perron reprend ; le 22 n'est pas un go automatique. » |
+| 0:00 | Ouvrir le fichier : choisir « Découvrir la démo », puis « Passer » le guide | « Aucune connexion, aucun compte. Situation figée au 30 septembre, 9 h, Montréal. » |
+| 0:20 | Accueil : responsable, 22 octobre, 0 condition sur 3 | « Nicolas Perron reprend ; le 22 n'est pas un go automatique. » |
 | 1:00 | Questions → Q08 → Preuve SEC-210 | « Livré n'est pas accepté : la preuve s'ouvre au passage exact. » |
 | 1:45 | Historique → Contradictions → K01 (plan v3, cellules E7:F7) | « Le plan dit encore 15 octobre ; la décision du 10 septembre fait foi. » |
 | 2:30 | Questions → Q10 → capture du runbook | « Deux travaux manquent : retour arrière et validation après déploiement. » |
-| 3:15 | Documents → S'entraîner avec l'exemple fictif → Avant / après → Initiale / Actualisée | « Une proposition ne devient jamais une décision ; la version initiale reste là. » |
+| 3:15 | Assistant → « Essai : Boréal propose le 29 octobre » → aperçu → Appliquer → Initiale / Actualisée | « Une proposition ne devient jamais une décision ; la version initiale reste là. » |
+| 3:50 | Assistant → « Essai : Boréal dit ACC-303 validé » | « Le fournisseur ne peut pas fermer une condition : c'est un correctif livré. » |
 | 4:15 | Méthode | « Lecture et extraction assistées par Claude, choix d'interprétation faits par l'équipe, chaque preuve vérifiée par un script ; limites dans le mode d'emploi. » |
 
 Prévoyez en plus le temps du véritable événement du jury (section 6).

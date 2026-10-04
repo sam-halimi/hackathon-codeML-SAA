@@ -166,6 +166,7 @@
     const journal = [];
     const erreurs = [];
     etat.synthese.propositions = etat.synthese.propositions || [];
+    etat.synthese.conditions = etat.synthese.conditions || [];
     for (const ev of evenements || []) {
       if (ev.actif === false) continue;
       const entree = { evenement: ev.id, titre: ev.titre, date: ev.date, impacts: [], refuses: [] };
@@ -181,6 +182,8 @@
           else if (impact.ajouter === 'propositions') etat.synthese.propositions.push(Object.assign({ nature: 'proposition' }, obj));
           else if (impact.ajouter === 'chronologie') etat.chronologie.push(obj);
           else if (impact.ajouter === 'risques') (etat.risques = etat.risques || []).push(obj);
+          else if (impact.ajouter === 'conditions') etat.synthese.conditions.push(Object.assign({ etat: 'ouvert', actions: [], questions: [] }, obj));
+          else if (impact.ajouter === 'decisions') (etat.decisions = etat.decisions || []).push(obj);
           else { erreurs.push(`${ev.id} : collection inconnue « ${impact.ajouter} ».`); continue; }
           entree.impacts.push({ type: 'ajout', collection: impact.ajouter, id: obj.id, titre: obj.titre || obj.texte, nature });
           continue;

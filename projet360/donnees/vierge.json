@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "mode": "vierge",
+    "projet": "Nouveau projet",
+    "titre": "Nouveau dossier",
+    "sous_titre": "Mémoire de projet",
+    "date_situation": null,
+    "date_situation_texte": null,
+    "version_donnees": "dossier vierge",
+    "methode": "Dossier construit à partir des informations saisies dans ce navigateur (assistant ou formulaire). Chaque fait garde sa source.",
+    "regles": [
+      "Une proposition n'est pas une décision.",
+      "Un correctif livré n'est pas une validation.",
+      "Une date de fichier récente ne garantit pas une information à jour.",
+      "Une pièce jointe et sa copie séparée comptent pour une seule preuve.",
+      "Une capture historique ne prouve pas à elle seule qu'un défaut est encore ouvert."
+    ]
+  },
+  "autorites": {
+    "decision": {
+      "libelle": "Décision formelle",
+      "ton": "violet",
+      "aide": "Comité, ADR, contrat, demande de changement approuvée ou décision écrite du chargé de projet."
+    },
+    "officielle": {
+      "libelle": "Source officielle",
+      "ton": "bleu",
+      "aide": "Compte rendu, courriel ou canal du projet."
+    },
+    "ticket": {
+      "libelle": "Ticket de suivi",
+      "ton": "bleu",
+      "aide": "Statut et commentaires datés des équipes responsables."
+    },
+    "fournisseur": {
+      "libelle": "Déclaration du fournisseur",
+      "ton": "ambre",
+      "aide": "Affirmation de Boréal : à confirmer par l'équipe responsable."
+    },
+    "finance": {
+      "libelle": "Document financier",
+      "ton": "bleu",
+      "aide": "Facture ou montant."
+    },
+    "brouillon": {
+      "libelle": "Brouillon",
+      "ton": "ambre",
+      "aide": "Aucune valeur de décision."
+    },
+    "non_officielle": {
+      "libelle": "Note non officielle",
+      "ton": "gris",
+      "aide": "Auteur inconnu ; aucune autorité."
+    }
+  },
+  "personnes": [],
+  "synthese": {
+    "projet": {
+      "nom": "Nouveau projet",
+      "preuves": []
+    },
+    "responsable": {
+      "nom": null,
+      "role": "Responsable du projet",
+      "depuis": null,
+      "avant": null,
+      "preuves": []
+    },
+    "date_mep": {
+      "approuvee": null,
+      "texte": null,
+      "statut": "À définir",
+      "autorite": null,
+      "date_decision": null,
+      "reserve": null,
+      "preuves": []
+    },
+    "propositions": [],
+    "conditions": [],
+    "portee": {
+      "texte": null,
+      "incluse": [],
+      "hors_portee": [],
+      "preuves": []
+    },
+    "finances": {
+      "devise": "CAD, hors taxes",
+      "autorise": null,
+      "calcul": null,
+      "facture": null,
+      "paye": null,
+      "en_validation": null,
+      "a_contester": null,
+      "factures": [],
+      "exclues": [],
+      "remarque": null,
+      "preuves": []
+    },
+    "priorites": [],
+    "incertitudes": [],
+    "a_ne_pas_utiliser": []
+  },
+  "questions": [],
+  "questions_complementaires": [],
+  "decisions": [],
+  "cycles": [],
+  "chronologie": [],
+  "contradictions": [],
+  "actions": [],
+  "risques": [],
+  "sources": []
+}

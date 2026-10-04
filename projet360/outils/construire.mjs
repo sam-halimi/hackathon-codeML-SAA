@@ -46,6 +46,8 @@ try {
   const maintenant = new Date();
   const donnees = {
     operations: charge.operations,
+    // Dossier vierge : même structure, sans aucune donnée (version « nouveau projet »).
+    vierge: charge.vierge,
     evenements: charge.evenements,
     exemples: charge.exemples,
     documents: charge.documents,
@@ -55,7 +57,7 @@ try {
   };
   // « < » est échappé pour que le JSON ne puisse jamais fermer la balise <script>.
   const json = JSON.stringify(donnees).replace(/</g, '\\u003c');
-  const scripts = ['app/commun.js', 'app/app.js', 'app/espaces.js', 'app/mises_a_jour.js', 'app/guide.js']
+  const scripts = ['app/commun.js', 'app/app.js', 'app/espaces.js', 'app/mises_a_jour.js', 'app/assistant.js', 'app/guide.js']
     .filter((f) => fs.existsSync(path.join(RACINE, f)))
     .map((f) => `<script>\n${lire(f).replace(/<\/script/gi, '<\\/script')}\n</script>`)
     .join('\n');

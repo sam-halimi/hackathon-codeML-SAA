@@ -74,8 +74,8 @@ Un fichier par événement (ou un tableau d'événements). Modèle : `donnees/mo
 
 - `source` : la nouvelle source, avec son texte intégral (`texte`) ou un `chemin` vers un fichier placé dans `corpus/`.
 - `impacts` : liste de changements.
-  - `{ "cible": "conditions/C2", "modifs": { "etat": "…" } }` modifie un élément existant. Cibles possibles : `questions/Qxx`, `actions/Axx`, `conditions/Cx`, `synthese/date_mep`, `synthese/finances`, `synthese/portee`, `synthese/responsable`.
-  - `{ "ajouter": "actions" | "propositions" | "risques" | "chronologie", "objet": { … } }` ajoute un élément.
+  - `{ "cible": "conditions/C2", "modifs": { "etat": "…" } }` modifie un élément existant. Cibles possibles : `questions/Qxx`, `actions/Axx`, `conditions/Cx`, `synthese/date_mep`, `synthese/finances`, `synthese/portee`, `synthese/responsable`, `synthese/projet` (nom du projet, dossier vierge).
+  - `{ "ajouter": "actions" | "propositions" | "conditions" | "decisions" | "risques" | "chronologie", "objet": { … } }` ajoute un élément. Une condition ajoutée démarre à l'état `ouvert` ; une décision ajoutée entre au registre des décisions.
   - Chaque impact porte une `nature`, un `passage` (preuve) et, au besoin, une `note`.
 - `inchange` : ce que l'événement ne change pas.
 - `date` : la **date du fait** (quand la source a été émise). `cree_le` : la **date d'ajout dans NOVA** (horodatage réel, renseigné automatiquement par le formulaire). Les deux sont affichées séparément ; la date de situation du 30 septembre, elle, ne change jamais.
@@ -91,12 +91,18 @@ La version initiale n'est jamais modifiée : les événements s'appliquent sur u
 
 `donnees/evenements/exemples/` contient un exemple **fictif**, chargé seulement à la demande (bouton « S'entraîner »).
 
+**Mises à jour créées par l'assistant** : même format. `methode` indique le moteur (« Assistant NOVA (moteur local, règles) » ou « Assistant NOVA (Claude, Anthropic) »), suivi de « vérifié et appliqué par l'utilisateur ». La source (`NS-…`) garde le message d'origine en entier (`texte`) ; chaque `passage` est une phrase de ce message. Les essais de la démo portent `"exemple": true` et le préfixe « EXEMPLE D'ESSAI » dans le titre de la source. Elles sont stockées dans le navigateur (`localStorage`, clé `nova360.evenements.v1` pour la démo, `nova360.vierge.evenements.v1` pour le dossier vierge) et s'exportent en JSON comme les autres.
+
+## Dossier vierge · `donnees/vierge.json`
+
+Même structure que `NOVA_OPERATIONS.json`, sans aucune donnée : `meta.mode` vaut `vierge`, `synthese.projet.nom` vaut « Nouveau projet », la date approuvée, le responsable et les montants sont `null`, toutes les listes sont vides. La date de situation est celle du jour (le dossier vierge vit au présent). Tout ce qui s'y ajoute passe par des événements, avec les mêmes garde-fous. La version choisie est mémorisée dans `localStorage` (`nova360.mode` : `demo` ou `vierge`).
+
 ## Guide d'accueil · `donnees/guide.json`
 
-Texte du tutoriel affiché à la première ouverture (modifiable sans toucher au code, puis `node outils/construire.mjs`).
+Texte du tutoriel affiché à la première ouverture (modifiable sans toucher au code, puis `node outils/construire.mjs`). La racine décrit le guide de la démo ; la clé `vierge` contient le guide du dossier vierge, avec la même structure.
 
-- `persona` : `nom`, `accroche` (titre du premier écran), `fiche` (4 éléments `icone`, `libelle`, `texte` : le contexte du dirigeant), `promesse`.
-- `etapes` (6) : `icone` (nom d'une icône de `app/icones.svg`, sans `i-`), `court` (libellé de l'écran d'accueil), `douleur_titre`, `douleur`, `risque`, `solution_titre`, `solution`, `onglet` (`vue`, `questions`, `historique`, `actions`, `documents`), `ancre` (facultatif), `bouton`.
+- `persona` : `nom`, `icone` (facultatif), `accroche` (titre du premier écran), `fiche` (4 éléments `icone`, `libelle`, `texte` : le contexte du dirigeant), `promesse`.
+- `etapes` (6 pour la démo, 4 pour le dossier vierge) : `icone` (nom d'une icône de `app/icones.svg`, sans `i-`), `court` (libellé de l'écran d'accueil), `douleur_titre`, `douleur`, `risque`, `solution_titre`, `solution`, puis la destination du bouton : soit `onglet` (`vue`, `questions`, `historique`, `actions`, `documents`) et `ancre` (facultatif), soit `assistant_exemple` (numéro d'un essai de l'assistant, qui s'ouvre avec ce message prêt à envoyer) ; enfin `bouton` (libellé).
 - `fin` : `titre`, `texte`.
 - Jetons remplacés par l'état affiché : `{date}`, `{jours}` (jours entre la date de situation et la date approuvée), `{remplies}`, `{autorise}`, `{conteste}`. Dans les étapes, les valeurs qui décrivent l'état courant passent par ces jetons, pour suivre les mises à jour.
 - Gardez les textes courts : la fenêtre du guide ne défile jamais, et le texte rétrécit si le contenu est trop long (le test échoue sous 13 px).

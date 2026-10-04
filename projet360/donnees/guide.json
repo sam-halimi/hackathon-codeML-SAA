@@ -88,17 +88,96 @@
       "icone": "bell-ring",
       "court": "Une nouvelle de dernière minute",
       "douleur_titre": "Une nouvelle tombe à la dernière minute",
-      "douleur": "Le fournisseur propose une autre date. Faut-il tout relire et tout refaire ?",
+      "douleur": "Le fournisseur propose une autre date par courriel. Faut-il tout relire et tout refaire ?",
       "risque": "Présenter une proposition comme une décision.",
-      "solution_titre": "Une mise à jour en quelques champs",
-      "solution": "NOVA montre ce qui change et ce qui ne change pas. La version d'origine reste consultable.",
-      "onglet": "documents",
-      "ancre": "d-ajout",
-      "bouton": "Ajouter une information"
+      "solution_titre": "Collez le courriel, l'assistant s'occupe du reste",
+      "solution": "Il montre ce qui change et ce qui ne change pas, et vous validez. Une proposition reste une proposition ; la version d'origine reste consultable.",
+      "assistant_exemple": 1,
+      "bouton": "Essayer avec l'assistant"
     }
   ],
   "fin": {
     "titre": "Vous êtes prêt à décider.",
-    "texte": "Imprimez le brief d'une page, ou posez votre question dans la barre de recherche, par exemple « qui a approuvé le report ? ». Ce guide reste disponible avec le bouton « Comment ça marche ? »."
+    "texte": "Imprimez le brief d'une page, ou posez votre question à l'assistant, par exemple « qui a approuvé le report ? ». Ce guide reste disponible avec le bouton « Guide », en haut à droite."
+  },
+  "vierge": {
+    "persona": {
+      "nom": "Le dirigeant qui lance un projet",
+      "icone": "rocket",
+      "accroche": "Un nouveau projet démarre. Tout est encore dans vos courriels.",
+      "fiche": [
+        {
+          "icone": "folder-plus",
+          "libelle": "Le dossier",
+          "texte": "Vierge : aucune donnée, aucun document pour l'instant."
+        },
+        {
+          "icone": "sparkles",
+          "libelle": "L'assistant",
+          "texte": "Vous lui parlez comme à un collègue ; il range chaque information."
+        },
+        {
+          "icone": "shield-check",
+          "libelle": "Les règles",
+          "texte": "Rien n'est modifié sans votre accord ; chaque fait garde sa source."
+        },
+        {
+          "icone": "save",
+          "libelle": "Vos données",
+          "texte": "Elles restent dans ce navigateur : aucun compte, aucun serveur."
+        }
+      ],
+      "promesse": "Quatre pièges guettent un projet qui démarre. NOVA vous en protège dès le premier jour."
+    },
+    "etapes": [
+      {
+        "icone": "mail",
+        "court": "Tout est dans les courriels",
+        "douleur_titre": "Tout est éparpillé dans les courriels",
+        "douleur": "Qui pilote, ce qui est décidé, ce qui reste à faire : tout est noyé dans les messages et les réunions.",
+        "risque": "Personne n'a la même version du projet.",
+        "solution_titre": "Dites-le, NOVA le range",
+        "solution": "Collez un courriel ou dites ce que vous savez : l'assistant remplit le responsable, la date, les conditions et les actions.",
+        "assistant_exemple": 0,
+        "bouton": "Essayer avec l'assistant"
+      },
+      {
+        "icone": "pencil-line",
+        "court": "Une idée prise pour une décision",
+        "douleur_titre": "Une idée prise pour une décision",
+        "douleur": "« On vise le 15 novembre » circule, et devient « la date » sans que personne ne l'ait approuvée.",
+        "risque": "Promettre une date que personne n'a validée.",
+        "solution_titre": "NOVA demande qui a décidé",
+        "solution": "Une date ne devient « approuvée » que si vous dites qui l'a approuvée. Sinon, elle reste une proposition, affichée comme telle.",
+        "assistant_exemple": 1,
+        "bouton": "Donner une date"
+      },
+      {
+        "icone": "users",
+        "court": "Qui fait quoi ?",
+        "douleur_titre": "Qui fait quoi ? Pour quand ?",
+        "douleur": "Les engagements se prennent à l'oral et se perdent : « je m'en occupe », sans date ni responsable.",
+        "risque": "Une tâche clé que personne ne porte.",
+        "solution_titre": "Une action claire, sans date inventée",
+        "solution": "Chaque action a un responsable et une échéance, ou « À confirmer » quand rien n'est écrit.",
+        "assistant_exemple": 3,
+        "bouton": "Ajouter une action"
+      },
+      {
+        "icone": "file-search",
+        "court": "D'où vient l'info ?",
+        "douleur_titre": "D'où vient cette information ?",
+        "douleur": "Trois mois plus tard, plus personne ne sait qui a dit quoi, ni quand.",
+        "risque": "Reprendre le projet sans pouvoir rien vérifier.",
+        "solution_titre": "Chaque fait garde sa source",
+        "solution": "Le message d'origine devient une source consultable. L'historique garde chaque mise à jour, et vous pouvez l'annuler.",
+        "onglet": "historique",
+        "bouton": "Voir l'historique"
+      }
+    ],
+    "fin": {
+      "titre": "Votre dossier est prêt à se remplir.",
+      "texte": "Ouvrez l'assistant et dites-lui ce que vous savez du projet, avec vos mots. Il range, vous validez. Ce guide reste disponible avec le bouton « Guide », en haut à droite."
+    }
   }
 }

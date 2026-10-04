@@ -3,14 +3,21 @@
 (function () {
   'use strict';
   const A = window.NOVA_APP;
-  const { etat, BASE, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, badge, badgeEtat, badgeNature, boutonPreuve, icone } = A;
+  const { etat, BASE, C, MODE, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, badge, badgeEtat, badgeNature, boutonPreuve, icone, tuile } = A;
+  const DEMO = MODE === 'demo';
+  const questionExiste = (id) => A.etat.actualise.questions.some((q) => q.id === id);
 
   // ===================================================================
   // Brouillon du formulaire (conservé entre deux affichages)
   // ===================================================================
 
+  const dateParDefaut = () => {
+    if (DEMO) return '2026-09-30T10:00';
+    const d = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+    return d.toISOString().slice(0, 16);
+  };
   const nouveauBrouillon = () => ({
-    titre: '', date: '2026-09-30T10:00', type: 'Courriel', auteur: '', autorite: 'officielle', texte: '', fichier: null,
+    titre: '', date: dateParDefaut(), type: 'Courriel', auteur: '', autorite: 'officielle', texte: '', fichier: null,
     methode: 'assistee', resume: '', impacts: [], inchange: '', message: '', erreurs: [], apercu: null,
   });
   let brouillon = nouveauBrouillon();
@@ -103,21 +110,22 @@
         impacts.push(Object.assign({ cible: 'conditions/' + im.condition, modifs: { etat: im.etat }, note: im.note || undefined }, commun));
         sujets.add(SUJET_CONDITION[im.condition]);
         // Les réponses liées reçoivent une note visible.
-        (c ? c.questions || [] : []).forEach((q) => impacts.push(Object.assign({ cible: 'questions/' + q, note: `${im.condition} (${c.titre}) : ${(C.ETATS[im.etat] || {}).libelle || im.etat}.${im.note ? ' ' + im.note : ''}` }, commun)));
+        (c ? c.questions || [] : []).filter(questionExiste).forEach((q) => impacts.push(Object.assign({ cible: 'questions/' + q, note: `${im.condition} (${c.titre}) : ${(C.ETATS[im.etat] || {}).libelle || im.etat}.${im.note ? ' ' + im.note : ''}` }, commun)));
       } else if (im.type === 'proposition_date') {
         if (!im.date) erreurs.push(`${n} : indiquez la date proposée.`);
         const texte = fmtDate(im.date, true);
         impacts.push(Object.assign({ ajouter: 'propositions', objet: { id: 'P-' + id.slice(4), date_proposee: im.date, texte, propose_par: im.propose_par, motif: im.motif, statut: 'En attente de décision' } }, commun, { nature: 'proposition' }));
-        impacts.push(Object.assign({ ajouter: 'actions', objet: { id: 'A-' + id.slice(4), titre: `Faire trancher la proposition du ${texte} par l'autorité compétente (comité de direction)`, condition: null, responsable: 'Nicolas Perron (comité de direction)', responsable_statut: 'propose', echeance: null, echeance_texte: 'À confirmer', etat: 'a_faire', type: 'recommandation' } }, commun, { nature: 'proposition' }));
-        impacts.push(Object.assign({ cible: 'questions/Q01', note: `Nouvelle proposition (non approuvée) : ${texte}${im.propose_par ? ', par ' + im.propose_par : ''}. La date approuvée reste ${A.etat.actualise.synthese.date_mep.texte} tant qu'aucune décision n'est prise.` }, commun, { nature: 'proposition' }));
+        const decideur = DEMO ? 'Nicolas Perron (comité de direction)' : (A.etat.actualise.synthese.responsable.nom || 'Responsable du projet');
+        impacts.push(Object.assign({ ajouter: 'actions', objet: { id: 'A-' + id.slice(4), titre: `Faire trancher la proposition du ${texte} par l'autorité compétente${DEMO ? ' (comité de direction)' : ''}`, condition: null, responsable: decideur, responsable_statut: 'propose', echeance: null, echeance_texte: 'À confirmer', etat: 'a_faire', type: 'recommandation' } }, commun, { nature: 'proposition' }));
+        if (questionExiste('Q01')) impacts.push(Object.assign({ cible: 'questions/Q01', note: `Nouvelle proposition (non approuvée) : ${texte}${im.propose_par ? ', par ' + im.propose_par : ''}. La date approuvée reste ${A.etat.actualise.synthese.date_mep.texte || 'non définie'} tant qu'aucune décision n'est prise.` }, commun, { nature: 'proposition' }));
         sujets.add('date');
       } else if (im.type === 'decision_date') {
         if (!im.date) erreurs.push(`${n} : indiquez la nouvelle date approuvée.`);
         if (!im.autorite.trim()) erreurs.push(`${n} : indiquez qui a approuvé (ex. : comité de direction).`);
         const texte = fmtDate(im.date, true);
         impacts.push(Object.assign({ cible: 'synthese/date_mep', modifs: { approuvee: im.date, texte, autorite: im.autorite, date_decision: date.slice(0, 10), statut: 'Approuvée' }, note: im.note || `Nouvelle date approuvée : ${texte} (${im.autorite}).` }, commun, { nature: 'decision_approuvee' }));
-        impacts.push(Object.assign({ cible: 'questions/Q01', note: `Nouvelle date approuvée : ${texte} par ${im.autorite}. Vérifiez si les conditions de go-live restent valables.` }, commun, { nature: 'decision_approuvee' }));
-        impacts.push(Object.assign({ cible: 'questions/Q03', note: `Nouvelle approbation : ${im.autorite}, le ${fmtDate(date)}.` }, commun, { nature: 'decision_approuvee' }));
+        if (questionExiste('Q01')) impacts.push(Object.assign({ cible: 'questions/Q01', note: `Nouvelle date approuvée : ${texte} par ${im.autorite}. Vérifiez si les conditions de go-live restent valables.` }, commun, { nature: 'decision_approuvee' }));
+        if (questionExiste('Q03')) impacts.push(Object.assign({ cible: 'questions/Q03', note: `Nouvelle approbation : ${im.autorite}, le ${fmtDate(date)}.` }, commun, { nature: 'decision_approuvee' }));
         sujets.add('date');
       } else if (im.type === 'reponse') {
         const modifs = im.remplacer && im.reponse_courte.trim() ? { reponse_courte: im.reponse_courte.trim() } : undefined;
@@ -160,7 +168,7 @@
     const s = A.etat.actualise.synthese;
     const touchees = new Set(brouillon.impacts.filter((i) => i.type === 'condition').map((i) => i.condition));
     const lignes = [];
-    if (!brouillon.impacts.some((i) => i.type === 'decision_date')) lignes.push(`La date approuvée reste le ${s.date_mep.texte} : aucune nouvelle décision d'approbation.`);
+    if (!brouillon.impacts.some((i) => i.type === 'decision_date')) lignes.push(s.date_mep.texte ? `La date approuvée reste le ${s.date_mep.texte} : aucune nouvelle décision d'approbation.` : 'Aucune date approuvée : la date reste à définir.');
     s.conditions.filter((c) => !touchees.has(c.id)).forEach((c) => lignes.push(`${c.id} (${c.titre}) reste : ${(C.ETATS[c.etat] || {}).libelle}.`));
     return lignes.join('\n');
   }
@@ -222,8 +230,9 @@
     const analyse = analyserTexte(b.texte);
     const indices = (analyse.indices || []).map((x, k) => `<li>${esc(x.libelle)} <button type="button" class="bouton petit" data-ajouter-indice="${k}">Ajouter cet impact</button></li>`).join('');
     const nat = (analyse.natures || []).map((n) => C.NATURES[n].libelle).join(', ');
-    return `<section class="carte" id="d-ajout"><h3 class="ligne-ic">${icone('bell-ring')}Ajouter une nouvelle information</h3>
-      <p class="intro">Saisissez la nouvelle source puis ce qu'elle change. La version initiale est conservée : vous pourrez toujours comparer. Pour une mise à jour permanente, exportez-la en JSON et placez le fichier dans <code>donnees/evenements/</code>.</p>
+    const typesDisponibles = Object.entries(TYPES_IMPACT).filter(([k]) => (k !== 'condition' || A.etat.actualise.synthese.conditions.length) && (k !== 'reponse' || A.etat.actualise.questions.length) && (k !== 'action_etat' || A.etat.actualise.actions.length));
+    return `<div class="formulaire-expert">
+      <p class="intro">Saisissez la nouvelle source puis ce qu'elle change, champ par champ. ${DEMO ? 'La version initiale est conservée : vous pourrez toujours comparer. ' : ''}Pour une mise à jour permanente, exportez-la en JSON${DEMO ? ' et placez le fichier dans <code>donnees/evenements/</code>' : ''}.</p>
       <div class="ligne-champs">
         <div class="champ"><label for="f-titre">Titre</label><input id="f-titre" type="text" data-brouillon="titre" value="${esc(b.titre)}" placeholder="ex. : Courriel de Boréal · ACC-303 livré"></div>
         <div class="champ"><label for="f-date">Date et heure (heure de Montréal)</label><input id="f-date" type="datetime-local" data-brouillon="date" value="${esc(b.date)}"></div>
@@ -245,7 +254,7 @@
       ${b.impacts.map((im, i) => `<div class="impact"><div class="groupe-boutons" style="justify-content:space-between"><strong>Impact ${i + 1} · ${esc(TYPES_IMPACT[im.type])}</strong>
         <button type="button" class="bouton petit danger" data-retirer-impact="${i}">Retirer</button></div>${champsImpact(im, i)}</div>`).join('')}
       <div class="groupe-boutons"><label for="f-nouvel-impact" class="visuellement-cache">Type d'impact</label>
-        <select id="f-nouvel-impact">${Object.entries(TYPES_IMPACT).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select>
+        <select id="f-nouvel-impact">${typesDisponibles.map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select>
         <button type="button" class="bouton" data-ajouter-impact>${icone('plus')}Ajouter un impact</button></div>
       <div class="champ" style="margin-top:1rem"><label for="f-inchange">Ce qui ne change pas (une ligne par point)</label>
         <textarea id="f-inchange" data-brouillon="inchange" rows="3">${esc(b.inchange)}</textarea>
@@ -257,19 +266,30 @@
         <button type="button" class="bouton primaire" data-maj="enregistrer">${icone('save')}Enregistrer la mise à jour</button>
         <button type="button" class="bouton" data-maj="vider">${icone('x')}Vider le formulaire</button></div>
       ${b.apercu ? `<div style="margin-top:1rem"><h4>Aperçu (non enregistré)</h4>${carteJournal(b.apercu.entree, b.apercu.ev, b.apercu.etat)}</div>` : ''}
-      <hr style="margin:1.2rem 0;border:0;border-top:1px solid var(--bordure)">
-      <div class="groupe-boutons"><label class="bouton" for="f-import">${icone('upload')}Importer une mise à jour (.json)</label><input id="f-import" type="file" accept=".json,application/json" class="visuellement-cache">
-        ${etat.exempleActif ? '<button type="button" class="bouton danger" data-maj="exemple-off">Retirer l\'exemple fictif</button>' : (A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : '')}</div>
-      <p class="petit doux" style="margin-top:.4rem">L'exemple fictif sert seulement à répéter la démonstration : il ne fait pas partie du corpus et il est signalé partout.</p>
-      ${etat.evenementsLocaux.length ? `<h4 style="margin-top:1rem">Mises à jour enregistrées dans ce navigateur</h4><ul>${etat.evenementsLocaux.map((ev, k) => `<li><strong>${esc(ev.id)}</strong> · ${esc(ev.titre)} (${fmtDateHeure(ev.date)}) <button type="button" class="bouton petit danger" data-supprimer-local="${k}">Supprimer</button></li>`).join('')}</ul>` : ''}
-    </section>`;
+    </div>`;
+  }
+
+  // Onglet « Mises à jour » : l'assistant d'abord, les outils ensuite, le formulaire complet en mode expert.
+  function rendreMisesAJour() {
+    return `<section class="carte appel-assistant" id="d-assistant">${tuile('bell-ring')}<div><strong>Une nouvelle information ?</strong>
+        <p>Collez-la dans l'assistant (courriel, compte rendu, décision) : il propose la mise à jour, vérifie les garde-fous, et vous validez.${DEMO ? ' La version initiale est conservée.' : ''}</p></div>
+        <button type="button" class="bouton primaire" data-ouvrir-assistant="">${icone('sparkles')}Ouvrir l'assistant</button></section>
+      <div class="groupe-boutons outils-maj"><label class="bouton" for="f-import">${icone('upload')}Importer une mise à jour (.json)</label><input id="f-import" type="file" accept=".json,application/json" class="visuellement-cache">
+        ${DEMO ? (etat.exempleActif ? '<button type="button" class="bouton danger" data-maj="exemple-off">Retirer l\'exemple fictif</button>' : (A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : '')) : ''}</div>
+      ${DEMO ? '<p class="petit doux" style="margin:.4rem 0 0">L\'exemple fictif sert seulement à répéter la démonstration : il ne fait pas partie du corpus et il est signalé partout.</p>' : ''}
+      ${!etat.expertOuvert && brouillon.message ? `<div class="encadre ton-vert" role="status" style="margin-top:var(--e3)">${esc(brouillon.message)}</div>` : ''}
+      ${!etat.expertOuvert && brouillon.erreurs.length ? `<div class="encadre ton-rouge" role="alert" style="margin-top:var(--e3)"><ul>${brouillon.erreurs.map((e) => `<li>${esc(e)}</li>`).join('')}</ul></div>` : ''}
+      ${etat.evenementsLocaux.length ? `<section class="carte" style="margin-top:var(--e4)"><h3 class="ligne-ic">${icone('save')}Mises à jour enregistrées dans ce navigateur</h3><ul class="liste-maj">${etat.evenementsLocaux.map((ev, k) => `<li><strong>${esc(ev.id)}</strong> · ${esc(ev.titre)} (${fmtDateHeure(ev.date)})${ev.exemple ? ' ' + badge('rouge', 'EXEMPLE', '!') : ''} <button type="button" class="bouton petit danger" data-supprimer-local="${k}">${icone('trash-2')}Supprimer</button></li>`).join('')}</ul></section>` : ''}
+      ${rendreAvantApres()}
+      <details class="carte accordeon" id="d-ajout"${etat.expertOuvert ? ' open' : ''}><summary><span class="accordeon-titre">${icone('pencil-line')}Formulaire expert</span><span class="accordeon-resume">saisir une mise à jour champ par champ</span></summary>
+        <div class="accordeon-corps">${rendreFormulaire()}</div></details>`;
   }
 
   // ===================================================================
   // Affichage : avant / après
   // ===================================================================
 
-  const CHAMPS_LIBELLES = { etat: 'État', reponse_courte: 'Réponse courte', approuvee: 'Date approuvée', texte: 'Texte', autorite: 'Autorité', statut: 'Statut', responsable: 'Responsable', echeance: 'Échéance', echeance_texte: 'Échéance', date_decision: 'Date de décision', detail: 'Détail', echeance_note: "Note d'échéance" };
+  const CHAMPS_LIBELLES = { nom: 'Nom', role: 'Rôle', depuis: 'Depuis', autorise: 'Montant autorisé', etat: 'État', reponse_courte: 'Réponse courte', approuvee: 'Date approuvée', texte: 'Texte', autorite: 'Autorité', statut: 'Statut', responsable: 'Responsable', echeance: 'Échéance', echeance_texte: 'Échéance', date_decision: 'Date de décision', detail: 'Détail', echeance_note: "Note d'échéance" };
 
   function libelleCible(cible, e) {
     const [coll, id] = cible.split('/');
@@ -277,10 +297,10 @@
     if (coll === 'questions') return `${id} · ${o.question || ''}`;
     if (coll === 'conditions') return `Condition ${id} · ${o.titre || ''}`;
     if (coll === 'actions') return `Action ${id} · ${o.titre || ''}`;
-    if (coll === 'synthese') return { date_mep: 'Date de mise en production', responsable: 'Responsable', portee: 'Portée', finances: 'Finances' }[id] || id;
+    if (coll === 'synthese') return { date_mep: 'Date de mise en production', responsable: 'Responsable', portee: 'Portée', finances: 'Finances', projet: 'Nom du projet' }[id] || id;
     return cible;
   }
-  const valeurAffichee = (champ, v) => (champ === 'etat' ? badgeEtat(v) : ['approuvee', 'echeance', 'date_decision'].includes(champ) ? (v ? fmtDate(v, true) : 'Non renseigné') : esc(v == null || v === '' ? 'Non renseigné' : String(v).slice(0, 200)));
+  const valeurAffichee = (champ, v) => (champ === 'etat' ? badgeEtat(v) : ['approuvee', 'echeance', 'date_decision', 'depuis'].includes(champ) ? (v ? fmtDate(v, true) : 'Non renseigné') : champ === 'autorise' ? (v == null ? 'Non renseigné' : fmtMontant(v)) : esc(v == null || v === '' ? 'Non renseigné' : String(v).slice(0, 200)));
 
   // Date d'ajout dans NOVA (horodatage réel de l'import), distincte de la date du fait.
   function ajouteLe(ev) {
@@ -299,7 +319,7 @@
     const actionsModifiees = modifs.filter((m) => /^actions\//.test(m.cible)).map((m) => C.resoudreCible(etatApres, m.cible)).filter(Boolean);
     const touchees = new Set(conditionsTouchees.map((m) => m.cible.split('/')[1]));
     const inchangeAuto = [];
-    if (!modifs.some((m) => m.cible === 'synthese/date_mep' && m.apres.approuvee)) inchangeAuto.push(`Date approuvée inchangée : ${etatApres.synthese.date_mep.texte}.`);
+    if (!modifs.some((m) => m.cible === 'synthese/date_mep' && m.apres.approuvee)) inchangeAuto.push(etatApres.synthese.date_mep.texte ? `Date approuvée inchangée : ${etatApres.synthese.date_mep.texte}.` : 'Aucune date approuvée.');
     etatApres.synthese.conditions.filter((c) => !touchees.has(c.id)).forEach((c) => inchangeAuto.push(`${c.id} inchangée : ${(C.ETATS[c.etat] || {}).libelle}.`));
     const preuveSource = src.id ? boutonPreuve({ source: src.id, repere: 'Nouvelle source (texte intégral)' }, { compact: true }) : '';
     const lignesModifs = modifs.map((m) => {
@@ -309,7 +329,7 @@
         : `<span class="doux">${m.note ? 'Note de mise à jour ajoutée :' : 'Contenu inchangé'}</span>`;
       return `<tr><td><strong>${esc(libelleCible(m.cible, etatApres))}</strong></td><td>${cellules}${m.note ? `<div class="maj-note petit">${esc(m.note)}</div>` : ''}</td><td>${badgeNature(m.nature)}</td></tr>`;
     }).join('');
-    const lignesAjouts = ajouts.map((a) => `<tr><td><strong>Nouveau : ${esc({ actions: 'action', propositions: 'proposition', chronologie: 'événement', risques: 'risque' }[a.collection] || a.collection)} ${esc(a.id || '')}</strong></td><td>${esc(a.titre || '')}</td><td>${badgeNature(a.nature)}</td></tr>`).join('');
+    const lignesAjouts = ajouts.map((a) => `<tr><td><strong>Nouveau : ${esc({ actions: 'action', propositions: 'proposition', chronologie: 'événement', risques: 'risque', conditions: 'condition', decisions: 'décision' }[a.collection] || a.collection)} ${esc(a.id || '')}</strong></td><td>${esc(a.titre || '')}</td><td>${badgeNature(a.nature)}</td></tr>`).join('');
     const ligneAction = (a) => `<li><strong>${esc(a.id)}</strong> ${esc(a.titre)} · ${esc(a.responsable)} ${a.responsable_statut === 'confirme' ? badge('vert', 'Confirmé', '✓') : badge('bleu', 'Proposé', '?')} · ${a.echeance ? fmtDate(a.echeance) : badge('ambre', a.echeance_texte || 'À confirmer', '?')} · ${badgeEtat(a.etat)}</li>`;
     return `<article class="carte">
       <div class="preuve-ligne"><h3 style="margin:0">${esc(ev.titre)}</h3>${badgeNature(ev.nature)} ${ev.exemple || String(ev.id).startsWith('EXEMPLE') ? badge('rouge', 'EXEMPLE FICTIF', '!') : ''}</div>
@@ -342,10 +362,15 @@
   }
 
   function rendreAvantApres() {
+    if (!DEMO) {
+      if (!etat.evenements.length) return '';
+      const parIdV = Object.fromEntries(etat.evenements.map((e) => [e.id, e]));
+      return `<section id="d-avant-apres"><div class="section"><h2>${icone('git-compare')}Ce que chaque information a changé</h2></div>
+        ${etat.journal.slice().reverse().map((j) => carteJournal(j, parIdV[j.evenement], A.etat.actualise)).join('')}</section>`;
+    }
     if (!etat.evenements.length) {
       return `<section id="d-avant-apres"><div class="section"><h2>${icone('git-compare')}Avant / après</h2></div>
-        <div class="carte"><p>Aucune mise à jour pour l'instant : l'application affiche la situation initiale du 30 septembre 2026 à 09 h.</p>
-        ${A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : ''}</div></section>`;
+        <div class="carte"><p style="margin:0">Aucune mise à jour pour l'instant : l'application affiche la situation initiale du 30 septembre 2026 à 09 h.</p></div></section>`;
     }
     const parId = Object.fromEntries(etat.evenements.map((e) => [e.id, e]));
     return `<section id="d-avant-apres"><div class="section"><h2>${icone('git-compare')}Avant / après</h2></div>
@@ -387,7 +412,13 @@
   // Interactions
   // ===================================================================
 
-  function rerendre(ancre) { A.rendre({ ancre: ancre || 'd-ajout' }); }
+  // Redessine l'onglet sans faire sauter la page (sauf si une ancre est demandée).
+  function rerendre(ancre) {
+    if (ancre) return A.rendre({ ancre });
+    const y = window.scrollY;
+    A.rendre();
+    window.scrollTo(0, y);
+  }
 
   function enregistrer(ev) {
     etat.evenementsLocaux.push(ev);
@@ -406,6 +437,9 @@
       else r.readAsText(fichier, 'utf-8');
     });
   }
+
+  // Le mode expert reste ouvert d'un affichage à l'autre (chaque changement de champ redessine l'onglet).
+  document.addEventListener('toggle', (e) => { if (e.target && e.target.id === 'd-ajout') etat.expertOuvert = e.target.open; }, true);
 
   document.addEventListener('input', (e) => {
     const t = e.target;
@@ -527,8 +561,9 @@
   });
 
   window.NOVA_MAJ = {
-    rendreSections: () => rendreFormulaire() + rendreAvantApres() + rendreExport(),
-    construireEvenement, analyserTexte,
+    rendreMisesAJour, rendreExport,
+    construireEvenement, analyserTexte, carteJournal, libelleCible, valeurAffichee, CHAMPS_LIBELLES,
+    enregistrer,
     _brouillon: () => brouillon,
   };
 })();

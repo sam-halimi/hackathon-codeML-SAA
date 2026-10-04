@@ -4,14 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NOVA · Mémoire de projet</title>
-<meta name="theme-color" content="#0B2348">
-<meta name="description" content="Projet 360 · NOVA : état du projet au 30 septembre 2026, réponses sourcées, chronologie, actions et mises à jour.">
+<meta name="theme-color" content="#221E45">
+<meta name="description" content="NOVA : la mémoire de projet qui reprend un dossier en cinq minutes. État du projet, réponses sourcées, chronologie, actions, et un assistant qui met tout à jour.">
 <!--STYLES-->
 </head>
 <body>
 <!--ICONES-->
 <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 
+<div class="page" id="page">
 <header class="entete">
   <div class="entete-haut">
     <div class="titre-bloc">
@@ -19,21 +20,25 @@
       <p class="situation" id="situation"></p>
     </div>
     <div class="entete-actions">
-    <form class="recherche-rapide" id="form-question" role="search">
-      <label for="champ-question" class="visuellement-cache">Poser une question sur le projet</label>
-      <input id="champ-question" type="search" placeholder="Posez votre question…" autocomplete="off">
-      <button type="submit" class="bouton primaire"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>Chercher</button>
-    </form>
-    <button type="button" class="bouton bouton-aide" id="ouvrir-guide"><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg>Comment ça marche ?</button>
+      <form class="recherche-rapide" id="form-question" role="search">
+        <label for="champ-question" class="visuellement-cache">Demander ou mettre à jour avec l'assistant</label>
+        <input id="champ-question" type="search" placeholder="Demandez à l'assistant…" autocomplete="off">
+        <button type="submit" class="bouton primaire"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg>Assistant</button>
+      </form>
+      <div class="menu-mode">
+        <button type="button" class="bouton bouton-mode" id="bouton-mode" aria-haspopup="true" aria-expanded="false" aria-controls="menu-mode"><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg><span id="bouton-mode-libelle">Démo · NOVA</span><svg class="ic" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+        <div class="menu-mode-liste" id="menu-mode" hidden></div>
+      </div>
+      <button type="button" class="bouton bouton-aide" id="ouvrir-guide" title="Comment ça marche ?"><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg><span class="libelle-guide">Guide</span></button>
     </div>
   </div>
   <div class="bandeau-version" id="bandeau-version" hidden></div>
   <nav class="onglets" aria-label="Espaces de l'application">
-    <button type="button" data-onglet="vue"><span class="num">01</span><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Vue d'ensemble</button>
-    <button type="button" data-onglet="questions"><span class="num">02</span><svg class="ic" aria-hidden="true"><use href="#i-message-circle-question"/></svg>Questions et preuves</button>
-    <button type="button" data-onglet="historique"><span class="num">03</span><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg>Historique et décisions</button>
+    <button type="button" data-onglet="vue"><span class="num">01</span><svg class="ic" aria-hidden="true"><use href="#i-layout-dashboard"/></svg>Accueil</button>
+    <button type="button" data-onglet="questions"><span class="num">02</span><svg class="ic" aria-hidden="true"><use href="#i-message-circle-question"/></svg>Questions</button>
+    <button type="button" data-onglet="historique"><span class="num">03</span><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg>Historique</button>
     <button type="button" data-onglet="actions"><span class="num">04</span><svg class="ic" aria-hidden="true"><use href="#i-list-checks"/></svg>Actions</button>
-    <button type="button" data-onglet="documents"><span class="num">05</span><svg class="ic" aria-hidden="true"><use href="#i-folder-open"/></svg>Documents et mises à jour</button>
+    <button type="button" data-onglet="documents"><span class="num">05</span><svg class="ic" aria-hidden="true"><use href="#i-folder-open"/></svg>Documents</button>
   </nav>
 </header>
 
@@ -42,6 +47,33 @@
 <footer class="pied">
   <p id="pied-texte"></p>
 </footer>
+</div>
+
+<button type="button" class="lanceur-assistant" id="lanceur-assistant" data-ouvrir-assistant="" aria-controls="assistant"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg>Assistant</button>
+
+<!-- Assistant : vue fractionnée, un tiers de la largeur à droite -->
+<aside class="assistant" id="assistant" aria-label="Assistant NOVA" aria-hidden="true">
+  <div class="assistant-entete">
+    <div class="assistant-titre">
+      <span class="tuile assistant-logo" aria-hidden="true"><svg class="ic"><use href="#i-sparkles"/></svg></span>
+      <div><h2>Assistant NOVA</h2><p id="assistant-moteur">Moteur local · sans connexion</p></div>
+    </div>
+    <div class="assistant-boutons">
+      <button type="button" class="bouton-rond" id="assistant-reglages" title="Connecteur Claude (facultatif)" aria-label="Réglages du connecteur" aria-expanded="false"><svg class="ic" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <button type="button" class="bouton-rond" id="assistant-nouveau" title="Nouvelle conversation" aria-label="Nouvelle conversation"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></button>
+      <button type="button" class="bouton-rond" id="assistant-fermer" title="Fermer l'assistant" aria-label="Fermer l'assistant"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+  </div>
+  <div class="assistant-reglages" id="assistant-panneau-reglages" hidden></div>
+  <div class="assistant-fil" id="assistant-fil" role="log" aria-live="polite" aria-label="Conversation"></div>
+  <div class="assistant-suggestions" id="assistant-suggestions"></div>
+  <form class="assistant-saisie" id="assistant-form">
+    <label for="assistant-champ" class="visuellement-cache">Message à l'assistant</label>
+    <textarea id="assistant-champ" rows="2" placeholder="Posez une question ou collez une information…"></textarea>
+    <button type="submit" class="bouton primaire bouton-envoyer" aria-label="Envoyer"><svg class="ic" aria-hidden="true"><use href="#i-arrow-up"/></svg></button>
+  </form>
+  <p class="assistant-pied">Rien n'est modifié sans votre accord. Chaque mise à jour garde sa source.</p>
+</aside>
 
 <dialog id="visionneuse" aria-labelledby="visionneuse-titre">
   <div class="visionneuse-entete">
@@ -57,6 +89,33 @@
 
 <dialog id="guide" aria-labelledby="guide-titre">
   <div class="guide-cadre" id="guide-cadre"></div>
+</dialog>
+
+<!-- Premier lancement : choisir la démo (dossier NOVA) ou un dossier vierge -->
+<dialog id="choix-mode" aria-labelledby="choix-mode-titre">
+  <div class="choix-cadre">
+    <div class="choix-haut">
+      <svg class="hero-etoile" aria-hidden="true" focusable="false"><use href="#i-nova"/></svg>
+      <span class="guide-persona"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg>Bienvenue</span>
+      <h2 id="choix-mode-titre">Reprenez n'importe quel projet en cinq minutes.</h2>
+      <p>NOVA range les documents d'un projet, répond avec les preuves, et un assistant met tout à jour pour vous.</p>
+    </div>
+    <div class="choix-cartes">
+      <button type="button" class="choix-carte" data-choisir-mode="demo">
+        <span class="tuile" aria-hidden="true"><svg class="ic"><use href="#i-presentation"/></svg></span>
+        <strong>Découvrir la démo</strong>
+        <span>Le dossier NOVA : 64 documents, une décision à prendre. Vous êtes le dirigeant qui doit trancher.</span>
+        <span class="choix-cta">Commencer la visite<svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+      </button>
+      <button type="button" class="choix-carte" data-choisir-mode="vierge">
+        <span class="tuile" aria-hidden="true"><svg class="ic"><use href="#i-folder-plus"/></svg></span>
+        <strong>Commencer un dossier vierge</strong>
+        <span>Votre projet : dites à l'assistant ce que vous savez, NOVA le range avec ses sources.</span>
+        <span class="choix-cta">Créer mon dossier<svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></span>
+      </button>
+    </div>
+    <p class="choix-pied">Tout reste dans ce navigateur. Vous pourrez changer de version à tout moment, en haut à droite.</p>
+  </div>
 </dialog>
 
 <div id="zone-impression" aria-hidden="true"></div>

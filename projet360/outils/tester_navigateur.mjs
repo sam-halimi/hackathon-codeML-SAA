@@ -38,8 +38,14 @@ if (fs.existsSync('/opt/pw-browsers/chromium')) {
 const navigateur = await pw.chromium.launch(options);
 const contexte = await navigateur.newContext({ viewport: { width: 1366, height: 900 }, locale: 'fr-CA', timezoneId: 'Europe/Paris' });
 if (!urlEnLigne) await contexte.setOffline(true);
-// Le tutoriel d'accueil est testé à part (tests_supplementaires) : on le marque comme déjà vu.
-await contexte.addInitScript(() => { try { if (!sessionStorage.getItem('tester-guide')) localStorage.setItem('nova360.guide.vu', '1'); } catch (e) { /* ignoré */ } });
+// L'écran de choix (démo ou dossier vierge) et le tutoriel sont testés à part (tests_supplementaires) :
+// par défaut, la démo est choisie et le tutoriel marqué comme déjà vu.
+await contexte.addInitScript(() => {
+  try {
+    if (!sessionStorage.getItem('tester-choix') && !localStorage.getItem('nova360.mode')) localStorage.setItem('nova360.mode', 'demo');
+    if (!sessionStorage.getItem('tester-guide')) { localStorage.setItem('nova360.guide.vu', '1'); localStorage.setItem('nova360.guide.vierge.vu', '1'); }
+  } catch (e) { /* ignoré */ }
+});
 const origine = urlEnLigne ? new URL(urlEnLigne).origin : null;
 const requetesReseau = [];
 const cacheEnLigne = new Map();
@@ -85,7 +91,8 @@ await contexte.route('**/*', (route) => {
 const page = await contexte.newPage();
 const erreursJs = [];
 page.on('pageerror', (e) => erreursJs.push(e.message));
-page.on('console', (m) => { if (m.type() === 'error') erreursJs.push(m.text()); });
+// Le test du connecteur Claude simule volontairement une clé refusée (HTTP 401) : cette réponse attendue n'est pas une erreur du code.
+page.on('console', (m) => { if (m.type() === 'error' && !String((m.location() || {}).url || '').startsWith('https://api.anthropic.com/')) erreursJs.push(m.text()); });
 
 console.log(`\nTEST NAVIGATEUR — ${urlEnLigne ? 'en ligne : ' + urlEnLigne : 'hors connexion'}, fuseau Europe/Paris (pour vérifier que la date de situation ne dépend pas de l'ordinateur)\n`);
 await page.goto(urlEnLigne || 'file://' + fichier);
@@ -140,18 +147,23 @@ const txtPj = await page.textContent('#visionneuse-corps');
 ok('Pièce jointe identique signalée (E07 = INV-003)', /Fichier identique/.test(txtPj) && /INV-003/.test(txtPj));
 await page.click('#visionneuse-fermer');
 
-// Recherche en langage naturel.
-await page.fill('#champ-question', 'Qui a approuvé le report de la date ?');
-await page.click('#form-question button[type=submit]');
-await page.waitForSelector('#titre-resultats');
-const meilleure = await page.textContent('#titre-resultats + p');
-ok('Question libre → réponse Q03', /Q03/.test(meilleure), meilleure.trim().slice(0, 90));
-await page.fill('#champ-question', 'rollback runbook');
-await page.click('#form-question button[type=submit]');
-await page.waitForSelector('#titre-resultats');
-ok('Question libre → réponse Q10', /Q10/.test(await page.textContent('#titre-resultats + p')));
-
 if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'questions.png'), fullPage: false });
+
+// Question en langage naturel : le champ de l'en-tête ouvre l'assistant (vue fractionnée), qui répond avec les preuves.
+async function demander(texte) {
+  await page.fill('#champ-question', texte);
+  await page.click('#form-question button[type=submit]');
+  await page.waitForFunction(() => window.NOVA_ASSISTANT && !window.NOVA_ASSISTANT.conv.occupe);
+  return page.evaluate(() => { const b = [...document.querySelectorAll('#assistant-fil .bulle')]; return b.length ? b[b.length - 1].textContent : ''; });
+}
+const r1 = await demander('Qui a approuvé le report de la date ?');
+ok('Assistant : question libre → réponse Q03', /Q03/.test(r1), r1.replace(/\s+/g, ' ').trim().slice(0, 90));
+await page.locator('#assistant-fil .bulle.ia').last().locator('[data-preuve-ia]').first().click();
+await page.waitForSelector('#visionneuse[open]');
+ok('Assistant : la preuve citée s\'ouvre au passage surligné', (await page.locator('#visionneuse-corps mark, #visionneuse-corps td.cible, #visionneuse-corps .zone-surlignee').count()) > 0);
+await page.click('#visionneuse-fermer');
+ok('Assistant : question libre → réponse Q10', /Q10/.test(await demander('rollback runbook')));
+await page.click('#assistant-fermer');
 
 // Espaces supplémentaires (s'ils existent).
 const onglets = ['vue', 'historique', 'actions', 'documents'];
