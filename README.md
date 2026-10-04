@@ -4,10 +4,8 @@
 
 | Branche | Projet | Contenu |
 |---|---|---|
-| **`main`** (par défaut) | **Projet 360 — NOVA** | L'application (`projet360/`) et son spot vidéo (`video/`) |
-| `boussole-app` | Boussole | L'application Boussole et son pitch deck |
-| `boussole-video-v1` | Boussole | Spot vidéo, premier aperçu |
-| `boussole-video-v2` | Boussole | Spot vidéo, captures finales |
+| **`nova`** (par défaut) | **Projet 360 — NOVA** | L'application (`projet360/`) et son spot vidéo (`video/`) |
+| **`boussole`** | **Boussole** | L'application, le pitch, les clips de démo et les deux versions du spot vidéo |
 
 ## Projet 360 — NOVA (cette branche)
 
