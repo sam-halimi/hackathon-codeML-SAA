@@ -116,7 +116,7 @@ const EndCard: React.FC = () => {
         <div style={{ fontSize: 56, marginTop: 30, opacity: fade }}>
           L'IA guide. <span style={{ color: AMBER }}>L'humain décide.</span>
         </div>
-        <div style={{ fontSize: 30, marginTop: 40, opacity: fade, color: "rgba(246,241,234,0.75)" }}>sam-halimi.github.io/hackathon-codeML-SAA</div>
+        <div style={{ fontSize: 30, marginTop: 40, opacity: fade, color: "rgba(246,241,234,0.75)" }}>boussole-beta.vercel.app</div>
         <div style={{ fontSize: 24, marginTop: 14, opacity: fade, color: ALERT }}>Prototype · données 100 % fictives</div>
       </div>
       <div style={{ opacity: fade, background: CREAM, padding: 20, borderRadius: 24 }}>

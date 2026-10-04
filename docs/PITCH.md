@@ -5,7 +5,7 @@
 
 Défi : Propolys, *Startup Challenge : Sécurité & IA* (Polytechnique Montréal). Livrable : pitch oral de 3 min, 3 diapositives au plus. Critères : idée claire et originale, lien avec la sécurité, potentiel entrepreneurial, qualité du pitch.
 
-Fichiers liés : `docs/SLIDES.md` (3 diapos), `docs/VIDEO.md` (clip muet de 40 s), site : https://sam-halimi.github.io/hackathon-codeML-SAA/ (accueil `/`, logiciel `/demo`).
+Fichiers liés : `docs/SLIDES.md` (3 diapos), `docs/VIDEO.md` (clip muet de 40 s), site : https://boussole-beta.vercel.app/ (accueil `/`, logiciel `/demo`).
 
 ---
 

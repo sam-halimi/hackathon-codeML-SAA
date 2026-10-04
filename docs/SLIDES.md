@@ -112,7 +112,7 @@ Personne 3 dit le même texte, en 3 temps, en pointant A, B, C. Garder aussi le 
   `Cherche : 1 centre désigné`
   `Pilote de 3 mois`
   puis en petit : `Mesures : récits répétés · prélèvements dans les délais · temps administratif`
-- **Bas droit : QR code** `docs/assets/qr-boussole.png`, **au moins 300×300 px**, sur carré blanc cassé, avec l'URL en dessous : `sam-halimi.github.io/hackathon-codeML-SAA`
+- **Bas droit : QR code** `docs/assets/qr-boussole.png`, **au moins 300×300 px**, sur carré blanc cassé, avec l'URL en dessous : `boussole-beta.vercel.app`
 - **Pied** : *On ne remplace pas l'humain auprès de Léa. On lui rend le temps de l'être.* (italique, blanc cassé)
 
 **Notes de présentation**

@@ -8,7 +8,7 @@ pres.title = 'Boussole — pitch';
 pres.theme = { headFontFace: 'Calibri', bodyFontFace: 'Calibri' };
 const NAVY = '0F1B2D', CARD = '18263C', CREAM = 'F6F1EA', AMBER = 'E8A33D', RED = 'E06A50', MUTED = '9AA6B8';
 const A = (p) => path.join(__dirname, '..', 'assets', p);
-const URL = process.env.SITE_URL || 'sam-halimi.github.io/hackathon-codeML-SAA';
+const URL = process.env.SITE_URL || 'boussole-beta.vercel.app';
 const T = (s, text, o) => s.addText(text, { margin: 0, isTextBox: true, ...o });
 
 function frame(s, kicker, title) {
