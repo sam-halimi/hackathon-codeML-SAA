@@ -404,7 +404,64 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); sessionStorage.setItem('tester-choix', '1'); sessionStorage.setItem('tester-guide', '1'); location.hash = ''; });
   await page.reload();
   await page.waitForSelector('#choix-mode[open]', { timeout: 5000 });
-  ok('Versions : au premier lancement, l\'écran de choix s\'ouvre (démo ou dossier vierge)', (await page.locator('#choix-mode [data-choisir-mode]').count()) === 2);
+  // Étape 1 : la vidéo de présentation (paysage sur ordinateur, portrait sur téléphone), puis le choix.
+  const etatAccueil = () => page.evaluate(() => {
+    const d = document.getElementById('choix-mode'), v = document.getElementById('intro-video'), r = d.getBoundingClientRect();
+    return { etape: d.dataset.etape, format: d.dataset.format, src: v.getAttribute('src') || '', t: v.currentTime, enPause: v.paused, muet: v.muted,
+      activerSon: getComputedStyle(document.getElementById('intro-activer-son')).display !== 'none', choixCache: document.getElementById('choix-cadre').hidden,
+      revoir: !document.getElementById('choix-revoir').hidden, ouvert: d.open, defile: d.scrollHeight > d.clientHeight + 1,
+      dedans: r.top >= 0 && r.left >= 0 && r.bottom <= innerHeight + 0.5 && r.right <= innerWidth + 0.5 };
+  });
+  let a = await etatAccueil();
+  ok('Accueil : le pop-up s\'ouvre sur la vidéo de présentation, en paysage sur ordinateur (le choix vient après)', a.etape === 'video' && a.format === 'paysage' && /16x9/.test(a.src) && a.choixCache, `${a.etape} · ${a.format} · ${a.src}`);
+  await page.waitForFunction(() => document.getElementById('intro-video').currentTime > 0.5, null, { timeout: 20000 }).catch(() => {});
+  a = await etatAccueil();
+  ok('Accueil : la vidéo démarre seule, avec le son ou muette avec un grand bouton « Activer le son »', a.t > 0.5 && !a.enPause && (!a.muet || a.activerSon), `${a.t.toFixed(1)} s, ${a.muet ? 'muette' : 'avec le son'}`);
+  if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'accueil_video.png') });
+  {
+    const defauts = [];
+    for (const [w, h, f] of [[1920, 1080, 'paysage'], [1366, 768, 'paysage'], [390, 844, 'portrait'], [360, 640, 'portrait']]) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.waitForTimeout(400);
+      a = await etatAccueil();
+      if (a.format !== f || !(f === 'portrait' ? /9x16/ : /16x9/).test(a.src)) defauts.push(`${w}×${h} : ${a.format}`);
+      if (a.defile || !a.dedans) defauts.push(`${w}×${h} : déborde`);
+      if (captures && w === 390) await page.screenshot({ path: path.join(dossierCaptures, 'accueil_video_mobile.png') });
+    }
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.waitForTimeout(400);
+    ok(`Accueil : vidéo en portrait sur téléphone, en paysage sur ordinateur, sans défilement (4 tailles)${defauts.length ? ' : ' + defauts.join(', ') : ''}`, defauts.length === 0);
+  }
+  await page.waitForFunction(() => document.getElementById('intro-video').readyState >= 1, null, { timeout: 20000 }).catch(() => {});
+  await page.evaluate(() => { const v = document.getElementById('intro-video'); v.currentTime = Math.max(0, v.duration - 0.5); v.play().catch(() => {}); });
+  await page.waitForFunction(() => document.getElementById('choix-mode').dataset.etape === 'choix', null, { timeout: 10000 }).catch(() => {});
+  a = await etatAccueil();
+  ok('Accueil : à la fin de la vidéo, le choix démo / dossier vierge apparaît (avec « Revoir la vidéo »)', a.etape === 'choix' && a.ouvert && !a.choixCache && a.revoir && (await page.locator('#choix-mode [data-choisir-mode]:visible').count()) === 2);
+  await page.click('#choix-revoir');
+  const revue = await etatAccueil();
+  await page.click('#intro-passer');
+  a = await etatAccueil();
+  ok('Accueil : « Revoir la vidéo » la relance, « Passer la vidéo » mène au choix', revue.etape === 'video' && a.etape === 'choix' && a.enPause && a.ouvert);
+  await page.click('#choix-revoir');
+  await page.keyboard.press('Escape');
+  a = await etatAccueil();
+  ok('Accueil : Échap pendant la vidéo passe au choix, sans fermer l\'écran d\'accueil', a.etape === 'choix' && a.ouvert);
+  await page.click('#choix-revoir');
+  await page.evaluate(() => document.getElementById('intro-video').dispatchEvent(new Event('error')));
+  a = await etatAccueil();
+  ok('Accueil : vidéo illisible ou absente → le choix s\'affiche directement, sans bouton « Revoir »', a.etape === 'choix' && a.ouvert && !a.revoir);
+  ok('Versions : l\'écran de choix propose la démo ou un dossier vierge', (await page.locator('#choix-mode [data-choisir-mode]:visible').count()) === 2);
+  {
+    const defauts = [];
+    for (const [w, h] of [[1920, 1080], [1366, 768], [390, 844], [360, 640]]) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.waitForTimeout(300);
+      a = await etatAccueil();
+      if (a.defile || !a.dedans) defauts.push(`${w}×${h}`);
+    }
+    await page.setViewportSize({ width: 1366, height: 900 });
+    ok(`Versions : l'écran de choix tient sans défilement (4 tailles)${defauts.length ? ' : déborde en ' + defauts.join(', ') : ''}`, defauts.length === 0);
+  }
   if (captures) await page.screenshot({ path: path.join(dossierCaptures, 'choix_version.png') });
   await Promise.all([page.waitForEvent('load'), page.click('[data-choisir-mode="vierge"]')]);
   await page.waitForSelector('main#contenu > *');

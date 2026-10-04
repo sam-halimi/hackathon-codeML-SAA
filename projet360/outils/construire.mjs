@@ -70,9 +70,21 @@ try {
   const sortie = path.join(RACINE, 'dist', 'NOVA_Projet360.html');
   fs.mkdirSync(path.dirname(sortie), { recursive: true });
   fs.writeFileSync(sortie, html);
+  // Vidéo de présentation (facultative) : copies web du spot (video/out/web), lues par l'écran d'accueil
+  // depuis le dossier dist/video/, à côté du fichier. Sans ce dossier, l'accueil s'ouvre directement sur le choix.
+  const dossierVideo = path.resolve(RACINE, '..', 'video', 'out', 'web');
+  const videos = fs.existsSync(dossierVideo) ? fs.readdirSync(dossierVideo).filter((n) => /^NOVA_spot_.*\.(mp4|webm)$/.test(n)) : [];
+  if (videos.length) {
+    fs.mkdirSync(path.join(path.dirname(sortie), 'video'), { recursive: true });
+    for (const n of videos) {
+      const src = path.join(dossierVideo, n), dest = path.join(path.dirname(sortie), 'video', n);
+      if (!fs.existsSync(dest) || fs.statSync(dest).size !== fs.statSync(src).size || fs.statSync(dest).mtimeMs < fs.statSync(src).mtimeMs) fs.copyFileSync(src, dest);
+    }
+  }
   const ko = Math.round(fs.statSync(sortie).size / 1024);
   console.log(`\n✓ Rendu autonome créé : ${path.relative(process.cwd(), sortie) || sortie} (${ko} ko, ${((Date.now() - debut) / 1000).toFixed(1)} s)`);
   console.log('  Ouvrez-le par double-clic dans Chrome, Edge ou Firefox. Aucune connexion requise.');
+  if (videos.length) console.log(`  Vidéo de présentation : dist/video/ (${videos.length} fichiers), à garder à côté du fichier pour l'écran d'accueil.`);
 } catch (e) {
   console.error('\n✗ ' + e.message);
   process.exit(1);

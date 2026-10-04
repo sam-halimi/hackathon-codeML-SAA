@@ -1,6 +1,7 @@
 /* Versions et tutoriel d'accueil.
-   1. Versions : au premier lancement, on choisit la démo (dossier NOVA, dans la peau d'un dirigeant)
-      ou un dossier vierge (son propre projet). Le menu « Démo · NOVA / Dossier vierge » permet d'en changer.
+   1. Versions : au premier lancement, la vidéo de présentation s'ouvre (paysage sur ordinateur, portrait sur téléphone),
+      puis on choisit la démo (dossier NOVA, dans la peau d'un dirigeant) ou un dossier vierge (son propre projet).
+      Le menu « Démo · NOVA / Dossier vierge » permet d'en changer.
    2. Tutoriel : chaque étape part d'un piège réel, puis montre la réponse de NOVA.
       Le texte vient de donnees/guide.json (clé « vierge » pour le dossier vierge) ; les chiffres viennent de l'état courant.
       Règle : la fenêtre ne défile jamais. Si l'écran est petit, la taille du texte est réduite pas à pas. */
@@ -21,6 +22,173 @@
   const dialogueChoix = $('#choix-mode');
   const boutonMode = $('#bouton-mode');
   const menuMode = $('#menu-mode');
+  const cadreChoix = $('#choix-cadre');
+
+  // -------------------------------------------------------------------
+  // Vidéo de présentation : première étape de l'écran d'accueil. À la fin, ou sur « Passer la vidéo »,
+  // le choix entre la démo et le dossier vierge apparaît. Les fichiers sont décrits dans donnees/guide.json
+  // (clé « video ») ; sans fichier lisible (fichier HTML seul, hors connexion), l'accueil s'ouvre sur le choix.
+  // -------------------------------------------------------------------
+  const VIDEO = (A.BRUT.operations.guide || {}).video || null;
+  const intro = $('#intro');
+  const video = $('#intro-video');
+  const ecranVideo = $('#intro-ecran');
+  const barreVideo = $('#intro-barre');
+  const boutonSon = $('#intro-son');
+  const boutonRevoir = $('#choix-revoir');
+  const portrait = window.matchMedia('(orientation: portrait)');
+  const autreFormat = (f) => (f === 'portrait' ? 'paysage' : 'portrait');
+  const formatVoulu = () => (portrait.matches ? 'portrait' : 'paysage');
+  // Premier fichier que ce navigateur sait lire (MP4 H.264, sinon WebM).
+  const sourceVideo = (format) => ((VIDEO && VIDEO[format]) || []).find((s) => s && s.src && video.canPlayType(s.type || '') !== '') || null;
+  let videoLisible = !!(VIDEO && (sourceVideo('paysage') || sourceVideo('portrait')));
+  let delaiChargement = 0;
+  const etapeAccueil = () => dialogueChoix.dataset.etape;
+
+  function montrerEtape(etape) {
+    dialogueChoix.dataset.etape = etape;
+    intro.hidden = etape !== 'video';
+    cadreChoix.hidden = etape !== 'choix';
+    dialogueChoix.setAttribute('aria-labelledby', etape === 'video' ? 'intro-titre' : 'choix-mode-titre');
+    boutonRevoir.hidden = !videoLisible;
+  }
+
+  // Le choix ne défile jamais : sur un très petit écran, l'ensemble est réduit pas à pas (jusqu'à 80 %).
+  function ajusterChoix() {
+    if (!dialogueChoix.open || etapeAccueil() !== 'choix') return;
+    cadreChoix.style.zoom = '';
+    for (let z = 0.95; z >= 0.8 && dialogueChoix.scrollHeight > dialogueChoix.clientHeight + 1; z -= 0.05) cadreChoix.style.zoom = z.toFixed(2);
+  }
+
+  function majSon() {
+    ecranVideo.classList.toggle('muet', video.muted);
+    boutonSon.setAttribute('aria-label', video.muted ? 'Activer le son' : 'Couper le son');
+    boutonSon.querySelector('use').setAttribute('href', video.muted ? '#i-volume-x' : '#i-volume-2');
+  }
+
+  // Charge le fichier du format voulu (ou de l'autre format s'il est seul lisible), à partir de « depuis » secondes.
+  function chargerVideo(format, depuis) {
+    const f = sourceVideo(format) ? format : autreFormat(format);
+    const s = sourceVideo(f);
+    if (!s) return false;
+    dialogueChoix.dataset.format = f;
+    if (video.getAttribute('src') !== s.src) {
+      ecranVideo.classList.add('charge');
+      video.src = s.src;
+      if (depuis > 0) video.addEventListener('loadedmetadata', () => { video.currentTime = depuis; }, { once: true });
+    } else {
+      try { video.currentTime = depuis || 0; } catch { /* métadonnées pas encore chargées */ }
+    }
+    return true;
+  }
+
+  // Le son d'abord ; si le navigateur refuse le son sans geste de l'utilisateur, la vidéo démarre muette
+  // avec un grand bouton « Activer le son ».
+  function lancerVideo() {
+    video.muted = false;
+    majSon();
+    const essai = video.play();
+    if (essai && essai.catch) {
+      essai.catch((e) => {
+        if (!e || e.name !== 'NotAllowedError' || etapeAccueil() !== 'video') return;
+        video.muted = true;
+        majSon();
+        video.play().catch(() => ecranVideo.classList.add('en-pause'));
+      });
+    }
+    clearTimeout(delaiChargement);
+    // Réseau trop lent : l'écran ne reste pas bloqué, on passe au choix (la vidéo reste à revoir).
+    delaiChargement = setTimeout(() => { if (etapeAccueil() === 'video' && video.readyState < 2) passerVideo(); }, 15000);
+  }
+
+  function activerSon() {
+    video.muted = false;
+    // Le récit commence dès la première seconde : si l'on vient d'arriver, on repart du début pour tout entendre.
+    if (video.currentTime < 12) { try { video.currentTime = 0; } catch { /* sans effet */ } }
+    if (video.paused) video.play().catch(() => {});
+    majSon();
+  }
+
+  function demarrerVideo() {
+    if (!videoLisible || !chargerVideo(formatVoulu(), 0)) return false;
+    montrerEtape('video');
+    if (dialogueChoix.open) intro.focus({ preventScroll: true });
+    lancerVideo();
+    return true;
+  }
+
+  function passerVideo() {
+    clearTimeout(delaiChargement);
+    video.pause();
+    montrerEtape('choix');
+    ajusterChoix();
+    dialogueChoix.classList.remove('transition');
+    void dialogueChoix.offsetWidth; // relance l'animation d'ouverture
+    dialogueChoix.classList.add('transition');
+    const carte = cadreChoix.querySelector('[data-choisir-mode]');
+    if (carte && dialogueChoix.open) carte.focus({ preventScroll: true });
+  }
+
+  // Écran d'accueil : la vidéo puis le choix, ou directement le choix.
+  function ouvrirAccueil(avecVideo) {
+    montrerEtape('choix');
+    if (!dialogueChoix.open) dialogueChoix.showModal();
+    if (!avecVideo || !demarrerVideo()) {
+      ajusterChoix();
+      const carte = cadreChoix.querySelector('[data-choisir-mode]');
+      if (carte) carte.focus({ preventScroll: true });
+    }
+  }
+
+  // Fenêtre fermée : la vidéo s'arrête et ne se télécharge plus.
+  function libererVideo() {
+    clearTimeout(delaiChargement);
+    video.pause();
+    if (video.getAttribute('src')) { video.removeAttribute('src'); video.load(); }
+  }
+
+  video.addEventListener('ended', passerVideo);
+  video.addEventListener('error', () => {
+    if (!video.getAttribute('src')) return;
+    videoLisible = false;
+    boutonRevoir.hidden = true;
+    if (etapeAccueil() === 'video') passerVideo();
+  });
+  video.addEventListener('timeupdate', () => { barreVideo.style.transform = `scaleX(${video.duration ? Math.min(1, video.currentTime / video.duration) : 0})`; });
+  video.addEventListener('play', () => ecranVideo.classList.remove('en-pause'));
+  video.addEventListener('pause', () => { if (!video.ended) ecranVideo.classList.add('en-pause'); });
+  video.addEventListener('waiting', () => ecranVideo.classList.add('charge'));
+  ['playing', 'canplay'].forEach((t) => video.addEventListener(t, () => ecranVideo.classList.remove('charge')));
+  video.addEventListener('volumechange', majSon);
+  // Un clic sur l'image : active le son s'il est coupé, sinon met en pause ou relance.
+  ecranVideo.addEventListener('click', () => {
+    if (video.muted) activerSon();
+    else if (video.paused) video.play().catch(() => {});
+    else video.pause();
+  });
+  boutonSon.addEventListener('click', () => { if (video.muted) activerSon(); else video.muted = true; });
+  $('#intro-passer').addEventListener('click', passerVideo);
+  boutonRevoir.addEventListener('click', demarrerVideo);
+  intro.addEventListener('keydown', (ev) => {
+    if (ev.target !== intro || (ev.key !== ' ' && ev.key !== 'k')) return;
+    ev.preventDefault();
+    if (video.paused) video.play().catch(() => {}); else video.pause();
+  });
+  // Téléphone tourné pendant la vidéo : on passe à l'autre format, au même instant.
+  const auChangementDeFormat = () => {
+    if (!dialogueChoix.open || etapeAccueil() !== 'video') return;
+    const f = formatVoulu();
+    if (dialogueChoix.dataset.format === f || !sourceVideo(f)) return;
+    const instant = video.currentTime, enLecture = !video.paused, muet = video.muted;
+    chargerVideo(f, instant);
+    video.muted = muet;
+    if (enLecture) video.play().catch(() => {});
+  };
+  if (portrait.addEventListener) portrait.addEventListener('change', auChangementDeFormat);
+  else if (portrait.addListener) portrait.addListener(auChangementDeFormat);
+  if (VIDEO && VIDEO.titre) $('#intro-titre').lastChild.nodeValue = VIDEO.titre;
+  dialogueChoix.addEventListener('close', libererVideo);
+  window.addEventListener('resize', ajusterChoix);
 
   function changerDeVersion(mode) {
     ecrire(CLE_MODE, mode);
@@ -52,7 +220,7 @@
     let html = item('demo', 'presentation', 'Démo · dossier NOVA', 'Dans la peau du dirigeant : 64 documents, une décision à prendre, situation au 30 septembre 2026.', { actuel: DEMO })
       + item('vierge', 'folder-plus', 'Dossier vierge', locauxVierge ? `Votre projet : ${locauxVierge} information${locauxVierge > 1 ? 's' : ''} enregistrée${locauxVierge > 1 ? 's' : ''} dans ce navigateur.` : 'Votre projet, rempli en parlant à l\'assistant.', { actuel: !DEMO });
     html += '<div class="menu-mode-sep" role="separator"></div>';
-    html += item('accueil', 'circle-play', 'Revoir l\'écran d\'accueil', 'Le choix entre la démo et un dossier vierge.');
+    html += item('accueil', 'circle-play', 'Revoir l\'écran d\'accueil', videoLisible ? 'La vidéo de présentation, puis le choix entre la démo et un dossier vierge.' : 'Le choix entre la démo et un dossier vierge.');
     if (DEMO && locauxDemo) html += item('reinitialiser-demo', 'rotate-ccw', 'Réinitialiser la démo', `Retire vos ${locauxDemo} mise${locauxDemo > 1 ? 's' : ''} à jour locale${locauxDemo > 1 ? 's' : ''} ; le dossier d'origine ne change jamais.`, { danger: true });
     if (!DEMO && locauxVierge) html += item('effacer-vierge', 'trash-2', 'Effacer le dossier vierge', 'Supprime les informations saisies dans ce navigateur.', { danger: true });
     menuMode.innerHTML = html;
@@ -84,7 +252,7 @@
       if (action === MODE) { A.annoncer('Cette version est déjà affichée.'); return; }
       changerDeVersion(action);
     } else if (action === 'accueil') {
-      dialogueChoix.showModal();
+      ouvrirAccueil(true);
     } else if (action === 'reinitialiser-demo') {
       if (!window.confirm('Retirer vos mises à jour locales de la démo ? Le dossier d\'origine reste intact.')) return;
       ecrire(CLE_EVENEMENTS.demo, null);
@@ -111,8 +279,13 @@
     const b = ev.target.closest('[data-choisir-mode]');
     if (b) choisir(b.dataset.choisirMode);
   });
-  // Échap sur l'écran d'accueil : on garde la version affichée (la démo au premier lancement).
-  dialogueChoix.addEventListener('cancel', (ev) => { ev.preventDefault(); choisir(MODE); });
+  // Échap sur l'écran d'accueil : pendant la vidéo, on passe au choix ; sur le choix, on garde la version affichée
+  // (la démo au premier lancement).
+  dialogueChoix.addEventListener('cancel', (ev) => {
+    ev.preventDefault();
+    if (etapeAccueil() === 'video') passerVideo();
+    else choisir(MODE);
+  });
 
   // ===================================================================
   // 2. Tutoriel d'accueil
@@ -283,12 +456,13 @@
     boutonGuide.hidden = true;
   }
 
-  // Premier lancement : choix de la version. Ensuite, le guide s'ouvre une fois (sauf lien direct vers une preuve).
+  // Premier lancement : la vidéo, puis le choix de la version. Ensuite, le guide s'ouvre une fois
+  // (sauf lien direct vers une preuve).
   document.addEventListener('DOMContentLoaded', () => {
     if (lienDirect()) return;
-    if (!lire(CLE_MODE)) setTimeout(() => { if (!dialogueChoix.open) dialogueChoix.showModal(); }, 200);
+    if (!lire(CLE_MODE)) setTimeout(() => { if (!dialogueChoix.open) ouvrirAccueil(true); }, 200);
     else if (G && !lireVu()) setTimeout(() => ouvrir(0), 350);
   });
 
-  window.NOVA_VERSIONS = { choisir, changerDeVersion, ouvrirMenu, fermerMenu };
+  window.NOVA_VERSIONS = { choisir, changerDeVersion, ouvrirMenu, fermerMenu, ouvrirAccueil, passerVideo };
 })();

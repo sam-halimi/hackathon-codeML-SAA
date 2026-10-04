@@ -91,14 +91,29 @@
   <div class="guide-cadre" id="guide-cadre"></div>
 </dialog>
 
-<!-- Premier lancement : choisir la démo (dossier NOVA) ou un dossier vierge -->
-<dialog id="choix-mode" aria-labelledby="choix-mode-titre">
-  <div class="choix-cadre">
+<!-- Premier lancement : la vidéo de présentation (paysage sur ordinateur, portrait sur téléphone),
+     puis le choix entre la démo (dossier NOVA) et un dossier vierge -->
+<dialog id="choix-mode" aria-labelledby="choix-mode-titre" data-etape="choix">
+  <div class="intro-etape" id="intro" tabindex="-1" hidden>
+    <div class="intro-ecran" id="intro-ecran">
+      <video id="intro-video" playsinline preload="none" aria-labelledby="intro-titre"></video>
+      <button type="button" class="intro-activer-son" id="intro-activer-son"><svg class="ic" aria-hidden="true"><use href="#i-volume-2"/></svg>Activer le son</button>
+      <span class="intro-reprendre" aria-hidden="true"><svg class="ic"><use href="#i-play"/></svg></span>
+    </div>
+    <div class="intro-bas">
+      <span class="intro-titre" id="intro-titre"><svg class="ic" aria-hidden="true"><use href="#i-nova"/></svg>Présentation · 1 min</span>
+      <div class="intro-progression" aria-hidden="true"><span id="intro-barre"></span></div>
+      <button type="button" class="intro-icone" id="intro-son" aria-label="Couper le son"><svg class="ic" aria-hidden="true"><use href="#i-volume-2"/></svg></button>
+      <button type="button" class="bouton intro-passer" id="intro-passer">Passer la vidéo<svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+    </div>
+  </div>
+  <div class="choix-cadre" id="choix-cadre">
     <div class="choix-haut">
       <svg class="hero-etoile" aria-hidden="true" focusable="false"><use href="#i-nova"/></svg>
       <span class="guide-persona"><svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg>Bienvenue</span>
       <h2 id="choix-mode-titre">Reprenez n'importe quel projet en cinq minutes.</h2>
       <p>NOVA range les documents d'un projet, répond avec les preuves, et un assistant met tout à jour pour vous.</p>
+      <button type="button" class="choix-revoir" id="choix-revoir" hidden><svg class="ic" aria-hidden="true"><use href="#i-circle-play"/></svg>Revoir la vidéo (1 min)</button>
     </div>
     <div class="choix-cartes">
       <button type="button" class="choix-carte" data-choisir-mode="demo">

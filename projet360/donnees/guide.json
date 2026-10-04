@@ -1,4 +1,27 @@
 {
+  "video": {
+    "titre": "Présentation · 1 min",
+    "paysage": [
+      {
+        "src": "video/NOVA_spot_16x9.mp4",
+        "type": "video/mp4; codecs=\"avc1.640032, mp4a.40.2\""
+      },
+      {
+        "src": "video/NOVA_spot_16x9.webm",
+        "type": "video/webm; codecs=\"vp9, opus\""
+      }
+    ],
+    "portrait": [
+      {
+        "src": "video/NOVA_spot_9x16.mp4",
+        "type": "video/mp4; codecs=\"avc1.640032, mp4a.40.2\""
+      },
+      {
+        "src": "video/NOVA_spot_9x16.webm",
+        "type": "video/webm; codecs=\"vp9, opus\""
+      }
+    ]
+  },
   "persona": {
     "nom": "Le PDG pressé",
     "accroche": "Mercredi 30 septembre, 9 h. Lance-t-on NOVA le {date} ?",

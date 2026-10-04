@@ -69,10 +69,15 @@ try {
   ];
   const brief = path.join(RACINE, 'dist', 'NOVA_brief_de_reprise.pdf');
   if (fs.existsSync(brief)) fichiers.push({ chemin: 'NOVA_brief_de_reprise.pdf', contenu: fs.readFileSync(brief) });
-  // Spot vidéo (facultatif) : copies web produites par video/outils/finaliser.mjs, lues sur /video/.
+  // Spot vidéo (facultatif) : copies web produites par video/outils/finaliser.mjs, lues sur /video/
+  // et par l'écran d'accueil de l'application (video/NOVA_spot_16x9.mp4, relatif à index.html).
   const dossierVideo = path.resolve(RACINE, '..', 'video', 'out', 'web');
   const videos = ['NOVA_spot_16x9.mp4', 'NOVA_spot_9x16.mp4'].filter((n) => fs.existsSync(path.join(dossierVideo, n)));
   for (const n of videos) fichiers.push({ chemin: 'video/' + n, contenu: fs.readFileSync(path.join(dossierVideo, n)) });
+  // Formats WebM : l'écran d'accueil de l'application les lit dans les navigateurs sans H.264.
+  for (const n of ['NOVA_spot_16x9.webm', 'NOVA_spot_9x16.webm'].filter((x) => fs.existsSync(path.join(dossierVideo, x)))) {
+    fichiers.push({ chemin: 'video/' + n, contenu: fs.readFileSync(path.join(dossierVideo, n)) });
+  }
   // Masters pleine qualité (facultatifs, video/out/) : proposés en téléchargement sur /video/.
   // VERCEL_SANS_MASTERS=1 les laisse de côté (déploiement plus léger).
   const masters = {};

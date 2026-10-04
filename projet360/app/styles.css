@@ -589,6 +589,51 @@ dialog#choix-mode[open] { animation: ouverture .6s var(--courbe); }
 .choix-carte:hover .choix-cta .ic { transform: translateX(3px); }
 .choix-cta .ic { transition: transform var(--doux); }
 .choix-pied { margin: 0; padding: 0 var(--e6) var(--e5); text-align: center; color: var(--encre-2); font-size: 14.5px; }
+.choix-revoir { margin-top: var(--e4); font: inherit; font-size: 15.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 8px 18px 8px 14px; border-radius: var(--pilule); border: 1.5px solid rgba(255, 255, 255, .28); background: rgba(255, 255, 255, .08); color: #fff; cursor: pointer; transition: background-color var(--doux), border-color var(--doux); }
+.choix-revoir:hover { background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .5); }
+.choix-revoir[hidden] { display: none; }
+
+/* Écran d'accueil, étape 1 : la vidéo de présentation, en paysage sur ordinateur et en portrait sur téléphone.
+   La fenêtre épouse la vidéo et ne défile jamais : la largeur se déduit de la hauteur disponible. */
+dialog#choix-mode[data-etape="video"] { width: fit-content; max-width: none; background: var(--sombre); color: #fff; overflow: hidden; }
+dialog#choix-mode.transition { animation: ouverture .5s var(--courbe); }
+.intro-etape[hidden], .choix-cadre[hidden] { display: none; }
+.intro-etape { --intro-bas: 68px; display: flex; flex-direction: column; outline: none; }
+.intro-ecran { position: relative; cursor: pointer; background: #16132F; line-height: 0; }
+.intro-ecran video { display: block; height: auto; aspect-ratio: 16 / 9; background: #16132F; object-fit: contain;
+  width: min(1280px, calc(100vw - 32px), calc((100vh - 32px - var(--intro-bas)) * 16 / 9));
+  width: min(1280px, calc(100vw - 32px), calc((100dvh - 32px - var(--intro-bas)) * 16 / 9)); }
+dialog#choix-mode[data-format="portrait"] .intro-ecran video { aspect-ratio: 9 / 16;
+  width: min(calc(100vw - 24px), calc((100vh - 24px - var(--intro-bas)) * 9 / 16));
+  width: min(calc(100vw - 24px), calc((100dvh - 24px - var(--intro-bas)) * 9 / 16)); }
+.intro-activer-son { position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); display: none; align-items: center; gap: 10px; padding: 15px 24px 15px 20px; border: 0; border-radius: var(--pilule);
+  background: #fff; color: var(--sombre); font: 600 17px/1 var(--police); white-space: nowrap; cursor: pointer; box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .6); animation: appel-son 2.4s var(--courbe) infinite; }
+.intro-activer-son .ic { width: 22px; height: 22px; color: var(--accent); }
+.intro-ecran.muet .intro-activer-son { display: inline-flex; }
+.intro-reprendre { position: absolute; inset: 0; margin: auto; width: 84px; height: 84px; border-radius: 50%; background: rgba(255, 255, 255, .94); color: var(--sombre); display: none; place-items: center; box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .6); }
+.intro-reprendre .ic { width: 34px; height: 34px; margin-left: 4px; }
+.intro-ecran.en-pause .intro-reprendre { display: grid; }
+.intro-ecran.en-pause .intro-activer-son { display: none; }
+.intro-ecran.charge::after { content: ""; position: absolute; inset: 0; margin: auto; width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, .22); border-top-color: #fff; animation: tourne 1s linear infinite; }
+.intro-bas { height: var(--intro-bas); display: flex; align-items: center; gap: 14px; padding: 0 14px 0 22px; }
+.intro-titre { display: inline-flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15.5px; color: var(--sombre-texte); white-space: nowrap; }
+.intro-titre .ic { width: 20px; height: 20px; color: var(--sombre-em); }
+.intro-progression { flex: 1; min-width: 40px; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+.intro-progression span { display: block; height: 100%; background: var(--sombre-em); transform-origin: left center; transform: scaleX(0); transition: transform .3s linear; }
+.intro-icone { flex: none; width: 46px; height: 46px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .1); color: #fff; display: grid; place-items: center; cursor: pointer; transition: background-color var(--doux); }
+.intro-icone:hover { background: rgba(255, 255, 255, .2); }
+.intro-icone .ic { width: 21px; height: 21px; }
+.intro-passer { flex: none; background: #fff; border-color: #fff; color: var(--sombre); }
+.intro-passer:hover { background: var(--sombre-texte); border-color: var(--sombre-texte); color: var(--sombre); }
+@keyframes appel-son { 0%, 100% { box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .6), 0 0 0 0 rgba(255, 255, 255, .45); } 50% { box-shadow: 0 14px 34px -12px rgba(0, 0, 0, .6), 0 0 0 10px rgba(255, 255, 255, 0); } }
+@keyframes tourne { to { transform: rotate(360deg); } }
+@media (max-width: 560px) {
+  .intro-etape { --intro-bas: 62px; }
+  .intro-titre { display: none; }
+  .intro-bas { gap: 10px; padding: 0 10px 0 14px; }
+  .intro-passer { padding: 10px 16px; font-size: 15px; min-height: 44px; }
+  .intro-activer-son { font-size: 16px; padding: 13px 20px 13px 17px; }
+}
 
 /* ---------- Assistant : vue fractionnée, un tiers de la largeur, à droite ---------- */
 :root { --largeur-assistant: max(360px, 33.333vw); }
@@ -774,6 +819,21 @@ body.assistant-ouvert .hero-date .affiche { font-size: clamp(44px, 5.4vw, 88px);
   .lanceur-assistant { display: inline-flex; right: var(--e4); bottom: var(--e4); padding: 13px 20px 13px 16px; }
   .assistant-entete { padding: var(--e3) var(--e3) var(--e3) var(--e4); }
   .assistant-fil { padding: var(--e4) var(--e3) var(--e3); }
+}
+
+/* Écran de choix sur téléphone : cartes en ligne (icône à gauche), pour tout voir sans défiler. */
+@media (max-width: 560px) {
+  .choix-haut { padding: 20px 18px 18px; }
+  .choix-haut h2 { font-size: 26px; margin: 12px 0 6px; }
+  .choix-haut p { font-size: 15.5px; line-height: 1.45; }
+  .choix-revoir { margin-top: 12px; min-height: 40px; font-size: 15px; }
+  .choix-cartes { gap: 10px; padding: 14px; }
+  .choix-carte { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; row-gap: 3px; align-items: start; padding: 14px 16px; border-radius: 20px; }
+  .choix-carte .tuile { grid-row: 1 / span 3; margin: 2px 0 0; }
+  .choix-carte strong { font-size: 19px; }
+  .choix-carte > span:not(.tuile):not(.choix-cta) { font-size: 15px; line-height: 1.4; }
+  .choix-cta { padding-top: 4px; }
+  .choix-pied { padding: 0 16px 14px; font-size: 13.5px; }
 }
 
 /* ---------- Impression : uniquement le brief, sur une page ---------- */

@@ -13,14 +13,16 @@ Ouvrez `dist/NOVA_Projet360.html` par double-clic dans Chrome, Edge ou Firefox.
 
 ## 2. Deux versions : la démo et un dossier vierge
 
-Au premier lancement, un écran propose :
+Au premier lancement, la **vidéo de présentation** (1 min) s'ouvre d'abord : en paysage sur ordinateur, en portrait sur téléphone. Si le navigateur bloque le son, elle démarre muette avec un grand bouton « Activer le son » (la vidéo repart alors du début). « Passer la vidéo » ou la touche Échap mènent directement au choix ; à la fin de la vidéo, le choix apparaît seul. La vidéo est lue depuis le dossier `video/` placé à côté du fichier (en ligne, ou `dist/video/` après la construction) ; avec le fichier HTML seul, l'écran s'ouvre directement sur le choix.
+
+L'écran de choix propose ensuite (avec un bouton « Revoir la vidéo ») :
 
 | Version | Pour quoi faire |
 |---|---|
 | **Découvrir la démo** | Le dossier NOVA : 64 documents, une décision à prendre. Vous êtes le dirigeant qui doit trancher. Situation figée au 30 septembre 2026. |
 | **Commencer un dossier vierge** | Votre propre projet : aucune donnée au départ. Vous parlez à l'assistant, il range chaque information (responsable, date, conditions, actions) avec sa source. La situation est la date du jour. |
 
-Le menu en haut à droite (« Démo · NOVA » ou « Dossier vierge ») permet de changer de version à tout moment, de revoir l'écran d'accueil, de réinitialiser la démo ou d'effacer le dossier vierge. Les deux dossiers ne se mélangent jamais : chacun a son propre historique local et son propre guide.
+Le menu en haut à droite (« Démo · NOVA » ou « Dossier vierge ») permet de changer de version à tout moment, de revoir l'écran d'accueil (vidéo comprise), de réinitialiser la démo ou d'effacer le dossier vierge. Les deux dossiers ne se mélangent jamais : chacun a son propre historique local et son propre guide.
 
 ## 3. Naviguer : une chose à la fois
 
