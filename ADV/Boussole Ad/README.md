@@ -9,7 +9,7 @@ Pub de 34 s (+ carte de fin + « made by ») pour Boussole, l'application qui ac
 | 1. Brief | ✅ `brief/PROMPT.md` (v2, tes décisions intégrées) |
 | 2. Liste des éléments | ⏳ `brief/ASSETS.md`, en attente de ton OK (Nunito, QR) |
 | 3. Voix | Prête à lancer sur le Mac (`voice/`) |
-| 4. Preview v1 | Captures, musique et mix prêts ; montage Remotion après ton OK sur Nunito |
+| 4. Preview v1 | Captures faites (16:9 et 9:16, planches dans `capture/sheets/`), maquette musicale et mix testés ; montage Remotion après ton OK sur Nunito |
 | 5. Finaux | — |
 | 6. Projet Resolve | Seulement si tu le demandes |
 
