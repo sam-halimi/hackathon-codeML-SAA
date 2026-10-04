@@ -1,0 +1,30 @@
+{
+  "_note": "Timing cible du brief v2 (version 34 s). À remplacer par timeline_vo.json, généré à partir des horodatages ElevenLabs de la prise retenue.",
+  "duration": 43.0,
+  "bpm": 72,
+  "logo": 35.2,
+  "sections": {
+    "ouverture": 0.0,
+    "compte": 5.0,
+    "accueil": 10.6,
+    "ou_aller": 16.8,
+    "dossier": 22.4,
+    "reunis": 30.4,
+    "souffle": 33.6,
+    "fin": 34.4,
+    "made_by": 39.8
+  },
+  "speech": [
+    [0.7, 3.9],
+    [5.1, 7.5],
+    [8.0, 9.6],
+    [12.0, 14.2],
+    [14.4, 16.6],
+    [17.0, 19.7],
+    [20.0, 22.2],
+    [22.6, 25.5],
+    [26.0, 30.2],
+    [30.6, 34.3],
+    [35.4, 37.6]
+  ]
+}

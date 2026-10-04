@@ -96,7 +96,7 @@ Ces images sont en 1×, trop justes pour les recadrages en 2× : les plans du fi
 
 | Élément | Statut | Détail |
 |---|---|---|
-| Voix | 💻 ElevenLabs, étape 3 | 3 voix en test, puis 2 prises. ≈ 1 320 crédits, plafond 1 700. |
+| Voix | 💻 ElevenLabs, étape 3 | 3 voix en test, puis 2 prises. ≈ 1 480 à 1 940 crédits selon que les balises de pause sont facturées ; plafond 2 000. |
 | Musique | 🛠 | Composée et synthétisée en Python. Aucun échantillon. |
 | Effets sonores | 💻 FOUR Editors Sound Effects | Liste des besoins ci-dessous, à copier dans `assets_in/sfx/<catégorie>/` |
 

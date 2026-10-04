@@ -110,7 +110,7 @@ Ce sont des timings cibles : **l'image sera recalée sur la prise de voix retenu
 | 00:05,0–00:07,8 | **2 · Compte** | L2 (5,1–7,5) | « Créez votre compte » : on tape « Alex », « alex@example.com » et le mot de passe. La jauge passe à 3 barres et affiche **« Fort »** (6,6). Confirmation accélérée, clic « Créer mon compte » (7,2). | Frappe feutrée, tintement minuscule sur « Fort », carillon 2. |
 | 00:07,8–00:10,6 | **3 · Étapes** | L3 (8,0–9,6) | La fenêtre monte : **« Alex, voici les étapes, dans l'ordre »**, puis « Vous pouvez vous arrêter à tout moment. Rien n'est obligatoire. » La frise 1 → 8 s'allume au fil des « Suivant » (8,0–10,0). Clic « C'est compris » (10,2). | Cadrage sur l'en-tête, la frise et le titre ; le corps des étapes reste hors champ. Soulignement doux sous « Rien n'est obligatoire. » Tics de verre, carillon 3. |
 | 00:10,6–00:12,6 | **4 · Accueil** | L4 démarre (12,0) | **« Bonsoir Alex. »**, « Prenez le temps qu'il vous faut… », le bouton corail Info-aide, puis les 4 cartes illustrées. Clic sur **« Écrire mon récit · Une seule fois, à votre rythme. »** (12,2). | Respiration : la musique porte. Étincelles des illustrations. Carillon 4. |
-| 00:12,6–00:16,8 | **5 · Mon récit** | fin de L4 (→ 14,2), L5 (14,4–16,6) | **« À votre rythme. »**, « « Je ne sais pas » est une réponse. » On coche « Je ne sais pas exactement », on place le curseur dans « Ce dont je me souviens » (seul le texte indicatif est visible), puis fondu vers « Ce dont j'ai besoin maintenant » : « Parler à quelqu'un », « Un examen médical », « Un conseil juridique ». La barre avance, la pastille affiche **« Chiffré · 18:24 »**. | Battement du cadenas, carillon 5. |
+| 00:12,6–00:16,8 | **5 · Mon récit** | fin de L4 (→ 14,2), L5 (14,4–16,6) | **« À votre rythme. »**, « « Je ne sais pas » est une réponse. » On coche « Je ne sais pas exactement », on place le curseur dans « Ce dont je me souviens » (seul le texte indicatif est visible), puis fondu vers « Ce dont j'ai besoin maintenant » : « Parler à quelqu'un », « Un examen médical », « Un conseil juridique ». La barre avance, la pastille affiche **« Chiffré · 18 h 21 »**. | Battement du cadenas, carillon 5. |
 | 00:16,8–00:22,4 | **6 · Où aller** | L6 (17,0–19,7) · L7 (20,0–22,2) | Carte de Montréal. Filtre **« Examens médicaux »** (17,3) : 5 points bleus numérotés (17,6–18,2). Clic sur la fiche 1, « Centre désigné de l'Île-de-Montréal (CDVASIM), Hôpital Notre-Dame » (18,8) : le point grossit, l'étiquette apparaît. Filtre **« Soutien psychologique »** (20,0), dont la fiche 1 est Info-aide (24 h/24) ; clic sur « CALACS Trêve pour Elles » (20,6, adresse confidentielle, pas de point), puis « CAVAC de Montréal » (21,4, point 3, la carte glisse). | Pops feutrés à l'apparition des points, souffle sur les glissés. Le cœur de `Talk` s'envole sur L7. Carillon 6. |
 | 00:22,4–00:25,8 | **7 · Mon dossier** | L8 (22,6–25,5) | **« Vous décidez de ce qui part. »** On coupe l'interrupteur « Examens prioritaires » (22,8), ce qui affiche « 2 sections ». Aperçu en plan large, destinataire Rebâtir, deux consentements cochés (23,2 et 23,5). « Envoyer à Rebâtir » (23,9) → **« Confirmer l'envoi ? »** → « Oui, envoyer » (24,3). Les 4 étapes s'allument (24,4–25,4) jusqu'à **« Accusé de réception (simulé) »**. | Bascules feutrées, whoosh aérien sur « Oui, envoyer », 3 tics puis carillon 7. |
 | 00:25,8–00:30,4 | **8 · Rappel** | L9 (26,0–30,2) | **« Quand souhaitez-vous être rappelée ? »** Clic « Demain » (26,2), puis « 10 h 00 » (26,6). On tape « +1 514 555-0187 » (27,0–27,8). « Pas de message vocal laissé » est déjà coché ; clic sur **« Une avocate (femme) si possible »** (28,2) et « Un ou une interprète » (28,6). « Confirmer demain à 10 h 00 » (29,2) → **« Rendez-vous confirmé (simulé) »** (29,6). | La coche de `Folder` flotte. Carillon 8, le plus chaud. |
@@ -147,10 +147,10 @@ Pour chacune, la même phrase test (L1 + L11).
 
 | Poste | Crédits |
 |---|---|
-| Phrases test, 3 voix | ≈ 260 |
-| 2 prises du script (≈ 530 caractères chacune) | ≈ 1 060 |
-| **Total** | **≈ 1 320** |
-| Plafond | 1 700 |
+| Phrases test, 3 voix (avec un essai témoin « Boussole ») | ≈ 420 |
+| 2 prises du script, en un appel | ≈ 1 060 à 1 515 (selon que les balises de pause sont facturées) |
+| **Total** | **≈ 1 480 à 1 940** |
+| Plafond | 2 000 |
 
 ---
 
