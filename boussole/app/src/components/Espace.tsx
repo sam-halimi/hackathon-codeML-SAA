@@ -319,7 +319,7 @@ function Accueil({ fiche, hoursSince, go, onIntro }: { fiche: Fiche; hoursSince:
       <a href="tel:+18889339007" id="call-ligne" className="rise rise-2 press mt-7 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/25"><Phone size={22} strokeWidth={2.25} /></span>
         <span className="min-w-0">
-          <span className="block text-sm font-bold text-white/85">Besoin de parler ? Gratuit, 24 h/24</span>
+          <span className="block text-sm font-bold text-white/85">Info-aide violence sexuelle · gratuit, 24 h/24</span>
           <span className="display block text-2xl sm:text-3xl">+1 888 933-9007</span>
         </span>
         <ArrowRight size={22} strokeWidth={2.25} className="ml-auto shrink-0" />
@@ -445,7 +445,7 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
     <div>
       <div className="rise eyebrow text-north">Où aller à Montréal</div>
       <h1 className="rise rise-1 display mt-3 text-4xl sm:text-5xl">Des personnes formées vous attendent.</h1>
-      <p className="rise rise-2 mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-2">En cas de doute, appelez d’abord la Ligne-ressource (24{NB}h/24){NB}: elle vous oriente vers le bon centre.</p>
+      <p className="rise rise-2 mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-2">En cas de doute, appelez d’abord Info-aide violence sexuelle (24{NB}h/24){NB}: elle vous oriente vers le bon centre.</p>
 
       {hoursSince !== null && urgent.length > 0 && (
         <div className="fade-in mt-6 rounded-2xl border border-warn/30 bg-warn-soft p-5">
@@ -462,7 +462,7 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
       <a href="tel:+18889339007" className="press mt-6 flex items-center gap-4 rounded-[28px] bg-coral p-5 text-white hover:brightness-105" id="call-ligne-aller">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white/25"><Phone size={22} strokeWidth={2.25} /></span>
         <span className="min-w-0">
-          <span className="block text-sm font-bold text-white/85">Ligne-ressource · gratuit · confidentiel · 24 h/24</span>
+          <span className="block text-sm font-bold text-white/85">Info-aide violence sexuelle · gratuit · confidentiel · 24 h/24</span>
           <span className="display block text-2xl sm:text-3xl">+1 888 933-9007</span>
         </span>
         <ArrowRight size={20} strokeWidth={1.75} className="ml-auto" />
@@ -505,7 +505,7 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
           {mapKind === 'google' && <p className="mt-2 text-xs text-ink-3">Google Maps ne se charge que si vous le choisissez. {gTarget ? `Affiché : ${gTarget.name}.` : 'Touchez une adresse pour l’afficher.'}</p>}
         </div>
       </div>
-      <p className="mt-4 text-xs text-ink-3">Plan OpenStreetMap ou Google Maps. Sources : CIUSSS du Centre-Sud-de-l’Île-de-Montréal, 211 Québec, rebatir.ca. Vérifiez les horaires par téléphone.</p>
+      <p className="mt-4 text-xs text-ink-3">Plan OpenStreetMap ou Google Maps. Sources : CIUSSS de Montréal, CVASM, SPVM (2026), sites officiels des organismes. Adresses confidentielles non affichées. Vérifiez les horaires par téléphone.</p>
     </div>
   )
 }
