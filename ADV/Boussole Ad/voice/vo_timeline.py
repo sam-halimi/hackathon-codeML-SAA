@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Recale le film sur la prise de voix retenue (l'image suit la voix, jamais l'inverse).
 
-    python3 vo_timeline.py takes/take1
+    python3 vo_timeline.py takes/take1 [sortie.json]
 
 Lit takes/take1.alignment.json (horodatage de chaque caractère, fourni par ElevenLabs) et écrit
 ../timeline/timeline_vo.json : début et fin de chaque ligne, chaque mot (pour la typo cinétique),
@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 VO_START = 0.7          # la première ligne commence à 0,7 s dans le film (brief §3)
 
 
-def main(prefix):
+def main(prefix, dest=None):
     with open(os.path.join(HERE, prefix + '.alignment.json'), encoding='utf-8') as f:
         al = json.load(f)
     chars, starts, ends = al['characters'], al['start'], al['end']
@@ -75,15 +75,15 @@ def main(prefix):
         'lines': L,
         'words': words,
     }
-    dest = os.path.join(HERE, '..', 'timeline', 'timeline_vo.json')
+    dest = dest or os.path.join(HERE, '..', 'timeline', 'timeline_vo.json')
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     with open(dest, 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
     body = sections['fin']
-    print(f'timeline/timeline_vo.json : corps {body:.1f} s, logo à {logo:.2f} s, film {made_by + 2.0:.1f} s')
+    print(f'{os.path.relpath(dest)} : corps {body:.1f} s, logo à {logo:.2f} s, film {made_by + 2.0:.1f} s')
     for ln in L:
         print(f"  L{ln['n']:<2} {ln['start']:6.2f} → {ln['end']:6.2f}  {ln['text']}")
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else 'takes/take1')
+    main(sys.argv[1] if len(sys.argv) > 1 else 'takes/take1', sys.argv[2] if len(sys.argv) > 2 else None)
