@@ -424,8 +424,8 @@ function Recit({ fiche, update, savedAt, hoursSince, onWipe, onNext }: {
 
 const FILTERS = [
   { id: 'all', label: 'Tout', icon: MapPin },
-  { id: 'exam', label: 'Examens', icon: Stethoscope },
-  { id: 'support', label: 'Soutien psy', icon: HeartHandshake },
+  { id: 'exam', label: 'Examens médicaux', icon: Stethoscope },
+  { id: 'support', label: 'Soutien psychologique', icon: HeartHandshake },
   { id: 'legal', label: 'Juridique', icon: Scale },
 ] as const
 
@@ -485,8 +485,8 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
             </Suspense>
           </div>
           <div className="mt-3 flex flex-wrap gap-3 text-xs font-bold text-ink-2">
-            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sky" /> Examens</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sage" /> Soutien</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sky" /> Examens médicaux</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sage" /> Soutien psychologique</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-sun" /> Juridique</span>
           </div>
         </div>
@@ -497,7 +497,7 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
 }
 
 function ResourceCard({ r, n, active, onSelect }: { r: Resource; n: number; active: boolean; onSelect: () => void }) {
-  const kind = { exam: ['Examens', 'bg-ink text-paper'], support: ['Soutien', 'bg-north text-paper'], legal: ['Juridique', 'bg-warn text-paper'] }[r.kind]
+  const kind = { exam: ['Examens médicaux', 'bg-ink text-paper'], support: ['Soutien psychologique', 'bg-north text-paper'], legal: ['Juridique', 'bg-warn text-paper'] }[r.kind]
   return (
     <li id={`res-${r.id}`} onClick={onSelect} className={`rise cursor-pointer rounded-[24px] border-2 p-5 transition-all duration-500 ease-[var(--ease-out-soft)] ${active ? 'border-north bg-north-soft shadow-[0_12px_30px_-18px_rgba(106,76,224,0.6)]' : 'border-transparent bg-white shadow-[0_14px_30px_-26px_rgba(45,36,64,.5)] hover:border-north-soft'}`}>
       <div className="flex items-start gap-3">
