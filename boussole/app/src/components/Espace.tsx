@@ -491,7 +491,7 @@ function Aller({ hoursSince, substance }: { hoursSince: number | null; substance
           </div>
         </div>
       </div>
-      <p className="mt-4 text-xs text-ink-3">Carte : OpenStreetMap et CARTO. Sources : CIUSSS de Montréal, CVASM, SPVM (2026), sites officiels des organismes. Adresses confidentielles non affichées. Vérifiez les horaires par téléphone.</p>
+      <p className="mt-4 text-xs text-ink-3">Carte : OpenStreetMap. Sources : CIUSSS de Montréal, CVASM, SPVM (2026), sites officiels des organismes. Adresses confidentielles non affichées. Vérifiez les horaires par téléphone.</p>
     </div>
   )
 }

@@ -38,12 +38,11 @@ export default function ResourceMap({ items, active, onSelect }: { items: Resour
       inertia
       className="h-full w-full"
     >
-      {/* Fond « plan de rues » clair (CARTO Voyager, données OpenStreetMap) */}
+      {/* Plan de rues standard OpenStreetMap : sans clé d'API, sans filigrane */}
       <TileLayer
-        attribution='&copy; OpenStreetMap &copy; CARTO'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={20}
+        attribution='&copy; contributeurs OpenStreetMap'
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        maxZoom={19}
       />
       {placed.map((r) => (
         <Marker key={r.id} position={[r.lat!, r.lng!]} icon={pin(r, items.indexOf(r) + 1, r.id === active)} zIndexOffset={r.id === active ? 1000 : 0} eventHandlers={{ click: () => onSelect(r.id) }}>
