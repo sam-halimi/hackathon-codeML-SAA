@@ -62,7 +62,7 @@ ${lignes}
 
 - \`planche_contact_16x9.jpg\`, \`planche_contact_9x16.jpg\` : 24 images régulières, horodatées.
 - \`pistes/\` : \`voix.wav\`, \`musique.wav\`, \`bruitages.wav\` (pistes séparées, avant mastering) et \`mix_master.wav\` (WAV 24 bits, 48 kHz).
-- \`web/\` : copies allégées pour la mise en ligne (H.264 CRF 23, AAC 192 kb/s), publiées sur https://nova-projet360.vercel.app/video/.
+- \`web/\` : copies allégées pour la mise en ligne (H.264 CRF 23, AAC 192 kb/s), lues sur https://nova-projet360.vercel.app/video/, où les masters sont aussi proposés en téléchargement.
 
 ## Son
 

@@ -5,7 +5,8 @@
 // Usage (depuis projet360/) :
 //   VERCEL_TOKEN=xxxx node outils/deployer.mjs            (macOS / Linux)
 //   $env:VERCEL_TOKEN="xxxx"; node outils/deployer.mjs   (Windows PowerShell)
-// Option : VERCEL_PROJET=nom-du-projet (par défaut : nova-projet360)
+// Options : VERCEL_PROJET=nom-du-projet (par défaut : nova-projet360) ;
+//           VERCEL_SANS_MASTERS=1 pour ne publier que les copies web du spot, sans les masters.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -32,9 +33,11 @@ async function appel(methode, chemin, corps, entetes) {
 }
 
 // Page de lecture du spot : sobre, aux couleurs de NOVA, sans dépendance.
-function pageVideo(videos) {
+// masters : { nom de la vidéo → poids en Mo } des versions pleine qualité publiées dans video/master/.
+function pageVideo(videos, masters = {}) {
+  const master = (n) => (masters[n] ? ` · <a href="master/${n}" download>Master pleine qualité (${masters[n]} Mo)</a>` : '');
   const lecteur = (n) => `<figure class="${n.includes('9x16') ? 'v' : 'h'}"><video src="${n}" controls playsinline preload="metadata"></video>
-    <figcaption>${n.includes('9x16') ? 'Format vertical 9:16' : 'Format 16:9'} · <a href="${n}" download>Télécharger</a></figcaption></figure>`;
+    <figcaption>${n.includes('9x16') ? 'Format vertical 9:16' : 'Format 16:9'} · <a href="${n}" download>Télécharger</a>${master(n)}</figcaption></figure>`;
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NOVA · Spot</title><meta name="robots" content="noindex">
 <style>
@@ -70,7 +73,19 @@ try {
   const dossierVideo = path.resolve(RACINE, '..', 'video', 'out', 'web');
   const videos = ['NOVA_spot_16x9.mp4', 'NOVA_spot_9x16.mp4'].filter((n) => fs.existsSync(path.join(dossierVideo, n)));
   for (const n of videos) fichiers.push({ chemin: 'video/' + n, contenu: fs.readFileSync(path.join(dossierVideo, n)) });
-  if (videos.length) fichiers.push({ chemin: 'video/index.html', contenu: Buffer.from(pageVideo(videos)) });
+  // Masters pleine qualité (facultatifs, video/out/) : proposés en téléchargement sur /video/.
+  // VERCEL_SANS_MASTERS=1 les laisse de côté (déploiement plus léger).
+  const masters = {};
+  if (!process.env.VERCEL_SANS_MASTERS) {
+    for (const n of videos) {
+      const src = path.resolve(dossierVideo, '..', n);
+      if (!fs.existsSync(src)) continue;
+      const contenu = fs.readFileSync(src);
+      fichiers.push({ chemin: 'video/master/' + n, contenu });
+      masters[n] = Math.round(contenu.length / 1048576);
+    }
+  }
+  if (videos.length) fichiers.push({ chemin: 'video/index.html', contenu: Buffer.from(pageVideo(videos, masters)) });
 
   const { user } = await appel('GET', '/v2/user');
   const equipe = user.defaultTeamId ? `teamId=${user.defaultTeamId}` : '';

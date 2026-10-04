@@ -152,8 +152,10 @@ $env:VERCEL_TOKEN="votre_jeton"; node outils/deployer.mjs         # Windows Powe
 
 Le script reconstruit le rendu, l'envoie et affiche l'adresse ; l'adresse de production reste https://nova-projet360.vercel.app. Le jeton n'est jamais enregistré : ne l'écrivez dans aucun fichier du dépôt.
 
+S'il trouve le spot vidéo rendu (`video/out/`), le script le publie aussi sur `/video/` : copies web à lire en ligne et masters pleine qualité à télécharger. Ajoutez `VERCEL_SANS_MASTERS=1` pour ne publier que les copies web.
+
 Pour tester la version en ligne dans un navigateur : `node outils/tester_navigateur.mjs --url https://nova-projet360.vercel.app/`.
 
 ## 11. Vidéo de présentation
 
-Le spot en motion design (environ 64 s : la douleur, puis NOVA, ses interfaces et l'assistant) est fabriqué par le code du dossier `video/` à la racine du dépôt (le projet Remotion de l'équipe) : brief et texte de la voix dans `video/brief/PROMPT.md`, commandes dans `video/README.md`. Formats 16:9 et 9:16, 60 images par seconde, son masterisé à −14 LUFS. Les vidéos rendues, les pistes audio et les captures ne sont pas versionnées.
+Le spot en motion design (environ 64 s : la douleur, puis NOVA, ses interfaces et l'assistant) est fabriqué par le code du dossier `video/` à la racine du dépôt (le projet Remotion de l'équipe) : brief et texte de la voix dans `video/brief/PROMPT.md`, commandes dans `video/README.md`. Formats 16:9 et 9:16, 60 images par seconde, son masterisé à −14 LUFS. Il est en ligne sur https://nova-projet360.vercel.app/video/ (lecture, copies web et masters à télécharger). Les vidéos rendues, les pistes audio et les captures ne sont pas versionnées.
