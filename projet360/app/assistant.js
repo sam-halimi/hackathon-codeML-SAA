@@ -195,6 +195,14 @@
     if (/(annonce|prevu|prochaine build|sera (livre|corrige|pret)|en preparation)/.test(t)) return 'correctif_annonce';
     return null;
   }
+  // Qui valide une condition : la partie « (validation) » du responsable, sinon le premier nom cité.
+  function valideurDe(c) {
+    const r = String((c && c.responsable) || '').trim();
+    if (!r || /^à confirmer$/i.test(r)) return 'l\'équipe responsable';
+    const parties = r.split(/\s*;\s*/);
+    const v = parties.find((x) => /validation/i.test(x)) || parties[0];
+    return v.replace(/\s*\((validation|approbation)[^)]*\)\s*/i, '').trim() || r;
+  }
   const NATURE_ETAT = { valide: 'validation_obtenue', correctif_livre: 'correctif_livre', rouvert: 'probleme', ouvert: 'probleme', correctif_annonce: 'information' };
 
   // ===================================================================
@@ -264,12 +272,12 @@
             || (/equipe (securite|accessibilite|exploitation|qa|infra|infrastructure)/.test(N(seg)) && !estFournisseur(N(seg), null));
           if (autorite === 'fournisseur' || f.valideur === 'fournisseur') {
             if (c.etat !== 'correctif_livre') ops.push({ operation: 'etat_condition', cible: c.id, etat: 'correctif_livre', nature: 'correctif_livre', passage: seg.length > 300 ? segAvec(new RegExp(N(c.id) + '|' + (c.tickets || []).map(N).join('|'))) : seg, texte: 'Déclaré corrigé par le fournisseur ; validation de l\'équipe responsable attendue.' });
-            else ops.push({ operation: 'note_condition', cible: c.id, nature: 'correctif_livre', passage: seg, texte: 'Le fournisseur affirme que c\'est validé de son côté : la condition reste ouverte tant que ' + (c.responsable || 'l\'équipe responsable') + ' ne l\'a pas validée.' });
-            remarques.push(`${badge('ambre', 'Garde-fou', 'shield-alert')} Le fournisseur ne peut pas fermer ${esc(c.id)} : j'enregistre un <strong>correctif livré</strong>, pas une validation. Seul${/a$/.test(N(c.responsable || '')) ? 'e' : ''} <strong>${esc(c.responsable || 'l\'équipe responsable')}</strong> peut valider.`);
+            else ops.push({ operation: 'note_condition', cible: c.id, nature: 'correctif_livre', passage: seg, texte: 'Le fournisseur affirme que c\'est validé de son côté : la condition reste ouverte tant que ' + valideurDe(c) + ' ne l\'a pas validée.' });
+            remarques.push(`${badge('ambre', 'Garde-fou', 'shield-alert')} Le fournisseur ne peut pas fermer ${esc(c.id)} : j'enregistre un <strong>correctif livré</strong>, pas une validation. La validation revient à <strong>${esc(valideurDe(c))}</strong>.`);
           } else if (valideurOk) {
             ops.push({ operation: 'etat_condition', cible: c.id, etat: 'valide', nature: 'validation_obtenue', passage: seg });
           } else if (f.valideur === 'aucun') {
-            ops.push({ operation: 'note_condition', cible: c.id, nature: 'information', passage: seg, texte: 'Validation annoncée sans validateur identifié : à confirmer auprès de ' + (c.responsable || 'l\'équipe responsable') + '.' });
+            ops.push({ operation: 'note_condition', cible: c.id, nature: 'information', passage: seg, texte: 'Validation annoncée sans validateur identifié : à confirmer auprès de ' + valideurDe(c) + '.' });
           } else {
             return { besoin: 'valideur', condition: c, texte };
           }
@@ -770,7 +778,7 @@
         const c = att.condition;
         const forcer = /fournisseur|boreal|prestataire/.test(t) ? { valideur: 'fournisseur', autorite: 'fournisseur' }
           : /(personne|ne sais pas|aucun|inconnu)/.test(t) ? { valideur: 'aucun' }
-          : (c.responsable && N(c.responsable).split(' ').some((m) => m.length > 2 && t.includes(m))) || /(equipe|responsable|oui)/.test(t) ? { valideur: 'responsable', personne: { nom: c.responsable, role: 'Valide ' + c.id }, autorite: 'officielle' } : null;
+          : (c.responsable && N(c.responsable).split(' ').some((m) => m.length > 2 && t.includes(m))) || /(equipe|responsable|oui)/.test(t) ? { valideur: 'responsable', personne: { nom: valideurDe(c), role: 'Valide ' + c.id }, autorite: 'officielle' } : null;
         if (forcer) return traiterInformation(att.texte, forcer, att.exemple);
       } else if (att.besoin === 'autorite_date') {
         const forcer = /(proposition|propose|pas encore|rien de decide)/.test(t) ? { autoriteDate: 'proposition' }
@@ -792,8 +800,8 @@
     if (r.besoin === 'valideur') {
       const c = r.condition;
       conv.attente = { besoin: 'valideur', condition: c, texte, exemple };
-      return dire(`Qui a validé <strong>${esc(c.id)}</strong> (${esc(c.titre)}) ? Pour fermer une condition, il faut la validation de l'équipe responsable${c.responsable ? ` (${esc(c.responsable)})` : ''}, pas seulement un correctif livré.
-        <div class="choix-rapides">${[c.responsable ? `${c.responsable} (équipe responsable)` : 'L\'équipe responsable', 'Le fournisseur', 'Personne pour l\'instant'].map((x) => `<button type="button" class="puce" data-ia-repondre="${esc(x)}">${esc(x)}</button>`).join('')}</div>`);
+      return dire(`Qui a validé <strong>${esc(c.id)}</strong> (${esc(c.titre)}) ? Pour fermer une condition, il faut la validation de l'équipe responsable${c.responsable ? ` (${esc(valideurDe(c))})` : ''}, pas seulement un correctif livré.
+        <div class="choix-rapides">${[c.responsable ? `${valideurDe(c)} (équipe responsable)` : 'L\'équipe responsable', 'Le fournisseur', 'Personne pour l\'instant'].map((x) => `<button type="button" class="puce" data-ia-repondre="${esc(x)}">${esc(x)}</button>`).join('')}</div>`);
     }
     if (r.besoin === 'autorite_date') {
       conv.attente = { besoin: 'autorite_date', texte, exemple };

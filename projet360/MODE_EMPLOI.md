@@ -156,4 +156,4 @@ Pour tester la version en ligne dans un navigateur : `node outils/tester_navigat
 
 ## 11. Vidéo de présentation
 
-La vidéo en motion design (douleur → solution → interfaces → assistant) est fabriquée par le code du dossier `video/` : brief dans `video/brief/PROMPT.md`, mode d'emploi dans `video/README.md`. Les fichiers rendus (MP4, pistes audio) ne sont pas versionnés.
+Le spot en motion design (environ 64 s : la douleur, puis NOVA, ses interfaces et l'assistant) est fabriqué par le code du dossier `video/` à la racine du dépôt (le projet Remotion de l'équipe) : brief et texte de la voix dans `video/brief/PROMPT.md`, commandes dans `video/README.md`. Formats 16:9 et 9:16, 60 images par seconde, son masterisé à −14 LUFS. Les vidéos rendues, les pistes audio et les captures ne sont pas versionnées.

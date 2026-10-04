@@ -641,6 +641,8 @@
       if (!$('#contenu').innerHTML) allerA(etat.onglet);
       return ouvrirPreuve({ source: cible, repere: 'Document complet' });
     }
+    // Lien direct vers une question : sa carte est mise en avant, nuances et preuves dépliées.
+    if (onglet === 'questions' && cible) etat.questionSurlignee = cible;
     allerA(onglet, cible ? (onglet === 'questions' ? 'question-' + cible : cible) : null);
   }
 
