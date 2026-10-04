@@ -1,0 +1,15 @@
+{
+ "integrated_LUFS": -14.0,
+ "true_peak_dBTP": -1.08,
+ "LRA": 15.9,
+ "vo_minus_music_LU_during_words": {
+  "min": 16.5,
+  "p5": 16.9,
+  "median": 19.3,
+  "share_ge_15": 1.0
+ },
+ "master_gain_dB": 3.85,
+ "me_limiter_ceiling_dBTP_post_gain": -1.5,
+ "vo_clip_gain_max_reduction_dB": 0.57,
+ "limiter_on_voice": false
+}

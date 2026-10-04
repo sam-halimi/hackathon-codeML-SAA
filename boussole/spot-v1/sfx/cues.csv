@@ -1,0 +1,80 @@
+categorie,effet,temps_s,gain_dB
+whoosh,whoosh 0.55s,-0.108,-20
+ticks,tic mot,0.25,-32
+ticks,tic mot,0.429,-32
+ticks,tic mot,0.788,-32
+ticks,tic mot,0.968,-32
+ticks,tic mot,1.327,-32
+ticks,tic mot,1.686,-32
+whoosh,trait de la règle,1.836,-30
+hits,hit feutré (expiration),1.936,-18
+whoosh,whoosh 0.50s,2.427,-21
+ticks,tic horloge,2.852,-30.0
+ticks,tic horloge,3.047,-29.62
+ticks,tic horloge,3.238,-29.2628
+ticks,tic horloge,3.427,-28.927032
+ticks,tic horloge,3.614,-28.61141008
+ticks,tic horloge,3.799,-28.3147254752
+ticks,tic horloge,3.983,-28.035841946688
+ticks,tic horloge,4.167,-27.77369142988672
+ticks,tic horloge,4.351,-27.52726994409352
+ticks,tic horloge,4.536,-27.295633747447905
+ticks,tic horloge,4.725,-27.07789572260103
+ticks,tic horloge,4.919,-26.87322197924497
+ticks,tic horloge,5.121,-26.68082866049027
+ticks,tic horloge,5.336,-26.499978940860856
+ticks,tic horloge,5.573,-26.329980204409203
+ticks,tic horloge,5.855,-26.170181392144652
+whoosh,swell inversé vers la bascule,5.918,-22
+ticks,tic horloge,6.299,-26.019970508615973
+whoosh,whoosh 0.80s,6.378,-15
+hits,arrêt mécanique (00:00:00),6.497,-15
+ticks,tic lettrage,7.038,-34
+ticks,tic lettrage,7.245,-34
+logo,signature logo : impact,7.388,-10
+logo,signature logo : scintillement (fa),7.398,-20
+ticks,tic lettrage,7.867,-34
+ticks,tic lettrage,8.074,-34
+hits,hit léger (nuit),8.796,-22
+whoosh,whoosh 0.60s,8.883,-16
+whoosh,whoosh 0.35s,9.075,-20
+hits,hit (texte règles),9.303,-19
+ui,pop loupe 18 h,9.473,-18
+ui,clic case prélèvement,9.823,-14
+ui,tic grave loupe sang,10.143,-16
+hits,hit étiquette RÈGLES,10.393,-18
+whoosh,whoosh 0.60s,10.572,-16
+ui,tic masque,11.032,-24
+ui,tic masque,11.142,-24
+ui,tic masque,11.252,-24
+ui,tic masque,11.362,-24
+ui,clic Générer,11.952,-14
+whoosh,whoosh 0.45s,12.06,-17
+ui,texture données (frappe),12.302,-24
+whoosh,swish filet source,13.342,-22
+ui,tic connexion source,13.712,-18
+whoosh,whoosh 0.40s,14.448,-19
+ui,tic ligne « Aucun… »,14.768,-20
+ui,tic ligne « Aucun… »,14.988,-20
+ui,tic ligne « Aucun… »,15.208,-20
+hits,hit (ne juge personne),15.478,-17
+whoosh,whoosh 0.45s,15.928,-18
+ui,clic Valider,16.311,-15
+ui,clic Valider,16.516,-15
+ui,clic Valider,16.721,-15
+ui,clic Valider,16.926,-15
+ui,clic Rejeter,17.131,-13
+ui,clic Valider,17.336,-15
+ui,clic Valider,17.541,-15
+hits,hit (tout),17.873,-15
+whoosh,whoosh 0.50s,18.05,-17
+ui,micro-clic maillon,18.763,-22
+ui,micro-clic maillon,18.893,-22
+ui,micro-clic maillon,19.023,-22
+hits,scellé (loquet) + hit,19.394,-12
+ui,clic simuler modification,19.811,-15
+hits,choc sec (altération détectée),19.911,-14
+whoosh,whoosh 0.90s,20.365,-15
+logo,signature logo (reprise courte) : impact,21.15,-12
+logo,signature logo (reprise courte) : scintillement,21.17,-23
+whoosh,whoosh 0.60s,24.61,-22
