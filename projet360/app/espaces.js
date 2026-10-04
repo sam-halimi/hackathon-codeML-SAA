@@ -26,7 +26,7 @@
     return statut === 'confirme' ? badge('vert', 'Confirmé', 'circle-check') : badge('bleu', 'Proposé par l\'équipe', 'pencil-line');
   }
   function badgeType(type) {
-    return type === 'engagement' ? badge('violet', 'Engagement documenté') : badge('bleu', 'Recommandation de l\'équipe');
+    return type === 'engagement' ? badge('violet', 'Engagement documenté', 'handshake') : badge('bleu', 'Recommandation de l\'équipe', 'lightbulb');
   }
   function texteEcheance(a) {
     if (a.echeance) return `<strong>${fmtDate(a.echeance)}</strong>`;
@@ -179,7 +179,7 @@
       ${s.priorites.map((p) => {
         const acts = (p.actions || []).map((id) => actionParId(e, id)).filter(Boolean);
         const cond = p.condition && s.conditions.find((c) => c.id === p.condition);
-        return `<li class="carte" style="margin-left:.4rem"><strong>${esc(p.titre)}</strong> ${cond ? badgeEtat(cond.etat) : ''}<br>${esc(p.texte)}<br>
+        return `<li class="carte" style="margin-left:.4rem"><strong class="ligne-ic">${icone('flag-triangle-right')}${esc(p.titre)}</strong> ${cond ? badgeEtat(cond.etat) : ''}<br>${esc(p.texte)}<br>
           <span class="petit">Actions : ${acts.map((a) => `<a href="#actions/action-${esc(a.id)}">${esc(a.id)}</a> (${esc(a.responsable)}, ${a.echeance ? fmtDate(a.echeance) : 'échéance à confirmer'})`).join(' · ')}</span></li>`;
       }).join('')}</ol>`;
 
@@ -208,7 +208,7 @@
     html += `<div class="section"><h2>${icone('triangle-alert')}Informations à ne pas utiliser</h2></div>
       <p class="intro">Ces informations circulent encore dans le corpus, mais elles sont périmées, inexactes ou hors projet.</p>
       <div class="table-wrap"><table><thead><tr><th>Information</th><th>Où on la trouve</th><th>Pourquoi l'écarter</th></tr></thead><tbody>
-      ${s.a_ne_pas_utiliser.map((x) => `<tr><td><strong>${esc(x.texte)}</strong></td><td>${x.sources.map((id) => `<button type="button" class="bouton petit" data-ouvrir-source-page="${esc(id)}">${esc(id)}</button>`).join(' ')}</td><td>${esc(x.raison)}</td></tr>`).join('')}
+      ${s.a_ne_pas_utiliser.map((x) => `<tr><td><span class="ligne-ic rouge">${icone('ban')}<strong>${esc(x.texte)}</strong></span></td><td>${x.sources.map((id) => `<button type="button" class="bouton petit" data-ouvrir-source-page="${esc(id)}">${esc(id)}</button>`).join(' ')}</td><td>${esc(x.raison)}</td></tr>`).join('')}
       </tbody></table></div>`;
 
     // Brief
@@ -300,7 +300,7 @@
       <div class="section" style="margin:0"><h2>Actions</h2><div class="groupe-boutons"><button type="button" class="bouton" data-action="exporter-actions">${icone('download')}Exporter les actions (CSV)</button></div></div></header>
       <p class="intro"><strong>${ouvertes.length} actions ouvertes</strong>, dont ${ouvertes.filter((a) => a.condition).length} liées aux conditions de go-live. ${sansDate} n'ont aucune échéance documentée : elles sont marquées « À confirmer ». Aucune date n'a été inventée.</p>
       <div class="encadre ton-gris petit"><strong>Lecture :</strong> ${badge('vert', 'Confirmé', '✓')} le responsable est désigné dans une source ; ${badge('bleu', "Proposé par l'équipe", '?')} c'est notre suggestion.
-        ${badge('violet', 'Engagement documenté')} promis dans une source ; ${badge('bleu', "Recommandation de l'équipe")} proposée par notre équipe, sans engagement écrit.</div>
+        ${badge('violet', 'Engagement documenté', 'handshake')} promis dans une source ; ${badge('bleu', "Recommandation de l'équipe", 'lightbulb')} proposée par notre équipe, sans engagement écrit.</div>
       <div class="filtres" role="group" aria-label="Filtrer les actions">
         ${Object.entries(FILTRES_ACTIONS).map(([k, [lib]]) => `<button type="button" class="puce" data-filtre-actions="${k}" aria-pressed="${etat.filtres.actions === k}">${esc(lib)}</button>`).join('')}
       </div>

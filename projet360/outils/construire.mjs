@@ -12,13 +12,15 @@ import { verifier } from './verifier.mjs';
 
 const debut = Date.now();
 
-// Polices IBM Plex (licence SIL OFL, voir app/polices/OFL.txt) intégrées en base64 :
-// le rendu garde sa typographie même hors connexion.
+// Polices (licence SIL OFL, voir app/polices/OFL.txt) intégrées en base64 : aucune requête réseau.
+// Fraunces pour les titres, Source Sans 3 pour le texte, Source Code Pro pour les repères (Q01, M04…).
 const POLICES = [
-  ['IBM Plex Sans', 400, 'normal', 'ibm-plex-sans-latin-400-normal.woff2'],
-  ['IBM Plex Sans', 400, 'italic', 'ibm-plex-sans-latin-400-italic.woff2'],
-  ['IBM Plex Sans', 600, 'normal', 'ibm-plex-sans-latin-600-normal.woff2'],
-  ['IBM Plex Mono', 500, 'normal', 'ibm-plex-mono-latin-500-normal.woff2'],
+  ['Fraunces', 600, 'normal', 'fraunces-latin-600-normal.woff2'],
+  ['Fraunces', 400, 'italic', 'fraunces-latin-400-italic.woff2'],
+  ['Source Sans 3', 400, 'normal', 'source-sans-3-latin-400-normal.woff2'],
+  ['Source Sans 3', 400, 'italic', 'source-sans-3-latin-400-italic.woff2'],
+  ['Source Sans 3', 600, 'normal', 'source-sans-3-latin-600-normal.woff2'],
+  ['Source Code Pro', 500, 'normal', 'source-code-pro-latin-500-normal.woff2'],
 ];
 function policesEmbarquees() {
   return POLICES.filter(([, , , f]) => fs.existsSync(path.join(RACINE, 'app', 'polices', f))).map(([famille, graisse, style, f]) =>

@@ -95,8 +95,8 @@ La version initiale n'est jamais modifiée : les événements s'appliquent sur u
 
 Texte du tutoriel affiché à la première ouverture (modifiable sans toucher au code, puis `node outils/construire.mjs`).
 
-- `persona` : `nom`, `accroche` (titre du premier écran), `texte`, `promesse`.
-- `etapes` (6) : `icone` (nom d'une icône de `app/icones.svg`, sans `i-`), `douleur_titre`, `douleur`, `risque`, `solution_titre`, `solution`, `onglet` (`vue`, `questions`, `historique`, `actions`, `documents`), `ancre` (facultatif), `bouton`.
+- `persona` : `nom`, `accroche` (titre du premier écran), `fiche` (4 éléments `icone`, `libelle`, `texte` : le contexte du dirigeant), `promesse`.
+- `etapes` (6) : `icone` (nom d'une icône de `app/icones.svg`, sans `i-`), `court` (libellé de l'écran d'accueil), `douleur_titre`, `douleur`, `risque`, `solution_titre`, `solution`, `onglet` (`vue`, `questions`, `historique`, `actions`, `documents`), `ancre` (facultatif), `bouton`.
 - `fin` : `titre`, `texte`.
-- Jetons remplacés par l'état affiché : `{date}`, `{remplies}`, `{autorise}`, `{conteste}`. Dans les étapes, les valeurs qui décrivent l'état courant passent par ces jetons, pour suivre les mises à jour.
-
+- Jetons remplacés par l'état affiché : `{date}`, `{jours}` (jours entre la date de situation et la date approuvée), `{remplies}`, `{autorise}`, `{conteste}`. Dans les étapes, les valeurs qui décrivent l'état courant passent par ces jetons, pour suivre les mises à jour.
+- Gardez les textes courts : la fenêtre du guide ne défile jamais, et le texte rétrécit si le contenu est trop long (le test échoue sous 13 px).

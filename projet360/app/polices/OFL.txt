@@ -1,4 +1,10 @@
-Copyright 2019 IBM Corp. All rights reserved. IBMPlexSans-Italic[wdth,wght].ttf: Copyright 2019 IBM Corp. All rights reserved.
+Polices intégrées à NOVA (fichiers woff2, sous-ensemble latin, distribués par Fontsource) :
+
+- Fraunces (titres) : Copyright 2020 The Fraunces Project Authors (github.com/undercasetype/Fraunces)
+- Source Sans 3 (texte) : Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
+- Source Code Pro (repères et codes) : Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
+
+Les trois familles sont publiées sous la licence SIL Open Font License, version 1.1, reproduite ci-dessous.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

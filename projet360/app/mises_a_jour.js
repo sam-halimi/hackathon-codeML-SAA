@@ -358,12 +358,12 @@
   function rendreExport() {
     return `<section class="carte" id="d-export"><h3 class="ligne-ic">${icone('download')}Exporter</h3>
       <div class="groupe-boutons">
-        <button type="button" class="bouton" data-export="evenements" ${etat.evenementsLocaux.length ? '' : 'disabled'}>Mises à jour de ce navigateur (JSON)</button>
-        <button type="button" class="bouton" data-export="etat">État actualisé complet (JSON)</button>
-        <button type="button" class="bouton" data-export="reponses">Réponses et preuves (texte)</button>
-        <button type="button" class="bouton" data-action="exporter-brief">Brief de reprise (texte)</button>
-        <button type="button" class="bouton" data-action="exporter-actions">Actions (CSV)</button>
-        <button type="button" class="bouton primaire" data-action="imprimer-brief">Imprimer le brief (1 page)</button></div>
+        <button type="button" class="bouton" data-export="evenements" ${etat.evenementsLocaux.length ? '' : 'disabled'}>${icone('file-json')}Mises à jour de ce navigateur (JSON)</button>
+        <button type="button" class="bouton" data-export="etat">${icone('file-json')}État actualisé complet (JSON)</button>
+        <button type="button" class="bouton" data-export="reponses">${icone('file-text')}Réponses et preuves (texte)</button>
+        <button type="button" class="bouton" data-action="exporter-brief">${icone('file-down')}Brief de reprise (texte)</button>
+        <button type="button" class="bouton" data-action="exporter-actions">${icone('sheet')}Actions (CSV)</button>
+        <button type="button" class="bouton primaire" data-action="imprimer-brief">${icone('printer')}Imprimer le brief (1 page)</button></div>
       <p class="petit doux" style="margin-top:.5rem">Pour rendre une mise à jour permanente : exportez-la, placez le fichier dans <code>donnees/evenements/</code>, puis relancez <code>node outils/construire.mjs</code>.</p></section>`;
   }
 

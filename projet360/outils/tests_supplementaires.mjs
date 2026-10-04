@@ -26,7 +26,7 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
     if (n) tirets.push(`${o} : ${n}`);
   }
   ok('Aucun tiret cadratin visible hors des citations (règle da-moderne)', tirets.length === 0, tirets.join(' | '));
-  ok('Polices IBM Plex chargées depuis le fichier (hors connexion)', await page.evaluate(async () => { await document.fonts.ready; return document.fonts.check('600 20px "IBM Plex Sans"') && [...document.fonts].some((f) => f.family.includes('IBM Plex') && f.status === 'loaded'); }));
+  ok('Polices Fraunces et Source Sans 3 chargées depuis le fichier (hors connexion)', await page.evaluate(async () => { await document.fonts.ready; const charge = (n) => [...document.fonts].some((f) => f.family.replace(/"/g, '') === n && f.status === 'loaded'); return document.fonts.check('600 20px "Fraunces"') && document.fonts.check('400 18px "Source Sans 3"') && charge('Fraunces') && charge('Source Sans 3'); }));
   await page.click('[data-onglet="vue"]');
 
   // ---------- Brief sur une page ----------
@@ -175,8 +175,8 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   await page.reload();
   await page.waitForSelector('#guide[open]', { timeout: 5000 });
   const accueil = await texte('#guide');
-  ok('Tutoriel : s\'ouvre à la première visite, dans la peau du PDG', /PDG/.test(accueil) && /Lundi/.test(accueil));
-  ok('Tutoriel : liste les six douleurs', (await page.locator('#guide .guide-promesses li').count()) === 6);
+  ok('Tutoriel : s\'ouvre à la première visite, dans la peau du PDG, au mercredi 30 septembre', /PDG/.test(accueil) && /Mercredi 30\s*septembre/.test(accueil) && /22\s*jours/.test(accueil));
+  ok('Tutoriel : fiche du dirigeant (4 éléments) et six pièges', (await page.locator('#guide .guide-fiche li').count()) === 4 && (await page.locator('#guide .guide-pieges li').count()) === 6);
   await page.click('#guide [data-guide="suivant"]');
   const etape1 = await texte('#guide');
   ok('Tutoriel : chaque étape oppose le problème et la réponse de NOVA', /Le problème/.test(etape1) && /Avec NOVA/.test(etape1));
@@ -204,6 +204,40 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
     await page.click('#guide [data-guide="suivant"]'); await page.waitForTimeout(600);
     await page.screenshot({ path: path.join(dossierCaptures, 'guide_etape.png') });
     await page.keyboard.press('Escape');
+  }
+
+  // ---------- Icônes : chaque icône affichée existe et se dessine ----------
+  {
+    const manquantes = new Set();
+    for (const onglet of ['vue', 'questions', 'historique', 'actions', 'documents']) {
+      await page.evaluate((o) => { location.hash = '#' + o; }, onglet);
+      await page.waitForTimeout(500);
+      (await page.evaluate(() => [...document.querySelectorAll('use')].map((u) => u.getAttribute('href')).filter((h) => {
+        const s = document.querySelector(h);
+        return !s || !s.querySelector('path, rect, circle, line, polyline, polygon, ellipse') || s.querySelector('svg');
+      }))).forEach((h) => manquantes.add(h));
+    }
+    ok(`Icônes : toutes celles affichées existent et se dessinent${manquantes.size ? ' (manquantes : ' + [...manquantes].join(', ') + ')' : ''}`, manquantes.size === 0);
+  }
+
+  // ---------- Tutoriel : aucun défilement, quelle que soit la taille d'écran ----------
+  {
+    const tailles = [[1920, 1080], [1440, 900], [1366, 768], [1280, 720], [768, 1024], [390, 844], [375, 667], [360, 640]];
+    const defauts = [];
+    for (const [w, h] of tailles) {
+      await page.setViewportSize({ width: w, height: h });
+      await page.evaluate(() => window.NOVA_GUIDE.ouvrir(0));
+      for (let i = 0; i < 8; i++) {
+        await page.waitForTimeout(60);
+        const m = await page.evaluate(() => { const d = document.getElementById('guide'); return { sh: d.scrollHeight, ch: d.clientHeight, sw: d.scrollWidth, cw: d.clientWidth, h: d.getBoundingClientRect().height, vh: window.innerHeight, t: parseFloat(d.style.fontSize) }; });
+        if (m.sh > m.ch + 1 || m.h > m.vh) defauts.push(`${w}×${h} écran ${i + 1} (${m.sh}/${m.ch})`);
+        if (m.t < 13) defauts.push(`${w}×${h} écran ${i + 1} : texte trop petit (${m.t} px)`);
+        if (i < 7) await page.keyboard.press('ArrowRight');
+      }
+      await page.evaluate(() => window.NOVA_GUIDE.fermer());
+    }
+    ok(`Tutoriel : aucun défilement ni texte trop petit, 8 écrans × ${tailles.length} tailles${defauts.length ? ' : ' + defauts.slice(0, 4).join(', ') : ''}`, defauts.length === 0);
+    await page.setViewportSize({ width: 1366, height: 900 });
   }
 
   // ---------- Téléphone : rien ne déborde, la recherche et l'aide restent visibles ----------

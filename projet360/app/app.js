@@ -464,6 +464,9 @@
     return res;
   }
 
+  // Une icône par thème de question (présentation seulement ; les questions restent dans les données).
+  const ICONE_QUESTION = { Q01: 'calendar-check', Q02: 'route', Q03: 'gavel', Q04: 'user-check', Q05: 'wallet', Q06: 'receipt', Q07: 'server', Q08: 'shield-check', Q09: 'accessibility', Q10: 'list-checks' };
+
   function carteQuestion(q, surlignee) {
     const liens = (q.liens && q.liens.conditions) || [];
     const touchees = etat.courant === BASE ? [] : conditionsModifiees(liens);
@@ -471,12 +474,12 @@
     const bandeauTouchee = touchees.map((t) => `<div class="maj-note"><strong>Touchée par une mise à jour (${esc(t.par)}) :</strong> condition ${esc(t.id)} « ${esc(t.titre)} » : ${badgeEtat(t.avant)} → ${badgeEtat(t.apres)}</div>`).join('');
     const nbIndep = sourcesIndependantes(q.preuves);
     return `<article class="carte${surlignee ? ' surlignee' : ''}" id="question-${esc(q.id)}">
-      <div class="question-tete"><span class="question-num">${esc(q.id)}</span><h3 class="question-texte">${esc(q.question)}</h3>
+      <div class="question-tete">${tuile(ICONE_QUESTION[q.id] || 'circle-help')}<span class="question-num">${esc(q.id)}</span><h3 class="question-texte">${esc(q.question)}</h3>
         ${(q._modifie_par || []).length ? badge('ambre', 'Mis à jour', '◆') : ''}</div>
       ${bandeauTouchee}${notes}
       <p class="reponse-courte">${esc(q.reponse_courte)}</p>
-      ${q.details && q.details.length ? `<details open><summary>Nuances et points d'attention</summary><ul>${q.details.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
-      <details ${surlignee ? 'open' : ''}><summary>Preuves (${(q.preuves || []).length}) · ${nbIndep} source${nbIndep > 1 ? 's' : ''} indépendante${nbIndep > 1 ? 's' : ''}</summary>${listePreuves(q.preuves)}</details>
+      ${q.details && q.details.length ? `<details open><summary>${icone('info')}Nuances et points d'attention</summary><ul>${q.details.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
+      <details ${surlignee ? 'open' : ''}><summary>${icone('file-search')}Preuves (${(q.preuves || []).length}) · ${nbIndep} source${nbIndep > 1 ? 's' : ''} indépendante${nbIndep > 1 ? 's' : ''}</summary>${listePreuves(q.preuves)}</details>
     </article>`;
   }
 
@@ -547,8 +550,28 @@
   // Typographie française à l'affichage : espaces insécables avant « : ; ! ? » et dans les guillemets.
   // Les documents du corpus (visionneuse) et les champs de saisie ne sont jamais modifiés.
   const EXCLUS_TYPO = 'textarea, input, select, option, code, pre, script, style, .doc-texte, .feuille, .courriel-entetes';
+  // En-têtes de tableaux : une petite icône devant chaque libellé connu (repère visuel, le texte reste).
+  const ICONE_ENTETE = [
+    [/^Condition/, 'flag'], [/^(État|Statut)$/, 'circle-dashed'], [/^Responsable/, 'user-round'], [/^Échéance/, 'calendar-clock'],
+    [/^Actions?( et responsable)?$/, 'list-todo'], [/^Preuve/, 'file-search'], [/^Proposition$/, 'lightbulb'], [/^Par$/, 'user-round'],
+    [/^Motif$/, 'message-square-quote'], [/^Facture$/, 'receipt'], [/^Date$/, 'calendar-days'], [/^Montant/, 'coins'],
+    [/^Information$/, 'info'], [/^Où on la trouve$/, 'map-pin'], [/^Pourquoi l'écarter$/, 'ban'], [/^Décision$/, 'gavel'],
+    [/^Autorité$/, 'landmark'], [/^ID$/, 'tag'], [/^Document$/, 'file-text'], [/^Note$/, 'bookmark'], [/^Élément$/, 'layers'],
+    [/^Nature$/, 'tag'], [/^Avant → après$/, 'git-compare'], [/^Initiale/, 'history'], [/^Actualisée$/, 'refresh-cw'],
+  ];
+  function decorerEntetes(racine) {
+    racine.querySelectorAll('th:not([data-ic])').forEach((th) => {
+      if (th.closest('.feuille, .courriel-entetes, .brief')) return;
+      const t = th.textContent.trim();
+      const m = ICONE_ENTETE.find(([re]) => re.test(t));
+      th.dataset.ic = '1';
+      if (m) th.insertAdjacentHTML('afterbegin', icone(m[1]));
+    });
+  }
+
   function typographier(racine) {
     if (!racine) return;
+    decorerEntetes(racine);
     const parcours = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {
       acceptNode: (n) => (n.parentElement && n.parentElement.closest(EXCLUS_TYPO) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
     });

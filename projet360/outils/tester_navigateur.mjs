@@ -5,8 +5,9 @@
 // Usage : node outils/tester_navigateur.mjs [--captures] [--url https://adresse-en-ligne]
 
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { RACINE } from './lib/charger.mjs';
 
@@ -41,6 +42,33 @@ if (!urlEnLigne) await contexte.setOffline(true);
 await contexte.addInitScript(() => { try { if (!sessionStorage.getItem('tester-guide')) localStorage.setItem('nova360.guide.vu', '1'); } catch (e) { /* ignoré */ } });
 const origine = urlEnLigne ? new URL(urlEnLigne).origin : null;
 const requetesReseau = [];
+const cacheEnLigne = new Map();
+// Téléchargement par curl (TLS vérifié) : le pare-feu de Vercel refuse les requêtes du fetch de Node,
+// mais accepte curl et les vrais navigateurs.
+function telecharger(url) {
+  const dossier = fs.mkdtempSync(path.join(os.tmpdir(), 'nova-'));
+  const corps = path.join(dossier, 'corps'), entetes = path.join(dossier, 'entetes');
+  try {
+    execFileSync('curl', ['-sS', '--max-time', '60', '-D', entetes, '-o', corps, url]);
+    const lignes = fs.readFileSync(entetes, 'utf8').trim().split(/\r?\n\r?\n/).pop().split(/\r?\n/);
+    const status = +lignes[0].split(' ')[1];
+    const headers = Object.fromEntries(lignes.slice(1).map((l) => [l.slice(0, l.indexOf(':')).trim().toLowerCase(), l.slice(l.indexOf(':') + 1).trim()]).filter(([k]) => k && k !== 'content-length' && k !== 'content-encoding' && k !== 'transfer-encoding'));
+    return { status, headers, body: fs.readFileSync(corps) };
+  } finally { fs.rmSync(dossier, { recursive: true, force: true }); }
+}
+function telechargerUneFois(url) {
+  if (!cacheEnLigne.has(url)) {
+    const essai = async (n) => {
+      try { return telecharger(url); } catch (e) {
+        if (n >= 3) throw e;
+        await new Promise((ok) => setTimeout(ok, 2000 * n));
+        return essai(n + 1);
+      }
+    };
+    cacheEnLigne.set(url, essai(1).catch((e) => { cacheEnLigne.delete(url); throw e; }));
+  }
+  return cacheEnLigne.get(url);
+}
 await contexte.route('**/*', (route) => {
   const url = route.request().url();
   if (url.startsWith('file:') || url.startsWith('data:') || url.startsWith('blob:')) return route.continue();
@@ -48,7 +76,8 @@ await contexte.route('**/*', (route) => {
     // Site en ligne : la page est téléchargée par Node (TLS vérifié), puis remise telle quelle
     // au navigateur (statut, en-têtes, contenu). Utile si le navigateur de test ne reconnaît
     // pas l'autorité de certification d'un proxy d'entreprise.
-    return fetch(url).then(async (r) => route.fulfill({ status: r.status, headers: Object.fromEntries(r.headers), body: Buffer.from(await r.arrayBuffer()) }), () => route.abort());
+    // Chaque adresse est téléchargée une fois (trois essais au plus), puis resservie depuis la mémoire aux rechargements.
+    return telechargerUneFois(url).then((r) => route.fulfill(r), () => route.abort());
   }
   requetesReseau.push(url);
   return route.abort();
