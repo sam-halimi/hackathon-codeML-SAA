@@ -1,11 +1,11 @@
 {
   "meta": {
     "projet": "NOVA",
-    "titre": "Projet 360 — NOVA",
+    "titre": "Projet 360 · NOVA",
     "sous_titre": "Mémoire opérationnelle du projet",
     "date_situation": "2026-09-30T09:00:00-04:00",
     "date_situation_texte": "30 septembre 2026, 09 h 00 (heure de Montréal, UTC−04:00)",
-    "version_donnees": "1.0 — baseline",
+    "version_donnees": "1.0 (baseline)",
     "methode": "Analyse humaine assistée par Claude (Claude Code), vérifiée passage par passage dans les documents originaux du corpus. L'application n'appelle aucune IA : elle affiche les réponses préparées par l'équipe et leurs preuves.",
     "regles": [
       "Une proposition n'est pas une décision.",
@@ -110,7 +110,7 @@
         "actions": ["A04", "A05"],
         "questions": ["Q01", "Q10"],
         "preuves": [
-          { "source": "OPS-601-CAP", "repere": "Capture « Version du 25 septembre », étapes 4 et 5", "zone": { "x": 80, "y": 420, "w": 1010, "h": 125 }, "lecture": "4. Procédure de retour arrière — TODO ; 5. Validation fonctionnelle post-déploiement — À compléter" },
+          { "source": "OPS-601-CAP", "repere": "Capture « Version du 25 septembre », étapes 4 et 5", "zone": { "x": 80, "y": 420, "w": 1010, "h": 125 }, "lecture": "4. Procédure de retour arrière : TODO ; 5. Validation fonctionnelle post-déploiement : À compléter" },
           { "source": "OPS-601", "repere": "Commentaire du 29 sept.", "passage": "29 sept - Olivier : Toujours pas reçu la version finale." }
         ]
       }
@@ -135,7 +135,7 @@
       "a_contester": 18000,
       "solde_si_inv003_corrigee": 36000,
       "factures": [
-        { "id": "INV-001", "date": "2026-07-31", "montant": 60000, "statut": "Payée", "detail": "Développement phase 1 — acompte", "source": "INV-001" },
+        { "id": "INV-001", "date": "2026-07-31", "montant": 60000, "statut": "Payée", "detail": "Développement phase 1, acompte", "source": "INV-001" },
         { "id": "INV-002", "date": "2026-08-31", "montant": 72000, "statut": "Payée", "detail": "Jalon 2 (48 000 $) + rapports avancés CR-01 (24 000 $)", "source": "INV-002" },
         { "id": "INV-003", "date": "2026-09-22", "montant": 54000, "statut": "En validation", "detail": "Jalon 3 (36 000 $) + ligne CR-04 non approuvée (18 000 $)", "source": "INV-003", "alerte": true }
       ],
@@ -323,7 +323,7 @@
         { "source": "M06", "repere": "Transcription du 26 sept., 10:02", "passage": "10:02 Sophie : Attention à la formulation. Vous avez livré un fix. Nous n'avons pas encore donné l'acceptation sécurité de SEC-210.", "role": "Non accepté" },
         { "source": "TEAMS-19SEPT", "repere": "Canal Sécurité, 19 sept., 10:31", "passage": "10:31 - Sophie : Merci. On garde le ticket en validation jusqu'à notre re-test.", "role": "Livré ≠ accepté" },
         { "source": "E08", "repere": "Courriel de Boréal du 19 sept., 10 h 20", "passage": "Le correctif pour SEC-210 est déployé en validation depuis ce matin.", "role": "Livraison (déclaration fournisseur)" },
-        { "source": "SEC-210-CAP", "repere": "Capture du journal d'audit, ligne EXPORT_CSV de 14:04:08", "zone": { "x": 35, "y": 355, "w": 1111, "h": 56 }, "lecture": "EXPORT_CSV — Objet : « --- » — Résultat : « --- »", "role": "Défaut initial" },
+        { "source": "SEC-210-CAP", "repere": "Capture du journal d'audit, ligne EXPORT_CSV de 14:04:08", "zone": { "x": 35, "y": 355, "w": 1111, "h": 56 }, "lecture": "EXPORT_CSV, Objet : « --- », Résultat : « --- »", "role": "Défaut initial" },
         { "source": "RAPPORT-STATUT", "repere": "Page 1, tableau « Synthèse », ligne Sécurité", "page": 1, "passage": "Sécurité VERT Correctif SEC-210 livré", "role": "Contradiction (inexact)" }
       ]
     },
@@ -342,7 +342,7 @@
       "preuves": [
         { "source": "ACC-303", "repere": "Ticket, commentaire du 17 sept., 13:14", "passage": "17 sept 13:14 - Mélissa : Reproduit sur Chrome et Edge. Le focus reste entre le champ Nom et Commentaire; le bouton Enregistrer n'est jamais atteint avec Tab.", "role": "Défaut ouvert" },
         { "source": "ACC-303", "repere": "Ticket, commentaire du 26 sept., 11:03", "passage": "26 sept 11:03 - Mélissa : Toujours ouvert. Correctif annoncé pour la prochaine build.", "role": "État au 26 sept." },
-        { "source": "ACC-303-CAP", "repere": "Capture « Build 2026.09.17 », bouton Enregistrer", "zone": { "x": 780, "y": 490, "w": 275, "h": 100 }, "lecture": "Enregistrer — « Le focus clavier ne rejoint pas ce bouton »", "role": "Défaut" },
+        { "source": "ACC-303-CAP", "repere": "Capture « Build 2026.09.17 », bouton Enregistrer", "zone": { "x": 780, "y": 490, "w": 275, "h": 100 }, "lecture": "Enregistrer : « Le focus clavier ne rejoint pas ce bouton »", "role": "Défaut" },
         { "source": "M06", "repere": "Transcription du 26 sept., 10:05", "passage": "10:05 Mélissa : Il reste ACC-303.", "jusqua": "Pour moi c'est un bloquant d'accessibilité avant production.", "role": "Bloquant" },
         { "source": "ACC-301", "repere": "Ticket, commentaire du 15 août", "passage": "15 août - Mélissa : Validé avec NVDA et VoiceOver. Fermé.", "role": "Validé" },
         { "source": "ACC-302", "repere": "Ticket, commentaire du 20 août", "passage": "20 août - Mélissa : Re-test OK à 5,3:1. Fermé.", "role": "Validé" }
@@ -361,7 +361,7 @@
       "mots_cles": ["conditions", "go-live", "go", "lancement", "runbook", "rollback", "retour arrière", "exploitation", "OPS-601", "Olivier", "capture", "manquant", "étape"],
       "preuves": [
         { "source": "M06", "repere": "Transcription du 26 sept., 10:09 à 10:10", "passage": "10:09 Nicolas : Donc trois conditions concrètes : validation sécurité de SEC-210, fermeture de ACC-303 et approbation du runbook incluant rollback. Exact?", "jusqua": "10:10 Olivier : Oui.", "role": "Les trois conditions" },
-        { "source": "OPS-601-CAP", "repere": "Capture « Version du 25 septembre », étapes 4 et 5", "zone": { "x": 80, "y": 420, "w": 1010, "h": 125 }, "lecture": "4. Procédure de retour arrière — TODO ; 5. Validation fonctionnelle post-déploiement — À compléter", "role": "Travaux manquants" },
+        { "source": "OPS-601-CAP", "repere": "Capture « Version du 25 septembre », étapes 4 et 5", "zone": { "x": 80, "y": 420, "w": 1010, "h": 125 }, "lecture": "4. Procédure de retour arrière : TODO ; 5. Validation fonctionnelle post-déploiement : À compléter", "role": "Travaux manquants" },
         { "source": "OPS-601", "repere": "Ticket, commentaire du 25 sept.", "passage": "25 sept - Olivier : Il manque au minimum la procédure de rollback. La capture jointe identifie aussi une autre étape à compléter.", "role": "Exigence" },
         { "source": "OPS-601", "repere": "Ticket, commentaire du 29 sept.", "passage": "29 sept - Olivier : Toujours pas reçu la version finale.", "role": "État au 29 sept." },
         { "source": "E09", "repere": "Courriel du 27 sept., 17 h 02", "passage": "Le comité du 26 septembre a précisé les éléments à fermer.", "role": "Rappel officiel" }
@@ -450,14 +450,14 @@
 
   "decisions": [
     { "id": "D01", "date": "2026-07-07", "titre": "Démarrage : Élodie Caron chargée de projet, budget initial maximal de 180 000 $, cible au 15 octobre, portée de la phase 1", "autorite": "Rencontre de démarrage", "statut": "Remplacée en partie", "remarque": "Responsable remplacé le 16 sept. (D07), date remplacée le 10 sept. (D05). Portée et budget initial toujours valides.", "preuve": { "source": "M01", "passage": "- Élodie Caron agit comme chargée de projet.", "jusqua": "rapports standards." } },
-    { "id": "D02", "date": "2026-07-23", "titre": "Données de production hébergées dans Canada Central (ADR-007)", "autorite": "Atelier architecture (Élodie, Marc, Sophie, Julien) ; ADR « Acceptée »", "statut": "En vigueur — mise en œuvre vérifiée le 27 août", "preuve": { "source": "ADR-007", "passage": "Statut : Acceptée" } },
+    { "id": "D02", "date": "2026-07-23", "titre": "Données de production hébergées dans Canada Central (ADR-007)", "autorite": "Atelier architecture (Élodie, Marc, Sophie, Julien) ; ADR « Acceptée »", "statut": "En vigueur, mise en œuvre vérifiée le 27 août", "preuve": { "source": "ADR-007", "passage": "Statut : Acceptée" } },
     { "id": "D03", "date": "2026-07-23", "titre": "Authentification par SSO seulement en production", "autorite": "Atelier architecture", "statut": "En vigueur", "preuve": { "source": "M02", "passage": "09:15 Sophie : SSO seulement en production." } },
-    { "id": "D04", "date": "2026-08-14", "titre": "CR-01 approuvée : rapports avancés et export de synthèse (24 000 $)", "autorite": "Comité de projet", "statut": "En vigueur — facturée dans INV-002", "preuve": { "source": "CR-01", "page": 1, "passage": "Date de décision 14 août 2026" } },
-    { "id": "D05", "date": "2026-09-10", "titre": "Mise en production reportée du 15 au 22 octobre 2026", "autorite": "Comité de direction NOVA", "statut": "En vigueur — conditionnelle (D09)", "remarque": "Proposée par Boréal le 8 sept. (E05).", "preuve": { "source": "M04", "passage": "15:22 Élodie : Je vais formuler la décision.", "jusqua": "Le 22 devient la date officielle." } },
+    { "id": "D04", "date": "2026-08-14", "titre": "CR-01 approuvée : rapports avancés et export de synthèse (24 000 $)", "autorite": "Comité de projet", "statut": "En vigueur, facturée dans INV-002", "preuve": { "source": "CR-01", "page": 1, "passage": "Date de décision 14 août 2026" } },
+    { "id": "D05", "date": "2026-09-10", "titre": "Mise en production reportée du 15 au 22 octobre 2026", "autorite": "Comité de direction NOVA", "statut": "En vigueur, conditionnelle (D09)", "remarque": "Proposée par Boréal le 8 sept. (E05).", "preuve": { "source": "M04", "passage": "15:22 Élodie : Je vais formuler la décision.", "jusqua": "Le 22 devient la date officielle." } },
     { "id": "D06", "date": "2026-09-10", "titre": "Optimisations mobiles : aucune décision de dépense", "autorite": "Comité de direction NOVA", "statut": "En vigueur", "preuve": { "source": "M04", "passage": "15:37 Élodie : Pas selon la portée actuelle. On va traiter ça séparément, aucune approbation aujourd'hui." } },
     { "id": "D07", "date": "2026-09-16", "titre": "Nicolas Perron devient chargé de projet", "autorite": "Passation annoncée par Élodie Caron (« comme convenu ») ; l'instance qui l'a décidée n'est pas précisée", "statut": "En vigueur", "preuve": { "source": "E06", "passage": "Comme convenu, Nicolas Perron prend officiellement la charge du projet NOVA" } },
     { "id": "D08", "date": "2026-09-24", "titre": "CR-04 (mobile avancé) reporté à la phase 2 ; aucune dépense ni facturation sans nouvelle approbation", "autorite": "Chargé de projet (Nicolas Perron), document de décision de portée", "statut": "En vigueur", "preuve": { "source": "DECISION-PORTEE", "passage": "Décision : Les optimisations mobiles avancées associées à la demande CR-04 sont reportées à la phase 2." } },
-    { "id": "D09", "date": "2026-09-26", "titre": "Trois conditions de go-live : validation de SEC-210, fermeture d'ACC-303, runbook avec rollback approuvé", "autorite": "Comité de direction NOVA", "statut": "En vigueur — aucune condition remplie au 30 sept.", "preuve": { "source": "M06", "passage": "10:09 Nicolas : Donc trois conditions concrètes", "jusqua": "10:10 Olivier : Oui." } }
+    { "id": "D09", "date": "2026-09-26", "titre": "Trois conditions de go-live : validation de SEC-210, fermeture d'ACC-303, runbook avec rollback approuvé", "autorite": "Comité de direction NOVA", "statut": "En vigueur, aucune condition remplie au 30 sept.", "preuve": { "source": "M06", "passage": "10:09 Nicolas : Donc trois conditions concrètes", "jusqua": "10:10 Olivier : Oui." } }
   ],
 
   "cycles": [
@@ -480,15 +480,15 @@
       ]
     },
     {
-      "sujet": "Sécurité — SEC-210",
+      "sujet": "Sécurité : SEC-210",
       "etapes": [
         { "etape": "Problème", "date": "2026-09-12", "texte": "Audit d'export incomplet (bloquant)", "statut": "fait", "preuve": { "source": "SEC-210", "passage": "Priorité : Bloquante avant production" } },
         { "etape": "Livraison", "date": "2026-09-19", "texte": "Correctif déployé en validation", "statut": "fait", "preuve": { "source": "SEC-210", "passage": "19 sept 10:22 - Boréal : Fix déployé sur l'environnement de validation." } },
-        { "etape": "Validation", "date": null, "texte": "Non obtenue — re-test planifié (26 sept.)", "statut": "manquant", "preuve": { "source": "SEC-210", "passage": "26 sept 15:40 - Sophie : Re-test planifié. Statut maintenu EN VALIDATION." } }
+        { "etape": "Validation", "date": null, "texte": "Non obtenue, re-test planifié (26 sept.)", "statut": "manquant", "preuve": { "source": "SEC-210", "passage": "26 sept 15:40 - Sophie : Re-test planifié. Statut maintenu EN VALIDATION." } }
       ]
     },
     {
-      "sujet": "Accessibilité — ACC-303",
+      "sujet": "Accessibilité : ACC-303",
       "etapes": [
         { "etape": "Problème", "date": "2026-09-17", "texte": "Enregistrer inatteignable au clavier", "statut": "fait", "preuve": { "source": "ACC-303", "passage": "Créé : 17 septembre 2026" } },
         { "etape": "Livraison", "date": null, "texte": "Correctif annoncé « prochaine build », non livré", "statut": "manquant", "preuve": { "source": "M06", "passage": "10:12 Julien : On vise le correctif ACC-303 dans la prochaine build." } },
@@ -496,7 +496,7 @@
       ]
     },
     {
-      "sujet": "Accessibilité — ACC-301 et ACC-302",
+      "sujet": "Accessibilité : ACC-301 et ACC-302",
       "etapes": [
         { "etape": "Problème", "date": "2026-08-11", "texte": "Libellés (11 août) et contraste 2,1:1 (12 août)", "statut": "fait", "preuve": { "source": "ACC-302", "passage": "13 août - Mélissa : J'ai mesuré 2,1:1 entre le texte de statut et le fond." } },
         { "etape": "Livraison", "date": "2026-08-14", "texte": "Corrigés les 14 et 18 août", "statut": "fait", "preuve": { "source": "ACC-301", "passage": "14 août - Boréal : Ajout du label programmatique" } },
@@ -504,7 +504,7 @@
       ]
     },
     {
-      "sujet": "Connecteur interne — INT-101",
+      "sujet": "Connecteur interne : INT-101",
       "etapes": [
         { "etape": "Problème", "date": "2026-09-05", "texte": "Recherches vides, erreurs 401", "statut": "fait", "preuve": { "source": "INT-101", "passage": "05 sept 09:41 - Marc : C'était OK hier en DEV." } },
         { "etape": "Livraison", "date": "2026-09-17", "texte": "Correctif déployé (14:23)", "statut": "fait", "preuve": { "source": "INT-101", "passage": "17 sept 14:23 - Boréal : Correctif déployé." } },
@@ -512,7 +512,7 @@
       ]
     },
     {
-      "sujet": "Runbook — OPS-601",
+      "sujet": "Runbook : OPS-601",
       "etapes": [
         { "etape": "Exigence", "date": "2026-09-10", "texte": "Olivier veut un runbook final quelques jours avant", "statut": "fait", "preuve": { "source": "M04", "passage": "mais je veux un runbook final au moins quelques jours avant." } },
         { "etape": "Livraison", "date": "2026-09-25", "texte": "Version du 25 sept. incomplète (étapes 4 et 5)", "statut": "manquant", "preuve": { "source": "OPS-601-CAP", "zone": { "x": 80, "y": 420, "w": 1010, "h": 125 }, "lecture": "Étape 4 TODO ; étape 5 À compléter" } },
@@ -520,7 +520,7 @@
       ]
     },
     {
-      "sujet": "CR-04 — mobile avancé",
+      "sujet": "CR-04 : mobile avancé",
       "etapes": [
         { "etape": "Proposition", "date": "2026-09-04", "texte": "Brouillon de Boréal, 18 000 $", "statut": "fait", "preuve": { "source": "CR-04", "page": 1, "passage": "Demande initiale 4 septembre 2026" } },
         { "etape": "Décision", "date": "2026-09-24", "texte": "Non approuvé, reporté à la phase 2", "statut": "fait", "preuve": { "source": "DECISION-PORTEE", "passage": "sont reportées à la phase 2." } },
@@ -595,7 +595,7 @@
       "id": "K03",
       "sujet": "Sécurité « VERT »",
       "type": "Rapport de statut",
-      "version_perimee": { "texte": "Sécurité VERT — « Correctif SEC-210 livré »", "sources": ["RAPPORT-STATUT", "E11"], "preuve": { "source": "RAPPORT-STATUT", "page": 1, "passage": "Sécurité VERT Correctif SEC-210 livré" } },
+      "version_perimee": { "texte": "Sécurité VERT : « Correctif SEC-210 livré »", "sources": ["RAPPORT-STATUT", "E11"], "preuve": { "source": "RAPPORT-STATUT", "page": 1, "passage": "Sécurité VERT Correctif SEC-210 livré" } },
       "version_valide": { "texte": "SEC-210 « EN VALIDATION » : livré, non accepté", "sources": ["SEC-210", "M06", "TEAMS-19SEPT"], "preuve": { "source": "SEC-210", "passage": "26 sept 15:40 - Sophie : Re-test planifié. Statut maintenu EN VALIDATION." } },
       "explication": "Autorité : seule l'équipe sécurité peut accepter SEC-210. Le rapport confond livraison et validation, et reconnaît avoir été préparé avant la vérification détaillée des tickets.",
       "preuve_explication": { "source": "RAPPORT-STATUT", "page": 1, "passage": "Le rapport a été préparé avant la dernière vérification détaillée de certains tickets." }
@@ -824,50 +824,50 @@
   ],
 
   "risques": [
-    { "id": "R-02", "titre": "Validation sécurité incomplète (SEC-210)", "registre": "Probabilité élevée, impact élevé — ouvert", "analyse": "Bloque le go (condition 1). Date du re-test inconnue.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A3:H3" } },
-    { "id": "R-03", "titre": "Préparation exploitation incomplète (runbook, rollback)", "registre": "Probabilité moyenne, impact élevé — ouvert", "analyse": "Bloque le go (condition 3). Étapes 4 et 5 manquantes ; version finale non reçue au 29 sept.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A4:H4" } },
-    { "id": "R-04", "titre": "Accessibilité (ACC-303)", "registre": "Probabilité moyenne, impact moyen — ouvert", "analyse": "Bloque le go (condition 2) : l'impact « Moyen » du registre est sous-estimé.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A5:H5" } },
+    { "id": "R-02", "titre": "Validation sécurité incomplète (SEC-210)", "registre": "Probabilité élevée, impact élevé, ouvert", "analyse": "Bloque le go (condition 1). Date du re-test inconnue.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A3:H3" } },
+    { "id": "R-03", "titre": "Préparation exploitation incomplète (runbook, rollback)", "registre": "Probabilité moyenne, impact élevé, ouvert", "analyse": "Bloque le go (condition 3). Étapes 4 et 5 manquantes ; version finale non reçue au 29 sept.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A4:H4" } },
+    { "id": "R-04", "titre": "Accessibilité (ACC-303)", "registre": "Probabilité moyenne, impact moyen, ouvert", "analyse": "Bloque le go (condition 2) : l'impact « Moyen » du registre est sous-estimé.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A5:H5" } },
     { "id": "R-01", "titre": "Retard du connecteur interne", "registre": "Ouvert (commentaire : suivi au 9 sept.)", "analyse": "Périmé : INT-101 a été fermé le 17 sept. À fermer ou à réviser.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A2:H2" } },
-    { "id": "R-05", "titre": "Migration des données", "registre": "Faible / moyen — fermé", "analyse": "Cohérent : DATA-401 fermé le 9 sept.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A6:H6" } },
+    { "id": "R-05", "titre": "Migration des données", "registre": "Faible / moyen, fermé", "analyse": "Cohérent : DATA-401 fermé le 9 sept.", "preuve": { "source": "REGISTRE-RISQUES", "cellules": "A6:H6" } },
     { "id": "R-FIN", "titre": "Facturation hors portée (CR-04 sur INV-003)", "registre": "Absent du registre", "analyse": "Ajout de notre équipe : 18 000 $ facturés sans approbation.", "preuve": { "source": "INV-003", "page": 1, "passage": "Optimisation interface mobile - CR-04 18 000 $" } }
   ],
 
   "sources": [
     { "id": "E01", "chemin": "01_Courriels/E01_Lancement_NOVA.eml", "titre": "Confirmation du démarrage", "date": "2026-07-07", "auteur": "Élodie Caron", "autorite": "officielle", "remarque": "Historique : responsable et date ont changé depuis." },
-    { "id": "E02", "chemin": "01_Courriels/E02_Question_hebergement.eml", "titre": "RE: architecture v1 — question d'hébergement", "date": "2026-07-22", "auteur": "Sophie Lambert", "autorite": "officielle", "remarque": "Pièce jointe identique à Architecture_NOVA_v1.pdf." },
+    { "id": "E02", "chemin": "01_Courriels/E02_Question_hebergement.eml", "titre": "RE: architecture v1 : question d'hébergement", "date": "2026-07-22", "auteur": "Sophie Lambert", "autorite": "officielle", "remarque": "Pièce jointe identique à Architecture_NOVA_v1.pdf." },
     { "id": "E03", "chemin": "01_Courriels/E03_Confirmation_Canada_Central.eml", "titre": "Migration Canada Central complétée", "date": "2026-08-26", "auteur": "Julien Moreau (Boréal)", "autorite": "fournisseur", "remarque": "Pièce jointe identique à Architecture_NOVA_v2.pdf." },
     { "id": "E04", "chemin": "01_Courriels/E04_Corrections_accessibilite.eml", "titre": "RE: anomalies accessibilité", "date": "2026-08-20", "auteur": "Julien Moreau (Boréal)", "autorite": "fournisseur", "remarque": "« Tout devrait être conforme » : contredit par ACC-303." },
     { "id": "E05", "chemin": "01_Courriels/E05_Retard_integration.eml", "titre": "Risque sur la date du 15 octobre (proposition du 22 octobre)", "date": "2026-09-08", "auteur": "Julien Moreau (Boréal)", "autorite": "fournisseur", "remarque": "Proposition, pas une décision." },
     { "id": "E06", "chemin": "01_Courriels/E06_Transition_charge_projet.eml", "titre": "Transition de la charge de projet", "date": "2026-09-16", "auteur": "Élodie Caron", "autorite": "officielle" },
-    { "id": "E07", "chemin": "01_Courriels/E07_Facture_003_question.eml", "titre": "INV-003 — référence CR-04 ?", "date": "2026-09-23", "auteur": "Amélie Fortin (Finances)", "autorite": "officielle", "remarque": "Pièce jointe identique à INV-003.pdf." },
-    { "id": "E08", "chemin": "01_Courriels/E08_Correctif_journalisation.eml", "titre": "SEC-210 — correctif déployé", "date": "2026-09-19", "auteur": "Julien Moreau (Boréal)", "autorite": "fournisseur", "remarque": "Livraison ; pas une validation." },
+    { "id": "E07", "chemin": "01_Courriels/E07_Facture_003_question.eml", "titre": "INV-003 : référence CR-04 ?", "date": "2026-09-23", "auteur": "Amélie Fortin (Finances)", "autorite": "officielle", "remarque": "Pièce jointe identique à INV-003.pdf." },
+    { "id": "E08", "chemin": "01_Courriels/E08_Correctif_journalisation.eml", "titre": "SEC-210 : correctif déployé", "date": "2026-09-19", "auteur": "Julien Moreau (Boréal)", "autorite": "fournisseur", "remarque": "Livraison ; pas une validation." },
     { "id": "E09", "chemin": "01_Courriels/E09_Rappel_mise_en_production.eml", "titre": "Cible du 22 octobre et conditions restantes", "date": "2026-09-27", "auteur": "Nicolas Perron", "autorite": "officielle" },
     { "id": "E10", "chemin": "01_Courriels/E10_Fonction_mobile.eml", "titre": "CR-04 / mobile", "date": "2026-09-24", "auteur": "Nicolas Perron", "autorite": "decision", "remarque": "Pièce jointe identique à CR-04_Optimisation_mobile_BROUILLON.pdf." },
-    { "id": "E11", "chemin": "01_Courriels/E11_Communication_statut.eml", "titre": "Brouillon de communication — projet au vert", "date": "2026-09-21", "auteur": "Alex Deschamps", "autorite": "brouillon", "remarque": "Message inexact basé sur le rapport du 21 sept. Pièce jointe identique à Rapport_Statut_21sept.pdf." },
-    { "id": "E12", "chemin": "01_Courriels/E12_Resolution_integration.eml", "titre": "INT-101 fermé — connecteur validé", "date": "2026-09-17", "auteur": "Marc Gervais", "autorite": "officielle" },
+    { "id": "E11", "chemin": "01_Courriels/E11_Communication_statut.eml", "titre": "Brouillon de communication : projet au vert", "date": "2026-09-21", "auteur": "Alex Deschamps", "autorite": "brouillon", "remarque": "Message inexact basé sur le rapport du 21 sept. Pièce jointe identique à Rapport_Statut_21sept.pdf." },
+    { "id": "E12", "chemin": "01_Courriels/E12_Resolution_integration.eml", "titre": "INT-101 fermé : connecteur validé", "date": "2026-09-17", "auteur": "Marc Gervais", "autorite": "officielle" },
     { "id": "M01", "chemin": "02_Reunions/M01_CR_Demarrage_07juillet.txt", "titre": "Compte rendu de démarrage", "date": "2026-07-07", "auteur": "Équipe projet", "autorite": "decision", "remarque": "Responsable et date remplacés depuis." },
-    { "id": "M02", "chemin": "02_Reunions/M02_Transcript_Architecture_23juillet.txt", "titre": "Transcription — atelier architecture", "date": "2026-07-23", "auteur": "Équipe projet", "autorite": "decision" },
-    { "id": "M03", "chemin": "02_Reunions/M03_CR_Comite_27aout.txt", "titre": "Compte rendu — comité du 27 août", "date": "2026-08-27", "auteur": "Comité projet", "autorite": "officielle" },
-    { "id": "M04", "chemin": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt", "titre": "Transcription — comité de direction du 10 septembre", "date": "2026-09-10", "auteur": "Comité de direction", "autorite": "decision" },
-    { "id": "M05", "chemin": "02_Reunions/M05_CR_Suivi_18sept.txt", "titre": "Compte rendu — suivi de livraison du 18 septembre", "date": "2026-09-18", "auteur": "Équipe projet", "autorite": "officielle" },
-    { "id": "M06", "chemin": "02_Reunions/M06_Transcript_Comite_26sept.txt", "titre": "Transcription — comité de direction du 26 septembre", "date": "2026-09-26", "auteur": "Comité de direction", "autorite": "decision" },
-    { "id": "ACC-301", "chemin": "03_Tickets/ACC-301.txt", "titre": "Ticket ACC-301 — libellés de champs", "date": "2026-08-11", "auteur": "QA", "autorite": "ticket", "remarque": "Fermé et validé le 15 août." },
+    { "id": "M02", "chemin": "02_Reunions/M02_Transcript_Architecture_23juillet.txt", "titre": "Transcription : atelier architecture", "date": "2026-07-23", "auteur": "Équipe projet", "autorite": "decision" },
+    { "id": "M03", "chemin": "02_Reunions/M03_CR_Comite_27aout.txt", "titre": "Compte rendu : comité du 27 août", "date": "2026-08-27", "auteur": "Comité projet", "autorite": "officielle" },
+    { "id": "M04", "chemin": "02_Reunions/M04_Transcript_Comite_direction_10sept.txt", "titre": "Transcription : comité de direction du 10 septembre", "date": "2026-09-10", "auteur": "Comité de direction", "autorite": "decision" },
+    { "id": "M05", "chemin": "02_Reunions/M05_CR_Suivi_18sept.txt", "titre": "Compte rendu : suivi de livraison du 18 septembre", "date": "2026-09-18", "auteur": "Équipe projet", "autorite": "officielle" },
+    { "id": "M06", "chemin": "02_Reunions/M06_Transcript_Comite_26sept.txt", "titre": "Transcription : comité de direction du 26 septembre", "date": "2026-09-26", "auteur": "Comité de direction", "autorite": "decision" },
+    { "id": "ACC-301", "chemin": "03_Tickets/ACC-301.txt", "titre": "Ticket ACC-301 : libellés de champs", "date": "2026-08-11", "auteur": "QA", "autorite": "ticket", "remarque": "Fermé et validé le 15 août." },
     { "id": "ACC-301-CAP", "chemin": "03_Tickets/ACC-301_labels.png", "titre": "Capture ACC-301 (champ sans libellé)", "date": "2026-08-11", "auteur": "QA", "autorite": "capture_historique", "remarque": "Défaut corrigé depuis." },
-    { "id": "ACC-302", "chemin": "03_Tickets/ACC-302.txt", "titre": "Ticket ACC-302 — contraste", "date": "2026-08-12", "auteur": "QA", "autorite": "ticket", "remarque": "Fermé et validé le 20 août." },
+    { "id": "ACC-302", "chemin": "03_Tickets/ACC-302.txt", "titre": "Ticket ACC-302 : contraste", "date": "2026-08-12", "auteur": "QA", "autorite": "ticket", "remarque": "Fermé et validé le 20 août." },
     { "id": "ACC-302-CAP", "chemin": "03_Tickets/ACC-302_contraste.png", "titre": "Capture ACC-302 (contraste 2,1:1)", "date": "2026-08-12", "auteur": "QA", "autorite": "capture_historique", "remarque": "Défaut corrigé depuis." },
-    { "id": "ACC-303", "chemin": "03_Tickets/ACC-303.txt", "titre": "Ticket ACC-303 — focus clavier de la fenêtre modale", "date": "2026-09-17", "auteur": "Mélissa Gagnon", "autorite": "ticket", "remarque": "OUVERT au 26 sept." },
+    { "id": "ACC-303", "chemin": "03_Tickets/ACC-303.txt", "titre": "Ticket ACC-303 : focus clavier de la fenêtre modale", "date": "2026-09-17", "auteur": "Mélissa Gagnon", "autorite": "ticket", "remarque": "OUVERT au 26 sept." },
     { "id": "ACC-303-CAP", "chemin": "03_Tickets/ACC-303_focus.png", "titre": "Capture ACC-303 (bouton Enregistrer)", "date": "2026-09-17", "auteur": "Mélissa Gagnon", "autorite": "capture", "remarque": "Défaut toujours ouvert selon le ticket (26 sept.)." },
-    { "id": "DATA-401", "chemin": "03_Tickets/DATA-401.txt", "titre": "Ticket DATA-401 — doublons de migration", "date": "2026-09-02", "auteur": "Camille Beaulieu", "autorite": "ticket", "remarque": "Fermé le 9 sept." },
+    { "id": "DATA-401", "chemin": "03_Tickets/DATA-401.txt", "titre": "Ticket DATA-401 : doublons de migration", "date": "2026-09-02", "auteur": "Camille Beaulieu", "autorite": "ticket", "remarque": "Fermé le 9 sept." },
     { "id": "DATA-401-CAP", "chemin": "03_Tickets/DATA-401_doublons.png", "titre": "Capture DATA-401 (dossiers 8401 et 8402)", "date": "2026-09-02", "auteur": "Camille Beaulieu", "autorite": "capture_historique" },
     { "id": "DATA-401-CSV", "chemin": "03_Tickets/DATA-401_echantillon.csv", "titre": "Échantillon DATA-401 (CSV)", "date": "2026-09-02", "auteur": "Camille Beaulieu", "autorite": "capture_historique" },
-    { "id": "INT-101", "chemin": "03_Tickets/INT-101.txt", "titre": "Ticket INT-101 — connecteur interne", "date": "2026-09-05", "auteur": "Marc Gervais", "autorite": "ticket", "remarque": "Fermé et validé le 17 sept." },
+    { "id": "INT-101", "chemin": "03_Tickets/INT-101.txt", "titre": "Ticket INT-101 : connecteur interne", "date": "2026-09-05", "auteur": "Marc Gervais", "autorite": "ticket", "remarque": "Fermé et validé le 17 sept." },
     { "id": "INT-101-CAP", "chemin": "03_Tickets/INT-101_aucun_resultat.png", "titre": "Capture INT-101 (aucun résultat)", "date": "2026-09-05", "auteur": "Marc Gervais", "autorite": "capture_historique" },
     { "id": "INT-101-LOGS", "chemin": "03_Tickets/INT-101_extrait_logs.txt", "titre": "Extrait des journaux INT-101", "date": "2026-09-17", "auteur": "Boréal", "autorite": "ticket", "remarque": "401 le 5 sept., 200 OK le 17 sept." },
-    { "id": "OPS-601", "chemin": "03_Tickets/OPS-601.txt", "titre": "Ticket OPS-601 — runbook pas prêt", "date": "2026-09-25", "auteur": "Olivier Côté", "autorite": "ticket", "remarque": "OUVERT au 29 sept." },
+    { "id": "OPS-601", "chemin": "03_Tickets/OPS-601.txt", "titre": "Ticket OPS-601 : runbook pas prêt", "date": "2026-09-25", "auteur": "Olivier Côté", "autorite": "ticket", "remarque": "OUVERT au 29 sept." },
     { "id": "OPS-601-CAP", "chemin": "03_Tickets/OPS-601_runbook.png", "titre": "Capture du runbook (version du 25 septembre)", "date": "2026-09-25", "auteur": "Olivier Côté", "autorite": "capture" },
-    { "id": "PERF-501", "chemin": "03_Tickets/PERF-501.txt", "titre": "Ticket PERF-501 — lenteur", "date": "2026-09-03", "auteur": "Utilisateur pilote", "autorite": "ticket", "remarque": "Fermé le 7 sept." },
+    { "id": "PERF-501", "chemin": "03_Tickets/PERF-501.txt", "titre": "Ticket PERF-501 : lenteur", "date": "2026-09-03", "auteur": "Utilisateur pilote", "autorite": "ticket", "remarque": "Fermé le 7 sept." },
     { "id": "PERF-501-CAP", "chemin": "03_Tickets/PERF-501_lenteur.png", "titre": "Capture PERF-501 (mesures de lenteur)", "date": "2026-09-03", "auteur": "Utilisateur pilote", "autorite": "capture_historique" },
-    { "id": "SEC-210", "chemin": "03_Tickets/SEC-210.txt", "titre": "Ticket SEC-210 — audit admin incomplet sur export", "date": "2026-09-12", "auteur": "Sophie Lambert", "autorite": "ticket", "remarque": "EN VALIDATION au 26 sept." },
+    { "id": "SEC-210", "chemin": "03_Tickets/SEC-210.txt", "titre": "Ticket SEC-210 : audit admin incomplet sur export", "date": "2026-09-12", "auteur": "Sophie Lambert", "autorite": "ticket", "remarque": "EN VALIDATION au 26 sept." },
     { "id": "SEC-210-CAP", "chemin": "03_Tickets/SEC-210_audit.png", "titre": "Capture SEC-210 (journal d'audit)", "date": "2026-09-12", "auteur": "Sophie Lambert", "autorite": "capture_historique", "remarque": "Montre le défaut initial ; le correctif du 19 sept. n'est pas encore validé." },
     { "id": "CHARTE", "chemin": "04_Documents_projet/Charte_Projet_NOVA_v1.txt", "titre": "Charte de projet v1", "date": "2026-07-07", "auteur": "Élodie Caron", "autorite": "perimee", "remarque": "Point de départ, non mis à jour après les décisions." },
     { "id": "NOTE-TRANSITION", "chemin": "04_Documents_projet/Note_transition_Elodie_16sept.txt", "titre": "Note de transition", "date": "2026-09-16", "auteur": "Élodie Caron", "autorite": "officielle" },
@@ -876,19 +876,19 @@
     { "id": "RAPPORT-STATUT", "chemin": "04_Documents_projet/Rapport_Statut_21sept.pdf", "titre": "Rapport de statut du 21 septembre", "date": "2026-09-21", "auteur": "Non précisé", "autorite": "perimee", "remarque": "Sécurité et accessibilité « VERT » : inexact." },
     { "id": "REGISTRE-RISQUES", "chemin": "04_Documents_projet/Registre_Risques_29sept.xlsx", "titre": "Registre des risques (29 septembre)", "date": "2026-09-29", "auteur": "Équipe projet", "autorite": "officielle", "remarque": "R-01 non mis à jour (« Suivi au 9 septembre »)." },
     { "id": "CONTRAT", "chemin": "05_Contrats_et_finances/CONTRAT_Boreal_NOVA.pdf", "titre": "Contrat de services Boréal", "date": "2026-07-07", "auteur": "Organisation Démo / Boréal", "autorite": "decision" },
-    { "id": "CR-01", "chemin": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf", "titre": "CR-01 — rapports avancés (approuvée)", "date": "2026-08-14", "auteur": "Comité de projet", "autorite": "decision" },
-    { "id": "CR-04", "chemin": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf", "titre": "CR-04 — optimisation mobile (brouillon)", "date": "2026-09-04", "auteur": "Boréal Numérique", "autorite": "brouillon" },
+    { "id": "CR-01", "chemin": "05_Contrats_et_finances/CR-01_Rapports_avances_APPROUVE.pdf", "titre": "CR-01 : rapports avancés (approuvée)", "date": "2026-08-14", "auteur": "Comité de projet", "autorite": "decision" },
+    { "id": "CR-04", "chemin": "05_Contrats_et_finances/CR-04_Optimisation_mobile_BROUILLON.pdf", "titre": "CR-04 : optimisation mobile (brouillon)", "date": "2026-09-04", "auteur": "Boréal Numérique", "autorite": "brouillon" },
     { "id": "INV-001", "chemin": "05_Contrats_et_finances/INV-001.pdf", "titre": "Facture INV-001", "date": "2026-07-31", "auteur": "Boréal Numérique", "autorite": "finance" },
     { "id": "INV-002", "chemin": "05_Contrats_et_finances/INV-002.pdf", "titre": "Facture INV-002", "date": "2026-08-31", "auteur": "Boréal Numérique", "autorite": "finance" },
     { "id": "INV-003", "chemin": "05_Contrats_et_finances/INV-003.pdf", "titre": "Facture INV-003", "date": "2026-09-22", "auteur": "Boréal Numérique", "autorite": "finance", "remarque": "Ligne CR-04 de 18 000 $ non approuvée." },
-    { "id": "ADR-007", "chemin": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md", "titre": "ADR-007 — localisation des données", "date": "2026-07-23", "auteur": "Architecture", "autorite": "decision" },
+    { "id": "ADR-007", "chemin": "06_Architecture_et_decisions/ADR-007_Localisation_donnees.md", "titre": "ADR-007 : localisation des données", "date": "2026-07-23", "auteur": "Architecture", "autorite": "decision" },
     { "id": "ARCHI-V1", "chemin": "06_Architecture_et_decisions/Architecture_NOVA_v1.pdf", "titre": "Architecture v1 (East US)", "date": "2026-07-18", "auteur": "Boréal", "autorite": "perimee", "remarque": "Remplacée par ADR-007." },
     { "id": "ARCHI-V2", "chemin": "06_Architecture_et_decisions/Architecture_NOVA_v2.pdf", "titre": "Architecture v2 (Canada Central)", "date": "2026-08-25", "auteur": "Boréal", "autorite": "officielle", "remarque": "Même fichier que la pièce jointe de E03." },
-    { "id": "DECISION-PORTEE", "chemin": "06_Architecture_et_decisions/Decision_Portee_Phase2.md", "titre": "Décision de portée — mobile avancé en phase 2", "date": "2026-09-24", "auteur": "Chargé de projet", "autorite": "decision" },
-    { "id": "TEAMS-15SEPT", "chemin": "07_Conversations_Teams/Teams_15sept_ProjetNOVA.txt", "titre": "Teams — 15 septembre (date de lancement)", "date": "2026-09-15", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
-    { "id": "TEAMS-16SEPT", "chemin": "07_Conversations_Teams/Teams_16sept_Transition.txt", "titre": "Teams — 16 septembre (transition)", "date": "2026-09-16", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
-    { "id": "TEAMS-19SEPT", "chemin": "07_Conversations_Teams/Teams_19sept_Securite.txt", "titre": "Teams — 19 septembre (sécurité)", "date": "2026-09-19", "auteur": "Canal NOVA / Sécurité", "autorite": "officielle" },
-    { "id": "TEAMS-22SEPT", "chemin": "07_Conversations_Teams/Teams_22sept_Mobile.txt", "titre": "Teams — 22 septembre (mobile)", "date": "2026-09-22", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
+    { "id": "DECISION-PORTEE", "chemin": "06_Architecture_et_decisions/Decision_Portee_Phase2.md", "titre": "Décision de portée : mobile avancé en phase 2", "date": "2026-09-24", "auteur": "Chargé de projet", "autorite": "decision" },
+    { "id": "TEAMS-15SEPT", "chemin": "07_Conversations_Teams/Teams_15sept_ProjetNOVA.txt", "titre": "Teams : 15 septembre (date de lancement)", "date": "2026-09-15", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
+    { "id": "TEAMS-16SEPT", "chemin": "07_Conversations_Teams/Teams_16sept_Transition.txt", "titre": "Teams : 16 septembre (transition)", "date": "2026-09-16", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
+    { "id": "TEAMS-19SEPT", "chemin": "07_Conversations_Teams/Teams_19sept_Securite.txt", "titre": "Teams : 19 septembre (sécurité)", "date": "2026-09-19", "auteur": "Canal NOVA / Sécurité", "autorite": "officielle" },
+    { "id": "TEAMS-22SEPT", "chemin": "07_Conversations_Teams/Teams_22sept_Mobile.txt", "titre": "Teams : 22 septembre (mobile)", "date": "2026-09-22", "auteur": "Canal Projet NOVA", "autorite": "officielle" },
     { "id": "ARCHIVE-E12", "chemin": "08_Archives_et_documents_connexes/Courriel_archive_17sept.eml", "titre": "Courriel archivé du 17 septembre", "date": "2026-09-17", "auteur": "Marc Gervais", "autorite": "copie", "copie_de": "E12", "remarque": "Copie exacte de E12 (même fichier, même Message-ID)." },
     { "id": "INV-778", "chemin": "08_Archives_et_documents_connexes/INV-778_Projet_ORION.pdf", "titre": "Facture INV-778 (projet ORION)", "date": "2026-09-20", "auteur": "Boréal Numérique", "autorite": "hors_projet" },
     { "id": "FORMATION-EXCEL", "chemin": "08_Archives_et_documents_connexes/Invitation_Formation_Excel.txt", "titre": "Invitation à une formation Excel", "date": "2026-09-18", "auteur": "Formation interne", "autorite": "hors_projet" },

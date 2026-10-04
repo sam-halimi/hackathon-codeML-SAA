@@ -1,7 +1,7 @@
 {
   "id": "EXEMPLE-01",
   "exemple": true,
-  "titre": "EXEMPLE FICTIF — Boréal livre ACC-303 et propose le 29 octobre",
+  "titre": "EXEMPLE FICTIF : Boréal livre ACC-303 et propose le 29 octobre",
   "date": "2026-10-01T10:30:00-04:00",
   "nature": "proposition",
   "methode": "Exemple rédigé par l'équipe pour répéter la démonstration (analyse humaine assistée par Claude). Ce n'est PAS une source du corpus.",
@@ -9,13 +9,13 @@
   "sujets": ["accessibilite", "date", "exploitation"],
   "source": {
     "id": "EXEMPLE-SRC-01",
-    "titre": "EXEMPLE FICTIF — Courriel de Boréal du 1er octobre",
+    "titre": "EXEMPLE FICTIF : Courriel de Boréal du 1er octobre",
     "type": "Courriel",
-    "auteur": "Julien Moreau (Boréal) — fictif",
+    "auteur": "Julien Moreau (Boréal), fictif",
     "date": "2026-10-01",
     "autorite": "fournisseur",
     "remarque": "Texte inventé pour l'entraînement. Ne fait pas partie du corpus.",
-    "texte": "EXEMPLE FICTIF POUR ENTRAÎNEMENT — NE FAIT PAS PARTIE DU CORPUS\n\nDe : Julien Moreau (Boréal)\nÀ : Nicolas Perron\nDate : 1er octobre 2026, 10 h 30\nObjet : NOVA - ACC-303 et date\n\nBonjour Nicolas,\n\nLe correctif ACC-303 est livré dans la build du 1er octobre. Mélissa peut refaire son test au clavier.\n\nPour le runbook, notre équipe ops a besoin d'une semaine de plus pour la procédure de retour arrière. Nous proposons donc de déplacer la mise en production au 29 octobre.\n\nC'est une proposition : la décision revient au comité.\n\nJulien"
+    "texte": "EXEMPLE FICTIF POUR ENTRAÎNEMENT, NE FAIT PAS PARTIE DU CORPUS\n\nDe : Julien Moreau (Boréal)\nÀ : Nicolas Perron\nDate : 1er octobre 2026, 10 h 30\nObjet : NOVA - ACC-303 et date\n\nBonjour Nicolas,\n\nLe correctif ACC-303 est livré dans la build du 1er octobre. Mélissa peut refaire son test au clavier.\n\nPour le runbook, notre équipe ops a besoin d'une semaine de plus pour la procédure de retour arrière. Nous proposons donc de déplacer la mise en production au 29 octobre.\n\nC'est une proposition : la décision revient au comité.\n\nJulien"
   },
   "impacts": [
     {

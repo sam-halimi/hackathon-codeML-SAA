@@ -85,7 +85,8 @@
     const h = /T(\d{2}):(\d{2})/.exec(iso || '');
     return fmtDate(iso) + (h ? `, ${h[1]} h ${h[2]}` : '');
   }
-  const fmtMontant = (n) => (n == null ? '—' : Number(n).toLocaleString('fr-CA').replace(/ | /g, ' ') + ' $');
+  // Montant : espaces insécables (le « $ » ne passe jamais seul à la ligne).
+  const fmtMontant = (n) => (n == null ? 'Non renseigné' : Number(n).toLocaleString('fr-CA').replace(/\s/g, '\u00a0') + '\u00a0$');
   function joursEntre(debutIso, finIso) {
     const d = new Date(debutIso), f = new Date(finIso + 'T00:00:00-04:00');
     return Math.ceil((f - d) / 86400000);
@@ -99,7 +100,7 @@
     return badge(e.ton, e.libelle, e.icone);
   }
   function badgeNature(code) {
-    const n = C.NATURES[code] || { libelle: code || '—', ton: 'gris' };
+    const n = C.NATURES[code] || { libelle: code || 'Inconnue', ton: 'gris' };
     return badge(n.ton, n.libelle);
   }
   function badgeAutorite(code) {
@@ -138,7 +139,7 @@
         ${p.role ? badge('gris', p.role) : ''}
         ${s.copie_de ? badge('gris', 'Copie de ' + s.copie_de) : ''}</span>
       ${citation ? `<span class="preuve-citation">« ${esc(citation.length > 220 ? citation.slice(0, 217) + '…' : citation)}${p.jusqua ? ' … ' + esc(p.jusqua) : ''} »</span>` : ''}
-      <span class="petit doux">${esc(s.chemin || '')} — Ouvrir la preuve</span>
+      <span class="preuve-ouvrir">${esc(s.chemin || '')} · Ouvrir la preuve →</span>
     </button>`;
   }
   const listePreuves = (preuves) => (preuves && preuves.length ? `<ul class="liste-preuves">${preuves.map((p) => `<li>${boutonPreuve(p)}</li>`).join('')}</ul>` : '<p class="doux">Aucune preuve.</p>');
@@ -229,7 +230,7 @@
     const f = (p && p.feuille && doc.feuilles.find((x) => x.nom === p.feuille)) || doc.feuilles[0];
     if (!f) return '<p>Feuille vide.</p>';
     const cibles = new Set(p && p.cellules ? C.cellulesDePlage(p.cellules) : []);
-    let html = `<p class="petit">Feuille : <strong>${esc(f.nom)}</strong>${p && p.cellules ? ` — cellules surlignées : <strong>${esc(p.cellules)}</strong>` : ''}</p>`;
+    let html = `<p class="petit">Feuille : <strong>${esc(f.nom)}</strong>${p && p.cellules ? ` · cellules surlignées : <strong>${esc(p.cellules)}</strong>` : ''}</p>`;
     html += '<div class="feuille"><table><thead><tr><th class="entete-col"></th>';
     for (let c = 1; c <= f.maxCol; c++) html += `<th class="entete-col" scope="col">${C.lettreColonne(c)}</th>`;
     html += '</tr></thead><tbody>';
@@ -295,8 +296,10 @@
       <button type="button" class="bouton" data-copier-ref="${esc(p.source)}">Copier la référence</button>
       ${doc && doc.original ? '<button type="button" class="bouton" data-telecharger="original">Télécharger le fichier original</button>' : ''}</div>`;
     $('#visionneuse-corps').innerHTML = corps;
-    $('#visionneuse-corps').dataset.reference = `${p.source} — ${s ? s.chemin : ''} — ${p.repere || ''}${p.cellules ? ' (cellules ' + p.cellules + ')' : ''}${p.page ? ' (page ' + p.page + ')' : ''}`;
+    $('#visionneuse-corps').dataset.reference = `${p.source} · ${s ? s.chemin : ''} · ${p.repere || ''}${p.cellules ? ' (cellules ' + p.cellules + ')' : ''}${p.page ? ' (page ' + p.page + ')' : ''}`;
     if (!dialogue.open) dialogue.showModal();
+    typographier($('.visionneuse-entete'));
+    typographier($('#visionneuse-corps'));
     requestAnimationFrame(() => {
       const cible = $('#visionneuse-corps mark, #visionneuse-corps td.cible, #visionneuse-corps .zone-surlignee');
       if (cible) cible.scrollIntoView({ block: 'center' });
@@ -450,7 +453,7 @@
   function carteQuestion(q, surlignee) {
     const liens = (q.liens && q.liens.conditions) || [];
     const touchees = etat.courant === BASE ? [] : conditionsModifiees(liens);
-    const notes = (q.notes_maj || []).map((n) => `<div class="maj-note"><strong>Mise à jour (${esc(n.evenement)}, ${fmtDateHeure(n.date)}) — ${esc((C.NATURES[n.nature] || {}).libelle || '')} :</strong> ${esc(n.texte)}</div>`).join('');
+    const notes = (q.notes_maj || []).map((n) => `<div class="maj-note"><strong>Mise à jour (${esc(n.evenement)}, ${fmtDateHeure(n.date)}) · ${esc((C.NATURES[n.nature] || {}).libelle || '')} :</strong> ${esc(n.texte)}</div>`).join('');
     const bandeauTouchee = touchees.map((t) => `<div class="maj-note"><strong>Touchée par une mise à jour (${esc(t.par)}) :</strong> condition ${esc(t.id)} « ${esc(t.titre)} » : ${badgeEtat(t.avant)} → ${badgeEtat(t.apres)}</div>`).join('');
     const nbIndep = sourcesIndependantes(q.preuves);
     return `<article class="carte${surlignee ? ' surlignee' : ''}" id="question-${esc(q.id)}">
@@ -459,14 +462,14 @@
       ${bandeauTouchee}${notes}
       <p class="reponse-courte">${esc(q.reponse_courte)}</p>
       ${q.details && q.details.length ? `<details open><summary>Nuances et points d'attention</summary><ul>${q.details.map((d) => `<li>${esc(d)}</li>`).join('')}</ul></details>` : ''}
-      <details ${surlignee ? 'open' : ''}><summary>Preuves (${(q.preuves || []).length}) — ${nbIndep} source${nbIndep > 1 ? 's' : ''} indépendante${nbIndep > 1 ? 's' : ''}</summary>${listePreuves(q.preuves)}</details>
+      <details ${surlignee ? 'open' : ''}><summary>Preuves (${(q.preuves || []).length}) · ${nbIndep} source${nbIndep > 1 ? 's' : ''} indépendante${nbIndep > 1 ? 's' : ''}</summary>${listePreuves(q.preuves)}</details>
     </article>`;
   }
 
   function rendreQuestions() {
     const e = etat.courant;
-    let html = `<div class="section"><h2>Questions et preuves</h2></div>
-      <p class="intro">Les dix questions officielles, avec des réponses nuancées. Chaque preuve ouvre le document au bon endroit : passage surligné, page du PDF, cellules Excel ou zone de la capture.</p>
+    let html = `<header class="tete-page"><div class="eyebrow">Espace 02 · 10 questions officielles</div><h2>Questions et preuves</h2>
+      <p class="intro">Chaque réponse est nuancée, et chaque preuve ouvre le document au bon endroit : passage surligné, page du PDF, cellules Excel ou zone de la capture.</p></header>
       <form class="carte" id="form-interroger">
         <label for="champ-interroger">Interroger le projet en langage naturel</label>
         <div class="groupe-boutons" style="margin-top:.35rem">
@@ -483,9 +486,9 @@
       surlignee = rep[0] && rep[0].e.id;
       html += `<section class="carte" aria-labelledby="titre-resultats"><h3 id="titre-resultats">Résultats pour « ${esc(etat.requete)} »</h3>`;
       if (rep.length) {
-        html += `<p><strong>Réponse la plus proche : ${esc(rep[0].e.id)}</strong> — ${esc(rep[0].e.question)}</p>
+        html += `<p><strong>Réponse la plus proche : ${esc(rep[0].e.id)}</strong> · ${esc(rep[0].e.question)}</p>
           <p class="reponse-courte">${esc(rep[0].e.reponse_courte)}</p>${listePreuves(rep[0].e.preuves)}`;
-        if (rep.length > 1) html += `<p class="petit" style="margin-top:.6rem">Autres réponses possibles : ${rep.slice(1).map((r) => `<a href="#questions/${esc(r.e.id)}">${esc(r.e.id)} — ${esc(r.e.question)}</a>`).join(' · ')}</p>`;
+        if (rep.length > 1) html += `<p class="petit" style="margin-top:.6rem">Autres réponses possibles : ${rep.slice(1).map((r) => `<a href="#questions/${esc(r.e.id)}">${esc(r.e.id)} · ${esc(r.e.question)}</a>`).join(' · ')}</p>`;
       } else {
         html += '<p>Aucune réponse préparée ne correspond. Voici les passages trouvés dans les documents : vérifiez-les avant de conclure.</p>';
       }
@@ -493,7 +496,7 @@
     }
     html += e.questions.map((q) => carteQuestion(q, q.id === surlignee)).join('');
     if (e.questions_complementaires && e.questions_complementaires.length) {
-      html += `<div class="section"><h2>Questions complémentaires</h2></div>
+      html += `<div class="section"><div><div class="eyebrow">Exemples des consignes</div><h2>Questions complémentaires</h2></div></div>
         <p class="intro">Exemples de questions tirés des consignes du défi, préparés pour la démonstration.</p>`;
       html += e.questions_complementaires.map((q) => carteQuestion(q, q.id === surlignee)).join('');
     }
@@ -524,14 +527,38 @@
         ${etat.exempleActif ? badge('rouge', 'EXEMPLE FICTIF chargé (entraînement)', '!') : ''}`;
     } else bandeau.hidden = true;
     $$('.onglets button').forEach((b) => b.setAttribute('aria-current', b.dataset.onglet === etat.onglet ? 'page' : 'false'));
-    $('#pied-texte').innerHTML = `${esc(BASE.meta.methode)} Rendu construit le ${esc(BRUT.construit_le || '')} — ${Object.keys(DOCS).length} documents, données ${esc(BASE.meta.version_donnees)}.`;
+    $('#pied-texte').innerHTML = `${esc(BASE.meta.methode)} Rendu construit le ${esc(BRUT.construit_le || '')} · ${Object.keys(DOCS).length} documents, données ${esc(BASE.meta.version_donnees)}.`;
+  }
+
+  // Typographie française à l'affichage : espaces insécables avant « : ; ! ? » et dans les guillemets.
+  // Les documents du corpus (visionneuse) et les champs de saisie ne sont jamais modifiés.
+  const EXCLUS_TYPO = 'textarea, input, select, option, code, pre, script, style, .doc-texte, .feuille, .courriel-entetes';
+  function typographier(racine) {
+    if (!racine) return;
+    const parcours = document.createTreeWalker(racine, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (n.parentElement && n.parentElement.closest(EXCLUS_TYPO) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+    });
+    const noeuds = [];
+    while (parcours.nextNode()) noeuds.push(parcours.currentNode);
+    for (const n of noeuds) {
+      const t = n.nodeValue;
+      if (!/[:;!?«»]/.test(t)) continue;
+      const u = t.replace(/ ([;!?»])/g, '\u202f$1').replace(/ :/g, '\u00a0:').replace(/« /g, '«\u00a0');
+      if (u !== t) n.nodeValue = u;
+    }
   }
 
   function rendre(options) {
     PREUVES = [];
     rendreEntete();
     const fn = RENDUS[etat.onglet];
-    $('#contenu').innerHTML = fn ? fn() : `<div class="carte"><h2>En construction</h2><p>Cet espace arrive dans la prochaine version. Les dix réponses et leurs preuves sont dans « Questions et preuves ».</p></div>`;
+    const main = $('#contenu');
+    main.innerHTML = fn ? fn() : `<div class="carte"><h2>En construction</h2><p>Cet espace arrive dans la prochaine version.</p></div>`;
+    typographier(main);
+    typographier($('.entete'));
+    // Une seule animation d'entrée, au changement d'espace (jamais sur un simple filtre).
+    main.classList.remove('anime');
+    if (options && options.animer) { void main.offsetWidth; main.classList.add('anime'); }
     if (options && options.ancre) {
       const cible = document.getElementById(options.ancre);
       if (cible) cible.scrollIntoView({ block: 'start' });
@@ -540,7 +567,7 @@
 
   function allerA(onglet, ancre) {
     etat.onglet = RENDUS[onglet] || ['vue', 'historique', 'actions', 'documents'].includes(onglet) ? onglet : 'vue';
-    rendre({ ancre });
+    rendre({ ancre, animer: !ancre }); // pas d'animation sur un lien profond : le contenu visé s'affiche aussitôt
     if (!ancre) window.scrollTo(0, 0);
   }
 
@@ -578,7 +605,7 @@
   window.addEventListener('hashchange', lireAncre);
 
   // Exposé pour les autres parties de l'application.
-  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees };
+  window.NOVA_APP = { etat, BASE, BRUT, DOCS, SOURCES, C, $, $$, esc, fmtDate, fmtDateHeure, fmtMontant, joursEntre, badge, badgeEtat, badgeNature, badgeAutorite, badgeValidite, boutonPreuve, listePreuves, sourcesIndependantes, ouvrirPreuve, rechercherDocuments, htmlResultatsDocuments, recalculer, rendre, allerA, annoncer, ecrireLocaux, RENDUS, conditionsModifiees, typographier };
 
   // Premier affichage une fois tous les scripts chargés (espaces.js, mises_a_jour.js).
   document.addEventListener('DOMContentLoaded', () => {

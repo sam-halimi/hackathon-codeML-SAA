@@ -181,7 +181,7 @@
     let html = '';
     if (im.type === 'condition') {
       const c = e.synthese.conditions.find((x) => x.id === im.condition);
-      html += `<div class="ligne-champs">${champ('condition', 'Condition', sel('condition', e.synthese.conditions.map((x) => x.id), (v) => v + ' — ' + e.synthese.conditions.find((x) => x.id === v).titre))}
+      html += `<div class="ligne-champs">${champ('condition', 'Condition', sel('condition', e.synthese.conditions.map((x) => x.id), (v) => v + ' · ' + e.synthese.conditions.find((x) => x.id === v).titre))}
         ${champ('etat', 'Nouvel état', sel('etat', ETATS_CONDITION, (v) => C.ETATS[v].libelle), c ? 'État actuel : ' + esc(C.ETATS[c.etat].libelle) : '')}${natureSel}</div>
         ${im.etat === 'valide' ? `<p class="indice">Fermer une condition exige une <strong>validation obtenue</strong> de l'équipe responsable (${esc(c ? c.responsable : '')}). Un correctif livré ou une déclaration du fournisseur ne suffit pas : le passage cité doit montrer cette validation.</p>` : ''}
         ${champ('note', 'Précision (facultatif)', txt('note', 'ex. : correctif livré dans la build du 1er octobre, re-test à planifier'))}`;
@@ -192,13 +192,13 @@
       html += `<div class="ligne-champs">${champ('date', 'Nouvelle date approuvée', txt('date', '', 'date'))}${champ('autorite', 'Qui a approuvé ?', txt('autorite', 'ex. : Comité de direction NOVA'), 'Obligatoire. Sans approbation explicite, utilisez « Nouvelle proposition ».')}</div>
         ${champ('note', 'Précision (facultatif)', txt('note', 'ex. : conditions de go-live maintenues'))}`;
     } else if (im.type === 'reponse') {
-      html += `<div class="ligne-champs">${champ('question', 'Réponse concernée', sel('question', e.questions.map((q) => q.id), (v) => v + ' — ' + e.questions.find((q) => q.id === v).question.slice(0, 60) + '…'))}${natureSel}</div>
+      html += `<div class="ligne-champs">${champ('question', 'Réponse concernée', sel('question', e.questions.map((q) => q.id), (v) => v + ' · ' + e.questions.find((q) => q.id === v).question.slice(0, 60) + '…'))}${natureSel}</div>
         ${champ('note', 'Texte de mise à jour (affiché au-dessus de la réponse)', zone('note', 'ex. : Boréal propose le 29 octobre ; la date approuvée reste le 22 octobre.'))}
         <label class="petit"><input type="checkbox" data-impact="${i}" data-champ="remplacer" ${im.remplacer ? 'checked' : ''}> Remplacer aussi la réponse courte</label>
         ${im.remplacer ? champ('reponse_courte', 'Nouvelle réponse courte', zone('reponse_courte', '')) : ''}`;
     } else if (im.type === 'action_etat') {
       const a = e.actions.find((x) => x.id === im.action);
-      html += `<div class="ligne-champs">${champ('action', 'Action', sel('action', e.actions.map((x) => x.id), (v) => v + ' — ' + e.actions.find((x) => x.id === v).titre.slice(0, 55) + '…'))}
+      html += `<div class="ligne-champs">${champ('action', 'Action', sel('action', e.actions.map((x) => x.id), (v) => v + ' · ' + e.actions.find((x) => x.id === v).titre.slice(0, 55) + '…'))}
         ${champ('etat', 'Nouvel état', sel('etat', ETATS_ACTION, (v) => C.ETATS[v].libelle), a ? 'Actuel : ' + esc(C.ETATS[a.etat].libelle) : '')}${natureSel}</div>
         <div class="ligne-champs">${champ('responsable', 'Nouveau responsable (facultatif)', txt('responsable', a ? a.responsable : ''))}${champ('echeance', 'Échéance (si la source la donne)', txt('echeance', '', 'date'), 'Laissez vide si aucune date n\'est écrite : « À confirmer ».')}</div>
         ${champ('note', 'Précision (facultatif)', txt('note', ''))}`;
@@ -225,7 +225,7 @@
     return `<section class="carte" id="d-ajout"><h3>Ajouter une nouvelle information</h3>
       <p class="intro">Saisissez la nouvelle source puis ce qu'elle change. La version initiale est conservée : vous pourrez toujours comparer. Pour une mise à jour permanente, exportez-la en JSON et placez le fichier dans <code>donnees/evenements/</code>.</p>
       <div class="ligne-champs">
-        <div class="champ"><label for="f-titre">Titre</label><input id="f-titre" type="text" data-brouillon="titre" value="${esc(b.titre)}" placeholder="ex. : Courriel de Boréal — ACC-303 livré"></div>
+        <div class="champ"><label for="f-titre">Titre</label><input id="f-titre" type="text" data-brouillon="titre" value="${esc(b.titre)}" placeholder="ex. : Courriel de Boréal · ACC-303 livré"></div>
         <div class="champ"><label for="f-date">Date et heure (heure de Montréal)</label><input id="f-date" type="datetime-local" data-brouillon="date" value="${esc(b.date)}"></div>
       </div>
       <div class="ligne-champs">
@@ -242,7 +242,7 @@
         <label><input type="radio" name="methode" data-brouillon="methode" value="assistee" ${b.methode === 'assistee' ? 'checked' : ''}> Analyse humaine assistée par Claude</label></div>
       <div class="champ"><label for="f-resume">Qu'est-ce qui vient de changer ? (résumé)</label><textarea id="f-resume" data-brouillon="resume" rows="2">${esc(b.resume)}</textarea></div>
       <h4>Impacts : ce que la nouvelle information modifie</h4>
-      ${b.impacts.map((im, i) => `<div class="impact"><div class="groupe-boutons" style="justify-content:space-between"><strong>Impact ${i + 1} — ${esc(TYPES_IMPACT[im.type])}</strong>
+      ${b.impacts.map((im, i) => `<div class="impact"><div class="groupe-boutons" style="justify-content:space-between"><strong>Impact ${i + 1} · ${esc(TYPES_IMPACT[im.type])}</strong>
         <button type="button" class="bouton petit danger" data-retirer-impact="${i}">Retirer</button></div>${champsImpact(im, i)}</div>`).join('')}
       <div class="groupe-boutons"><label for="f-nouvel-impact" class="visuellement-cache">Type d'impact</label>
         <select id="f-nouvel-impact">${Object.entries(TYPES_IMPACT).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select>
@@ -261,7 +261,7 @@
       <div class="groupe-boutons"><label class="bouton" for="f-import">Importer une mise à jour (.json)</label><input id="f-import" type="file" accept=".json,application/json" class="visuellement-cache">
         ${etat.exempleActif ? '<button type="button" class="bouton danger" data-maj="exemple-off">Retirer l\'exemple fictif</button>' : (A.BRUT.exemples.length ? '<button type="button" class="bouton" data-maj="exemple-on">S\'entraîner avec l\'exemple fictif</button>' : '')}</div>
       <p class="petit doux" style="margin-top:.4rem">L'exemple fictif sert seulement à répéter la démonstration : il ne fait pas partie du corpus et il est signalé partout.</p>
-      ${etat.evenementsLocaux.length ? `<h4 style="margin-top:1rem">Mises à jour enregistrées dans ce navigateur</h4><ul>${etat.evenementsLocaux.map((ev, k) => `<li><strong>${esc(ev.id)}</strong> — ${esc(ev.titre)} (${fmtDateHeure(ev.date)}) <button type="button" class="bouton petit danger" data-supprimer-local="${k}">Supprimer</button></li>`).join('')}</ul>` : ''}
+      ${etat.evenementsLocaux.length ? `<h4 style="margin-top:1rem">Mises à jour enregistrées dans ce navigateur</h4><ul>${etat.evenementsLocaux.map((ev, k) => `<li><strong>${esc(ev.id)}</strong> · ${esc(ev.titre)} (${fmtDateHeure(ev.date)}) <button type="button" class="bouton petit danger" data-supprimer-local="${k}">Supprimer</button></li>`).join('')}</ul>` : ''}
     </section>`;
   }
 
@@ -274,13 +274,13 @@
   function libelleCible(cible, e) {
     const [coll, id] = cible.split('/');
     const o = C.resoudreCible(e, cible) || {};
-    if (coll === 'questions') return `${id} — ${o.question || ''}`;
-    if (coll === 'conditions') return `Condition ${id} — ${o.titre || ''}`;
-    if (coll === 'actions') return `Action ${id} — ${o.titre || ''}`;
+    if (coll === 'questions') return `${id} · ${o.question || ''}`;
+    if (coll === 'conditions') return `Condition ${id} · ${o.titre || ''}`;
+    if (coll === 'actions') return `Action ${id} · ${o.titre || ''}`;
     if (coll === 'synthese') return { date_mep: 'Date de mise en production', responsable: 'Responsable', portee: 'Portée', finances: 'Finances' }[id] || id;
     return cible;
   }
-  const valeurAffichee = (champ, v) => (champ === 'etat' ? badgeEtat(v) : ['approuvee', 'echeance', 'date_decision'].includes(champ) ? (v ? fmtDate(v, true) : '—') : esc(v == null || v === '' ? '—' : String(v).slice(0, 200)));
+  const valeurAffichee = (champ, v) => (champ === 'etat' ? badgeEtat(v) : ['approuvee', 'echeance', 'date_decision'].includes(champ) ? (v ? fmtDate(v, true) : 'Non renseigné') : esc(v == null || v === '' ? 'Non renseigné' : String(v).slice(0, 200)));
 
   function carteJournal(entree, ev, etatApres) {
     const src = ev.source || {};
@@ -303,7 +303,7 @@
       return `<tr><td><strong>${esc(libelleCible(m.cible, etatApres))}</strong></td><td>${cellules}${m.note ? `<div class="maj-note petit">${esc(m.note)}</div>` : ''}</td><td>${badgeNature(m.nature)}</td></tr>`;
     }).join('');
     const lignesAjouts = ajouts.map((a) => `<tr><td><strong>Nouveau : ${esc({ actions: 'action', propositions: 'proposition', chronologie: 'événement', risques: 'risque' }[a.collection] || a.collection)} ${esc(a.id || '')}</strong></td><td>${esc(a.titre || '')}</td><td>${badgeNature(a.nature)}</td></tr>`).join('');
-    const ligneAction = (a) => `<li><strong>${esc(a.id)}</strong> ${esc(a.titre)} — ${esc(a.responsable)} ${a.responsable_statut === 'confirme' ? badge('vert', 'Confirmé', '✓') : badge('bleu', 'Proposé', '?')} · ${a.echeance ? fmtDate(a.echeance) : badge('ambre', a.echeance_texte || 'À confirmer', '?')} · ${badgeEtat(a.etat)}</li>`;
+    const ligneAction = (a) => `<li><strong>${esc(a.id)}</strong> ${esc(a.titre)} · ${esc(a.responsable)} ${a.responsable_statut === 'confirme' ? badge('vert', 'Confirmé', '✓') : badge('bleu', 'Proposé', '?')} · ${a.echeance ? fmtDate(a.echeance) : badge('ambre', a.echeance_texte || 'À confirmer', '?')} · ${badgeEtat(a.etat)}</li>`;
     return `<article class="carte">
       <div class="preuve-ligne"><h3 style="margin:0">${esc(ev.titre)}</h3>${badgeNature(ev.nature)} ${ev.exemple || String(ev.id).startsWith('EXEMPLE') ? badge('rouge', 'EXEMPLE FICTIF', '!') : ''}</div>
       <p class="petit doux">${esc(ev.id)} · ${fmtDateHeure(ev.date)} · Source : ${esc(src.titre || '')}${src.auteur ? ' (' + esc(src.auteur) + ')' : ''} · ${esc(ev.methode || '')} ${preuveSource}</p>
@@ -324,9 +324,9 @@
     const ouvertes = (e) => e.actions.filter((a) => !C.ETATS_FERMES.includes(a.etat)).length;
     const ligne = (lib, a, b) => `<tr><td><strong>${esc(lib)}</strong></td><td>${a}</td><td>${b}</td><td>${a === b ? badge('gris', 'Inchangé') : badge('ambre', 'Modifié', '◆')}</td></tr>`;
     return `<div class="table-wrap"><table><thead><tr><th>Élément</th><th>Initiale (30 sept., 09 h)</th><th>Actualisée</th><th></th></tr></thead><tbody>
-      ${ligne('Date approuvée', esc(av.date_mep.texte + ' — ' + av.date_mep.statut), esc(ap.date_mep.texte + ' — ' + ap.date_mep.statut))}
+      ${ligne('Date approuvée', esc(av.date_mep.texte + ' · ' + av.date_mep.statut), esc(ap.date_mep.texte + ' · ' + ap.date_mep.statut))}
       ${ligne('Propositions en attente', esc((av.propositions || []).map((p) => p.texte).join(', ') || 'Aucune'), esc((ap.propositions || []).map((p) => p.texte + ' (non approuvée)').join(', ') || 'Aucune'))}
-      ${av.conditions.map((c, k) => ligne(`Condition ${c.id} — ${c.titre}`, badgeEtat(c.etat), badgeEtat(ap.conditions[k].etat))).join('')}
+      ${av.conditions.map((c, k) => ligne(`Condition ${c.id} · ${c.titre}`, badgeEtat(c.etat), badgeEtat(ap.conditions[k].etat))).join('')}
       ${ligne('Conditions remplies', `${av.conditions.filter((c) => C.ETATS_FERMES.includes(c.etat)).length} / 3`, `${ap.conditions.filter((c) => C.ETATS_FERMES.includes(c.etat)).length} / 3`)}
       ${ligne('Actions ouvertes', String(ouvertes(BASE)), String(ouvertes(A.etat.actualise)))}
       ${ligne('Responsable', esc(av.responsable.nom), esc(ap.responsable.nom))}
@@ -361,7 +361,7 @@
   }
 
   function reponsesTexte(e) {
-    const lignes = [`# NOVA — Réponses et preuves`, `Situation au ${BASE.meta.date_situation_texte}${e !== BASE ? ' (version actualisée)' : ''}`, ''];
+    const lignes = [`# NOVA · Réponses et preuves`, `Situation au ${BASE.meta.date_situation_texte}${e !== BASE ? ' (version actualisée)' : ''}`, ''];
     for (const q of e.questions) {
       lignes.push(`## ${q.id}. ${q.question}`, '', q.reponse_courte, '');
       (q.notes_maj || []).forEach((n) => lignes.push(`> Mise à jour (${n.evenement}) : ${n.texte}`));
@@ -369,7 +369,7 @@
       lignes.push('', 'Preuves :');
       (q.preuves || []).forEach((p) => {
         const s = A.SOURCES[p.source] || {};
-        lignes.push(`- ${p.source} — ${s.chemin || ''} — ${p.repere || ''}${p.cellules ? ' (cellules ' + p.cellules + ')' : ''}${p.passage ? ' : « ' + p.passage + (p.jusqua ? ' … ' + p.jusqua : '') + ' »' : ''}${p.lecture ? ' : ' + p.lecture : ''}`);
+        lignes.push(`- ${p.source} · ${s.chemin || ''} · ${p.repere || ''}${p.cellules ? ' (cellules ' + p.cellules + ')' : ''}${p.passage ? ' : « ' + p.passage + (p.jusqua ? ' … ' + p.jusqua : '') + ' »' : ''}${p.lecture ? ' : ' + p.lecture : ''}`);
       });
       lignes.push('');
     }

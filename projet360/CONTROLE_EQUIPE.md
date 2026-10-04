@@ -10,9 +10,9 @@ Liste de vérification avant la remise et avant la démonstration. Elle suit le 
 |---|---|
 | `node outils/verifier.mjs` | Chaque preuve (passage, page, cellules, zone) existe dans le corpus ; les 10 questions ont réponse et preuves ; chaque action a un responsable confirmé ou proposé, une échéance datée ou « À confirmer », un état et une preuve ; 3 conditions de go-live ; les copies sont déclarées ; les garde-fous des événements sont respectés |
 | `node outils/construire.mjs` | Refait la vérification et produit `dist/NOVA_Projet360.html` |
-| `node outils/tester_navigateur.mjs` | Dans Chromium, **hors connexion**, avec un fuseau horaire différent (Paris) : ouverture, date fixe du 30 sept., ouverture au bon endroit des 53 preuves des Q01–Q10, PDF, Excel et capture, copies signalées, questions libres, 5 espaces, brief sur **une page** (Lettre et A4), filtres, recherche, exemple fictif, garde-fous, enregistrement, persistance, import JSON, décision de date approuvée (la version initiale garde le 22 oct.), aucune erreur JavaScript, aucune requête réseau |
+| `node outils/tester_navigateur.mjs` | Dans Chromium, **hors connexion**, avec un fuseau horaire différent (Paris) : ouverture, date fixe du 30 sept., ouverture au bon endroit des 53 preuves des Q01–Q10, PDF, Excel et capture, copies signalées, questions libres, 5 espaces, brief sur **une page** (Lettre et A4), filtres, recherche, exemple fictif, garde-fous, enregistrement, persistance, import JSON, décision de date approuvée (la version initiale garde le 22 oct.), aucun tiret cadratin visible, polices chargées sans réseau, aucune erreur JavaScript, aucune requête réseau |
 
-**Dernière exécution (3 octobre 2026)** : `verifier.mjs` → 0 erreur (229 preuves contrôlées : 221 dans les données + 8 passages de l'exemple fictif) ; `tester_navigateur.mjs` → 58/58 vérifications réussies hors connexion, et 58/58 sur la version en ligne https://nova-projet360.vercel.app (4 octobre 2026).
+**Dernière exécution (3 octobre 2026)** : `verifier.mjs` → 0 erreur (229 preuves contrôlées : 221 dans les données + 8 passages de l'exemple fictif) ; `tester_navigateur.mjs` → 60/60 vérifications réussies hors connexion, et 60/60 sur la version en ligne https://nova-projet360.vercel.app (4 octobre 2026, après la refonte visuelle).
 
 ## 2. Barème → où le montrer
 

@@ -83,6 +83,7 @@ Pour répéter avant le jour J, utilisez le bouton « S'entraîner avec l'exempl
   - niveau d'autorité de chaque source ;
   - zones encadrées sur les captures (coordonnées en pixels lues à l'œil) ;
   - classement en « engagement documenté » ou « recommandation de l'équipe ».
+- **Direction artistique** : skill `da-moderne` (dépôt catalyst-skills), direction « Marine opérations » choisie par l'équipe : encre marine #0B2348, un seul accent bleu #1F6BFF réservé aux preuves et aux actions, polices IBM Plex intégrées au fichier (licence SIL OFL, `app/polices/OFL.txt`).
 - **Automatique** : extraction du texte (courriels, PDF, Excel), détection des copies (empreinte SHA-256 et Message-ID), contrôle des citations, des cellules et des zones, recherche plein texte.
 
 ## 6. Limites et informations incertaines

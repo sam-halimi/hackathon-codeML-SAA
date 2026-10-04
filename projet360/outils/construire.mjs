@@ -11,6 +11,20 @@ import { toutCharger, chargerCommun, RACINE } from './lib/charger.mjs';
 import { verifier } from './verifier.mjs';
 
 const debut = Date.now();
+
+// Polices IBM Plex (licence SIL OFL, voir app/polices/OFL.txt) intégrées en base64 :
+// le rendu garde sa typographie même hors connexion.
+const POLICES = [
+  ['IBM Plex Sans', 400, 'normal', 'ibm-plex-sans-latin-400-normal.woff2'],
+  ['IBM Plex Sans', 400, 'italic', 'ibm-plex-sans-latin-400-italic.woff2'],
+  ['IBM Plex Sans', 600, 'normal', 'ibm-plex-sans-latin-600-normal.woff2'],
+  ['IBM Plex Mono', 500, 'normal', 'ibm-plex-mono-latin-500-normal.woff2'],
+];
+function policesEmbarquees() {
+  return POLICES.filter(([, , , f]) => fs.existsSync(path.join(RACINE, 'app', 'polices', f))).map(([famille, graisse, style, f]) =>
+    `@font-face{font-family:"${famille}";font-style:${style};font-weight:${graisse};font-display:swap;src:url(data:font/woff2;base64,${fs.readFileSync(path.join(RACINE, 'app', 'polices', f)).toString('base64')}) format("woff2");}`,
+  ).join('\n');
+}
 const lire = (f) => fs.readFileSync(path.join(RACINE, f), 'utf8');
 
 try {
@@ -44,7 +58,7 @@ try {
     .map((f) => `<script>\n${lire(f).replace(/<\/script/gi, '<\\/script')}\n</script>`)
     .join('\n');
   const html = lire('app/index.html')
-    .replace('<!--STYLES-->', () => `<style>\n${lire('app/styles.css')}\n</style>`)
+    .replace('<!--STYLES-->', () => `<style>\n${lire('app/styles.css').replace('/*POLICES*/', policesEmbarquees())}\n</style>`)
     .replace('<!--DONNEES-->', () => `<script id="nova-donnees" type="application/json">${json}</script>`)
     .replace('<!--SCRIPTS-->', () => scripts);
 

@@ -46,27 +46,27 @@
         <td>${acts.map((a) => `${esc(a.id)} ${esc(a.responsable)} (${a.responsable_statut === 'confirme' ? 'confirmé' : 'proposé'})`).join('<br>')}</td>
         <td>${acts.map((a) => (a.echeance ? fmtDate(a.echeance) : esc(a.echeance_texte || 'À confirmer'))).join('<br>')}</td></tr>`;
     }).join('');
-    const props = (s.propositions || []).map((p) => `<li><strong>Proposition en attente (non approuvée) :</strong> ${esc(p.texte)} — ${esc(p.propose_par || '')}${p.motif ? ', ' + esc(p.motif) : ''}.</li>`).join('');
+    const props = (s.propositions || []).map((p) => `<li><strong>Proposition en attente (non approuvée) :</strong> ${esc(p.texte)} · ${esc(p.propose_par || '')}${p.motif ? ', ' + esc(p.motif) : ''}.</li>`).join('');
     const prio = s.priorites.map((p) => {
       const acts = (p.actions || []).map((id) => actionParId(e, id)).filter(Boolean);
       const cond = p.condition && s.conditions.find((c) => c.id === p.condition);
       const fait = cond && C.ETATS_FERMES.includes(cond.etat);
-      return `<li>${fait ? '<s>' : ''}<strong>${esc(p.titre)}</strong>${fait ? '</s> ✓' : ''} — ${acts.map((a) => `${esc(a.responsable)}, ${a.echeance ? fmtDate(a.echeance) : 'échéance à confirmer'}`).join(' ; ')}</li>`;
+      return `<li>${fait ? '<s>' : ''}<strong>${esc(p.titre)}</strong>${fait ? '</s> ✓' : ''} · ${acts.map((a) => `${esc(a.responsable)}, ${a.echeance ? fmtDate(a.echeance) : 'échéance à confirmer'}`).join(' ; ')}</li>`;
     }).join('');
     const ajouts = e.actions.filter((a) => a._ajoute_par && !C.ETATS_FERMES.includes(a.etat))
-      .map((a) => `<li><strong>${esc(a.titre)}</strong> — ${esc(a.responsable)} (${a.responsable_statut === 'confirme' ? 'confirmé' : 'proposé'}), ${a.echeance ? fmtDate(a.echeance) : 'échéance à confirmer'}</li>`).join('');
+      .map((a) => `<li><strong>${esc(a.titre)}</strong> · ${esc(a.responsable)} (${a.responsable_statut === 'confirme' ? 'confirmé' : 'proposé'}), ${a.echeance ? fmtDate(a.echeance) : 'échéance à confirmer'}</li>`).join('');
     const notesSynth = ['responsable', 'date_mep', 'portee', 'finances'].flatMap((k) => (s[k].notes_maj || []).map((n) => `<li>${esc(n.texte)}</li>`)).join('');
     // Sources tirées des preuves : elles suivent les mises à jour.
     const src = (preuves, extra) => `<span class="src">[${esc([...new Set([...(preuves || []).map((p) => p.source), ...(extra || [])])].join(', '))}]</span>`;
     const decisionInitiale = d.date_decision === BASE.synthese.date_mep.date_decision && d.approuvee === BASE.synthese.date_mep.approuvee;
     const autoriteTxt = d.autorite.charAt(0).toLowerCase() + d.autorite.slice(1);
     return `<div class="imp">
-      <h1>Brief de reprise — Projet NOVA</h1>
+      <h1>Brief de reprise · Projet NOVA</h1>
       <p class="imp-sous">Situation au ${esc(BASE.meta.date_situation_texte)}${versionTxt}. Préparé par l'équipe (analyse humaine assistée par Claude, vérifiée dans le corpus).</p>
       <h2>1. Responsable</h2>
       <p><strong>${esc(s.responsable.nom)}</strong>, ${esc(s.responsable.role.toLowerCase())} depuis le ${fmtDate(s.responsable.depuis, true)}. Avant : ${esc(s.responsable.avant)}. ${src(s.responsable.preuves)}</p>
       <h2>2. Date approuvée et conditions</h2>
-      <p><strong>${esc(d.texte)}</strong> — approuvée par le ${esc(autoriteTxt)} le ${fmtDate(d.date_decision, true)}${decisionInitiale ? ' (proposée par Boréal le 8 septembre), sous conditions' : ''}. ${decisionInitiale ? esc(d.reserve) : 'Vérifier si les conditions de go-live restent valables.'} ${src(d.preuves, decisionInitiale ? ['M06', 'E09'] : [])}</p>
+      <p><strong>${esc(d.texte)}</strong>, approuvée par le ${esc(autoriteTxt)} le ${fmtDate(d.date_decision, true)}${decisionInitiale ? ' (proposée par Boréal le 8 septembre), sous conditions' : ''}. ${decisionInitiale ? esc(d.reserve) : 'Vérifier si les conditions de go-live restent valables.'} ${src(d.preuves, decisionInitiale ? ['M06', 'E09'] : [])}</p>
       ${props ? `<ul>${props}</ul>` : ''}
       <table><thead><tr><th>Condition de go-live</th><th>État</th><th>Action et responsable</th><th>Échéance</th></tr></thead><tbody>${condLignes}</tbody></table>
       <h2>3. Portée</h2>
@@ -85,6 +85,7 @@
 
   function imprimerBrief() {
     $('#zone-impression').innerHTML = briefHtml(etat.courant);
+    A.typographier($('#zone-impression'));
     window.print();
   }
 
@@ -111,25 +112,36 @@
     const jours = joursEntre(dateReference(e), d.approuvee);
     const f = s.finances;
     const props = s.propositions || [];
-    let html = `<div class="section"><h2>Vue d'ensemble</h2>
-      <div class="groupe-boutons"><button type="button" class="bouton primaire" data-action="imprimer-brief">Imprimer le brief (1 page)</button>
-      <a class="bouton" href="#vue/brief">Voir le brief</a></div></div>
-      <p class="intro">L'essentiel pour reprendre le projet. Les montants sont en CAD, hors taxes. Chaque chiffre renvoie à sa preuve.</p>
+    const restantes = s.conditions.length - remplies;
+    const sousTitre = restantes === s.conditions.length ? 'sous trois conditions.' : restantes > 0 ? `${restantes} condition${restantes > 1 ? 's' : ''} encore ouverte${restantes > 1 ? 's' : ''}.` : 'conditions remplies.';
+    const ouvertes = e.actions.filter((a) => !C.ETATS_FERMES.includes(a.etat));
+    const ton = (code) => (C.ETATS[code] || {}).ton || 'gris';
+    // Le moment fort de la page : la date approuvée et sa réserve, en pleine largeur.
+    let html = `<section class="hero-date" aria-labelledby="titre-date">
+        <div class="eyebrow">Espace 01 · Mise en production approuvée ${marqueMaj(d)}</div>
+        <p class="affiche" id="titre-date">${esc(d.texte)},<br><em>${esc(sousTitre)}</em></p>
+        <div class="hero-ligne">
+          <span>Approuvée par le <strong>${esc(d.autorite.charAt(0).toLowerCase() + d.autorite.slice(1))}</strong> le ${fmtDate(d.date_decision, true)}.</span>
+          ${jours >= 0 ? `<span class="jalon">J−${jours} · au ${fmtDate(dateReference(e))}</span>` : ''}
+          ${boutonPreuve(d.preuves[0], { compact: true })}
+          <button type="button" class="bouton" data-action="imprimer-brief">Imprimer le brief (1 page)</button>
+        </div>
+        <div class="conditions-mini">${s.conditions.map((c) => `<a class="cond" href="#vue/conditions" style="color:inherit;text-decoration:none"><span class="point ${ton(c.etat)}" aria-hidden="true"></span><span class="cond-id">${esc(c.id)}</span>${esc(c.titre.split(' (')[0])} · <strong>${esc((C.ETATS[c.etat] || {}).libelle || c.etat)}</strong></a>`).join('')}
+          ${props.map((p) => `<span class="cond"><span class="point gris" aria-hidden="true"></span><span class="cond-id">PROPOSITION</span>${esc(p.texte)} · <strong>non approuvée</strong></span>`).join('')}</div>
+      </section>
       <div class="grille grille-4">
         <div class="carte"><div class="etiquette">Responsable</div><div class="chiffre">${esc(s.responsable.nom)}</div>
           <p>${esc(s.responsable.role)} depuis le <strong>${fmtDate(s.responsable.depuis, true)}</strong>.</p>
           <p class="petit doux">Avant : ${esc(s.responsable.avant)}.</p>${boutonPreuve(s.responsable.preuves[0], { compact: true })}${marqueMaj(s.responsable)}</div>
-        <div class="carte"><div class="etiquette">Mise en production approuvée</div><div class="chiffre">${esc(d.texte)}</div>
-          <p>${badge('ambre', d.statut, '◐')} ${marqueMaj(d)}</p>
-          <p class="petit">${esc(d.autorite)}, décision du ${fmtDate(d.date_decision)}. ${jours >= 0 ? `<strong>J−${jours}</strong> à partir du ${fmtDate(dateReference(e))}.` : ''}</p>
-          ${props.length ? `<p class="petit">${badge('bleu', props.length + ' proposition(s) en attente', '?')} non approuvée(s)</p>` : ''}
-          ${boutonPreuve(d.preuves[0], { compact: true })}</div>
         <div class="carte"><div class="etiquette">Conditions de go-live</div><div class="chiffre">${remplies} / ${s.conditions.length} remplies</div>
-          <ul class="petit" style="list-style:none;padding:0">${s.conditions.map((c) => `<li>${esc(c.id)} ${badgeEtat(c.etat)}</li>`).join('')}</ul>
+          <ul class="petit" style="list-style:none;padding:0;margin:0 0 12px">${s.conditions.map((c) => `<li>${esc(c.id)} ${badgeEtat(c.etat)}</li>`).join('')}</ul>
           <a class="petit" href="#vue/conditions">Détail des conditions</a></div>
-        <div class="carte"><div class="etiquette">Finances</div><div class="chiffre">${fmtMontant(f.autorise)}</div>
+        <div class="carte"><div class="etiquette">Finances (CAD, HT)</div><div class="chiffre">${fmtMontant(f.autorise)}</div>
           <p class="petit">autorisés (180 000 $ + CR-01).<br>Facturé : <strong>${fmtMontant(f.facture)}</strong> · Payé : <strong>${fmtMontant(f.paye)}</strong></p>
           <p class="petit">${badge('rouge', fmtMontant(f.a_contester) + ' à contester (INV-003)', '!')}</p>${boutonPreuve(f.preuves[0], { compact: true })}</div>
+        <div class="carte"><div class="etiquette">Actions ouvertes</div><div class="chiffre">${ouvertes.length}</div>
+          <p class="petit">dont ${ouvertes.filter((a) => a.condition).length} liées aux conditions de go-live.<br>Échéances documentées : <strong>${ouvertes.filter((a) => a.echeance).length}</strong> (les autres sont « À confirmer »).</p>
+          <a class="petit" href="#actions">Voir les actions</a></div>
       </div>`;
 
     // Conditions de go-live
@@ -208,7 +220,8 @@
       if (filtres.nature && t.nature !== filtres.nature) return false;
       return true;
     });
-    let html = `<div class="section"><h2>Historique et décisions</h2></div>
+    let html = `<header class="tete-page"><div class="eyebrow">Espace 03 · ${e.chronologie.length} événements, ${e.contradictions.length} contradictions</div><h2>Historique et décisions</h2>
+      <p class="intro">Ce qui a été proposé, décidé, livré et validé, et pourquoi certaines informations ne font plus foi.</p></header>
       <nav class="sous-nav" aria-label="Sections"><a href="#historique/h-chrono">Chronologie</a><a href="#historique/h-cycles">Proposition → décision → validation</a><a href="#historique/h-decisions">Registre des décisions</a><a href="#historique/h-contradictions">Contradictions expliquées</a></nav>
       <h3 id="h-chrono">Chronologie (${items.length} sur ${e.chronologie.length})</h3>
       <div class="filtres" role="group" aria-label="Filtrer par sujet">
@@ -228,7 +241,7 @@
       <p class="intro">Pour chaque sujet, ce qui a été proposé, décidé, livré et validé, avec les dates et les sources. Une étape rouge n'est pas faite.</p>
       ${e.cycles.map((c) => `<section class="carte"><h3>${esc(c.sujet)}</h3><div class="cycle">
         ${c.etapes.map((t) => `<div class="etape ${t.statut === 'fait' ? 'fait' : 'manquant'}"><div class="etape-nom">${t.statut === 'fait' ? '✓' : '✗'} ${esc(t.etape)}</div>
-          <div>${t.date ? `<strong>${fmtDate(t.date)}</strong> — ` : '<strong>Pas encore</strong> — '}${esc(t.texte)}</div>
+          <div>${t.date ? `<strong>${fmtDate(t.date)}</strong> · ` : '<strong>Pas encore</strong> · '}${esc(t.texte)}</div>
           ${t.preuve ? `<div style="margin-top:.3rem">${boutonPreuve(t.preuve, { compact: true })}</div>` : ''}</div>`).join('')}
       </div></section>`).join('')}`;
 
@@ -267,8 +280,8 @@
     const liste = e.actions.filter(filtre[1]);
     const ouvertes = e.actions.filter((a) => !C.ETATS_FERMES.includes(a.etat));
     const sansDate = ouvertes.filter((a) => !a.echeance).length;
-    return `<div class="section"><h2>Actions</h2>
-      <div class="groupe-boutons"><button type="button" class="bouton" data-action="exporter-actions">Exporter les actions (CSV)</button></div></div>
+    return `<header class="tete-page"><div class="eyebrow">Espace 04 · Responsables et échéances</div>
+      <div class="section" style="margin:0"><h2>Actions</h2><div class="groupe-boutons"><button type="button" class="bouton" data-action="exporter-actions">Exporter les actions (CSV)</button></div></div></header>
       <p class="intro"><strong>${ouvertes.length} actions ouvertes</strong>, dont ${ouvertes.filter((a) => a.condition).length} liées aux conditions de go-live. ${sansDate} n'ont aucune échéance documentée : elles sont marquées « À confirmer ». Aucune date n'a été inventée.</p>
       <div class="encadre ton-gris petit"><strong>Lecture :</strong> ${badge('vert', 'Confirmé', '✓')} le responsable est désigné dans une source ; ${badge('bleu', "Proposé par l'équipe", '?')} c'est notre suggestion.
         ${badge('violet', 'Engagement documenté')} promis dans une source ; ${badge('bleu', "Recommandation de l'équipe")} proposée par notre équipe, sans engagement écrit.</div>
@@ -312,7 +325,8 @@
       const dossier = s._evenement ? 'Nouvelles sources (mises à jour)' : DOSSIERS[(s.chemin || '').split('/')[0]] || 'Consignes du défi';
       (groupes[dossier] = groupes[dossier] || []).push(s);
     }
-    let html = `<div class="section"><h2>Documents et mises à jour</h2></div>
+    let html = `<header class="tete-page"><div class="eyebrow">Espace 05 · ${Object.keys(A.SOURCES).length} sources</div><h2>Documents et mises à jour</h2>
+      <p class="intro">Retrouver un passage dans les sources, ajouter une nouvelle information et comparer avant et après.</p></header>
       <nav class="sous-nav" aria-label="Sections"><a href="#documents/d-recherche">Rechercher</a><a href="#documents/d-liste">Tous les documents</a><a href="#documents/d-ajout">Ajouter une mise à jour</a><a href="#documents/d-avant-apres">Avant / après</a><a href="#documents/d-export">Exporter</a></nav>
       <section class="carte" id="d-recherche"><h3>Rechercher dans les sources</h3>
         <form id="form-recherche-docs" class="groupe-boutons" role="search">
@@ -378,7 +392,7 @@
     }
   });
   // Ctrl+P imprime toujours le brief de la version affichée.
-  window.addEventListener('beforeprint', () => { $('#zone-impression').innerHTML = briefHtml(etat.courant); });
+  window.addEventListener('beforeprint', () => { $('#zone-impression').innerHTML = briefHtml(etat.courant); A.typographier($('#zone-impression')); });
 
   Object.assign(A.RENDUS, { vue: rendreVue, historique: rendreHistorique, actions: rendreActions, documents: rendreDocuments });
   Object.assign(A, { briefHtml, briefTexte, actionsCsv, telecharger, imprimerBrief });

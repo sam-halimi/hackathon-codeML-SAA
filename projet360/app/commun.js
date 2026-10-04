@@ -171,7 +171,7 @@
       const entree = { evenement: ev.id, titre: ev.titre, date: ev.date, impacts: [], refuses: [] };
       for (const impact of ev.impacts || []) {
         const errs = controlerImpact(impact, ev);
-        if (errs.length) { erreurs.push(...errs.map((e) => `${ev.id} — ${e}`)); entree.refuses.push({ impact, erreurs: errs }); continue; }
+        if (errs.length) { erreurs.push(...errs.map((e) => `${ev.id} : ${e}`)); entree.refuses.push({ impact, erreurs: errs }); continue; }
         const nature = impact.nature || ev.nature;
         const preuve = { source: ev.source && ev.source.id, repere: impact.repere || 'Nouvelle source', passage: impact.passage, role: (NATURES[nature] || {}).libelle };
         if (impact.ajouter) {
@@ -181,12 +181,12 @@
           else if (impact.ajouter === 'propositions') etat.synthese.propositions.push(Object.assign({ nature: 'proposition' }, obj));
           else if (impact.ajouter === 'chronologie') etat.chronologie.push(obj);
           else if (impact.ajouter === 'risques') (etat.risques = etat.risques || []).push(obj);
-          else { erreurs.push(`${ev.id} — collection inconnue « ${impact.ajouter} ».`); continue; }
+          else { erreurs.push(`${ev.id} : collection inconnue « ${impact.ajouter} ».`); continue; }
           entree.impacts.push({ type: 'ajout', collection: impact.ajouter, id: obj.id, titre: obj.titre || obj.texte, nature });
           continue;
         }
         const cible = resoudreCible(etat, impact.cible);
-        if (!cible) { erreurs.push(`${ev.id} — cible introuvable « ${impact.cible} ».`); continue; }
+        if (!cible) { erreurs.push(`${ev.id} : cible introuvable « ${impact.cible} ».`); continue; }
         const avant = {};
         for (const [champ, valeur] of Object.entries(impact.modifs || {})) {
           avant[champ] = cible[champ];

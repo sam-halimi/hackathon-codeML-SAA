@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NOVA — Mémoire de projet</title>
-<meta name="description" content="Projet 360 — NOVA : état du projet au 30 septembre 2026, réponses sourcées, chronologie, actions et mises à jour.">
+<title>NOVA · Mémoire de projet</title>
+<meta name="theme-color" content="#0B2348">
+<meta name="description" content="Projet 360 · NOVA : état du projet au 30 septembre 2026, réponses sourcées, chronologie, actions et mises à jour.">
 <!--STYLES-->
 </head>
 <body>
@@ -13,22 +14,22 @@
 <header class="entete">
   <div class="entete-haut">
     <div class="titre-bloc">
-      <h1>NOVA <span class="titre-fin">— Mémoire de projet</span></h1>
+      <h1><span class="marque">NOVA<span class="marque-point" aria-hidden="true"></span></span> <span class="titre-fin">Mémoire de projet</span></h1>
       <p class="situation" id="situation"></p>
     </div>
     <form class="recherche-rapide" id="form-question" role="search">
       <label for="champ-question" class="visuellement-cache">Poser une question sur le projet</label>
-      <input id="champ-question" type="search" placeholder="Poser une question… ex. : quelle est la date approuvée ?" autocomplete="off">
+      <input id="champ-question" type="search" placeholder="Poser une question sur le projet, ex. : qui a approuvé le report ?" autocomplete="off">
       <button type="submit" class="bouton primaire">Chercher</button>
     </form>
   </div>
   <div class="bandeau-version" id="bandeau-version" hidden></div>
   <nav class="onglets" aria-label="Espaces de l'application">
-    <button type="button" data-onglet="vue">1. Vue d'ensemble</button>
-    <button type="button" data-onglet="questions">2. Questions et preuves</button>
-    <button type="button" data-onglet="historique">3. Historique et décisions</button>
-    <button type="button" data-onglet="actions">4. Actions</button>
-    <button type="button" data-onglet="documents">5. Documents et mises à jour</button>
+    <button type="button" data-onglet="vue"><span class="num">01</span>Vue d'ensemble</button>
+    <button type="button" data-onglet="questions"><span class="num">02</span>Questions et preuves</button>
+    <button type="button" data-onglet="historique"><span class="num">03</span>Historique et décisions</button>
+    <button type="button" data-onglet="actions"><span class="num">04</span>Actions</button>
+    <button type="button" data-onglet="documents"><span class="num">05</span>Documents et mises à jour</button>
   </nav>
 </header>
 

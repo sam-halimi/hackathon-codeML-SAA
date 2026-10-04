@@ -10,9 +10,24 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   const vue = await texte('main');
   ok('Vue : date approuvée 22 octobre 2026', /22 octobre 2026/.test(vue));
   ok('Vue : 0 / 3 conditions remplies', /0 \/ 3 remplies/.test(vue));
-  ok('Vue : montant autorisé 204 000 $', /204 000 \$/.test(vue));
+  ok('Vue : montant autorisé 204 000 $', /204\s000\s\$/.test(vue));
   ok('Vue : responsable Nicolas Perron depuis le 16 septembre', /Nicolas Perron/.test(vue) && /16 septembre 2026/.test(vue));
   ok('Vue : compte à rebours depuis la date de situation (J−22)', /J−22/.test(vue));
+
+  // ---------- Direction artistique : aucun tiret cadratin visible hors des citations du corpus ----------
+  const tirets = [];
+  for (const o of ['vue', 'questions', 'historique', 'actions', 'documents']) {
+    await page.click(`[data-onglet="${o}"]`);
+    const n = await page.evaluate(() => {
+      const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: (t) => (t.parentElement.closest('script, style, textarea, .doc-texte, .preuve-citation, .extrait, #visionneuse') ? 2 : 1) });
+      let c = 0; while (w.nextNode()) if (w.currentNode.nodeValue.includes('\u2014')) c++;
+      return c;
+    });
+    if (n) tirets.push(`${o} : ${n}`);
+  }
+  ok('Aucun tiret cadratin visible hors des citations (règle da-moderne)', tirets.length === 0, tirets.join(' | '));
+  ok('Polices IBM Plex chargées depuis le fichier (hors connexion)', await page.evaluate(async () => { await document.fonts.ready; return document.fonts.check('600 20px "IBM Plex Sans"') && [...document.fonts].some((f) => f.family.includes('IBM Plex') && f.status === 'loaded'); }));
+  await page.click('[data-onglet="vue"]');
 
   // ---------- Brief sur une page ----------
   await page.evaluate(() => { document.getElementById('zone-impression').innerHTML = window.NOVA_APP.briefHtml(window.NOVA_APP.etat.courant); });
@@ -148,7 +163,7 @@ export default async function ({ page, ok, RACINE, captures, dossierCaptures }) 
   ok('Décision de date : le brief cite la nouvelle décision, pas l\'ancienne proposition', /3 octobre 2026/.test(briefDecision) && !/proposée par Boréal le 8 septembre/.test(briefDecision) && /TEST-SRC-2/.test(briefDecision));
   await page.click('[data-version="initiale"]');
   await page.click('[data-onglet="vue"]');
-  ok('Décision de date : la version initiale garde le 22 octobre', /22 octobre 2026/.test(await texte('main .grille')));
+  ok('Décision de date : la version initiale garde le 22 octobre', /22 octobre 2026/.test(await texte('main .hero-date')));
   await page.click('[data-version="actualisee"]');
 
   if (captures) {
